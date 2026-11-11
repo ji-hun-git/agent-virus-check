@@ -1,0 +1,18 @@
+{
+  "id": "benign-devcontainer-postcreate",
+  "title": "Dev container with postCreateCommand npm ci and no initializeCommand",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "ide",
+  "technique": "postCreateCommand runs inside the container after it is built (sandboxed), and there is no initializeCommand running on the host.",
+  "trigger": "Dev container build runs postCreateCommand in-container",
+  "incident": "Legitimate devcontainer.json (mirrors devcontainer-initializecommand without the host hook)",
+  "sources": [],
+  "notes": "Only an in-container install; no host execution.",
+  "files": {
+    ".devcontainer/devcontainer.json": "{\n  \"name\": \"dev\",\n  \"image\": \"mcr.microsoft.com/devcontainers/javascript-node:20\",\n  \"postCreateCommand\": \"npm ci\"\n}\n",
+    "package.json": "{\n  \"name\": \"svc\",\n  \"version\": \"1.0.0\"\n}\n",
+    "src/server.js": "console.log('svc');\n",
+    "README.md": "# svc\n\nReopen in container.\n"
+  }
+}

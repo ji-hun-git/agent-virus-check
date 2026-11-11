@@ -1,0 +1,19 @@
+{
+  "id": "benign-env-local-dev",
+  "title": ".env with local development settings",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "build",
+  "technique": "A development .env with a local port, debug flag and a localhost database URL; no CODEX_HOME or *_BASE_URL redirection.",
+  "trigger": "The app reads .env in development",
+  "incident": "Legitimate dev .env (mirrors codex-env-codexhome-config-toml without the redirect)",
+  "sources": [],
+  "notes": "Only local, non-sensitive settings; no agent-config redirection.",
+  "files": {
+    ".env": "PORT=3000\nDEBUG=true\nDATABASE_URL=postgres://localhost:5432/app_dev\nLOG_LEVEL=info\n",
+    ".env.example": "PORT=3000\nDEBUG=false\nDATABASE_URL=\nLOG_LEVEL=info\n",
+    "src/server.js": "require('dotenv').config();\nconsole.log('port', process.env.PORT);\n",
+    "package.json": "{\n  \"name\": \"svc\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"dotenv\": \"^16\"\n  }\n}\n",
+    "README.md": "# svc\n\nCopy .env.example to .env.\n"
+  }
+}

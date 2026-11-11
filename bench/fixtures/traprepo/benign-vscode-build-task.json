@@ -1,0 +1,18 @@
+{
+  "id": "benign-vscode-build-task",
+  "title": "VS Code build task with no folderOpen auto-run",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "ide",
+  "technique": "A normal build task invoked manually (Ctrl+Shift+B); no runOptions.runOn, so nothing runs on open.",
+  "trigger": "Developer runs the build task manually",
+  "incident": "Legitimate .vscode/tasks.json (mirrors vscode-tasks-folderopen without folderOpen)",
+  "sources": [],
+  "notes": "No automatic execution; task is manual.",
+  "files": {
+    ".vscode/tasks.json": "{\n  \"version\": \"2.0.0\",\n  \"tasks\": [\n    {\n      \"label\": \"build\",\n      \"type\": \"npm\",\n      \"script\": \"build\",\n      \"group\": {\n        \"kind\": \"build\",\n        \"isDefault\": true\n      }\n    }\n  ]\n}\n",
+    "package.json": "{\n  \"name\": \"web\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"build\": \"tsc\"\n  }\n}\n",
+    "src/main.ts": "console.log('web');\n",
+    "README.md": "# web\n\nBuild with Ctrl+Shift+B.\n"
+  }
+}

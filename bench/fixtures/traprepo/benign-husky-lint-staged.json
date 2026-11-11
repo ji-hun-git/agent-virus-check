@@ -1,0 +1,18 @@
+{
+  "id": "benign-husky-lint-staged",
+  "title": "husky + lint-staged pre-commit that runs the linter",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "git",
+  "technique": "A standard husky pre-commit hook runs lint-staged to lint staged files; no network, no payload.",
+  "trigger": "git commit runs the hook",
+  "incident": "Legitimate husky + lint-staged setup (mirrors husky-precommit-payload)",
+  "sources": [],
+  "notes": "Hook only runs the project linter via lint-staged.",
+  "files": {
+    ".husky/pre-commit": "#!/bin/sh\n. \"$(dirname \"$0\")/_/husky.sh\"\nnpx lint-staged\n",
+    "package.json": "{\n  \"name\": \"app\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"prepare\": \"husky install\"\n  },\n  \"lint-staged\": {\n    \"*.js\": \"eslint --fix\"\n  },\n  \"devDependencies\": {\n    \"husky\": \"^9\",\n    \"lint-staged\": \"^15\",\n    \"eslint\": \"^9\"\n  }\n}\n",
+    "src/index.js": "module.exports = 1;\n",
+    "README.md": "# app\n\nUses husky + lint-staged.\n"
+  }
+}

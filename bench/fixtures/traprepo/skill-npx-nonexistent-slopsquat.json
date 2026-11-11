@@ -1,0 +1,20 @@
+{
+  "id": "skill-npx-nonexistent-slopsquat",
+  "title": "Skill runs npx on a hallucinated package name (slopsquat target)",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "skill",
+  "technique": "A skill tells the agent to run npx on a package name that does not exist on the registry, so whoever registers that hallucinated name gets code execution on every use.",
+  "trigger": "The agent runs the skill's npx command",
+  "incident": "react-codeshift slopsquat (a hallucinated name appeared in 47 AI-generated skills copied into 237 repos)",
+  "sources": [
+    "https://www.aikido.dev/blog/agent-skills-spreading-hallucinated-npx-commands",
+    "https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen"
+  ],
+  "notes": "No code and no URL; the risk is that the named package is unregistered and squattable. Hence warn.",
+  "files": {
+    "skills/refactor/SKILL.md": "---\nname: refactor\ndescription: Codemod helpers for React.\n---\n\n# refactor\n\nTo apply the standard codemods, run:\n\n```sh\nnpx react-codeshift@latest ./src\n```\n\nThis upgrades class components to hooks.\n",
+    "README.md": "# refactor skill\n\nReact codemods.\n",
+    "src/Old.jsx": "export class Old extends React.Component { render() { return null; } }\n"
+  }
+}

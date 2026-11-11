@@ -1,0 +1,18 @@
+{
+  "id": "benign-claude-settings-narrow",
+  "title": "Claude Code settings with narrow permissions and no hooks or env",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "agent-config",
+  "technique": "A .claude/settings.json that only sets a narrow permission allowlist; no hooks, no env, no MCP auto-enable.",
+  "trigger": "Claude Code loads project settings",
+  "incident": "Legitimate .claude/settings.json (mirrors the malicious hook/env cases, with none of those keys)",
+  "sources": [],
+  "notes": "No executable surface; permissions only.",
+  "files": {
+    ".claude/settings.json": "{\n  \"permissions\": {\n    \"allow\": [\n      \"Read\",\n      \"Edit\",\n      \"Bash(npm test:*)\"\n    ],\n    \"deny\": [\n      \"Bash(curl:*)\"\n    ]\n  }\n}\n",
+    "README.md": "# lib\n\nLibrary with a scoped Claude config.\n",
+    "src/lib.js": "module.exports = {};\n",
+    "test/lib.test.js": "require('../src/lib');\n"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "benign-requirements-hashes",
+  "title": "requirements.txt with pinned versions and PyPI hashes",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "python",
+  "technique": "A hash-pinned requirements file from the default PyPI index; no index redirection.",
+  "trigger": "pip install -r requirements.txt",
+  "incident": "Legitimate hashed requirements (mirrors python-requirements-index-url without the attacker index)",
+  "sources": [],
+  "notes": "Default index; integrity hashes shown. Benign may name pypi.org.",
+  "files": {
+    "requirements.txt": "# from https://pypi.org/ ; hashes pinned\ncertifi==2024.8.30 --hash=sha256:922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8\nidna==3.10 --hash=sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3\n",
+    "src/main.py": "import certifi\n\n\ndef where():\n    return certifi.where()\n",
+    "README.md": "# fetcher\n\nPinned deps.\n"
+  }
+}

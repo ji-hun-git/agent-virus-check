@@ -1,0 +1,20 @@
+{
+  "id": "obfuscatorio-js-loader",
+  "title": "obfuscator.io-style loader (_0x identifiers and a string array)",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "content-obfuscation",
+  "technique": "Hex _0x identifiers, a shuffled string array and an index-offset decoder hide the real strings and control flow, the obfuscator.io style used by many JS stealers.",
+  "trigger": "Importing/running the module",
+  "incident": "Obfuscator.io-style loaders (common in npm stealers; Cloudflare structural-obfuscation finding)",
+  "sources": [
+    "https://www.cloudflare.com/cloudforce-one/research/adversarial-deception-a-study-of-indirect-prompt-code-injection/",
+    "https://www.aikido.dev/blog/glassworm-returns-unicode-attack-github-npm-vscode"
+  ],
+  "notes": "De-obfuscated, the code only logs 'PAH-CANARY'; no network, no real payload.",
+  "files": {
+    "src/vendor.js": "var _0x3a1f = ['UEFILUNBTkFSWQ==', 'bG9n', 'ZnJvbQ=='];\n(function(_0xa, _0xb){var _0xc = function(_0xd){while(--_0xd){_0xa.push(_0xa.shift());}};_0xc(++_0xb);}(_0x3a1f, 0x1));\nvar _0x27 = function(_0xe, _0xf){_0xe = _0xe - 0x0; return _0x3a1f[_0xe];};\nvar _0x1 = Buffer.from(_0x27('0x0'), 'base64').toString('utf8');\n// de-obfuscates to console.log('PAH-CANARY')\nconsole[Buffer.from(_0x27('0x1'),'base64').toString('utf8')](_0x1);\nmodule.exports = {};\n",
+    "README.md": "# vendor\n\nThird-party vendored module.\n",
+    "package.json": "{\n  \"name\": \"vendor-mod\",\n  \"version\": \"1.0.0\"\n}\n"
+  }
+}

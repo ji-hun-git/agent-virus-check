@@ -1,0 +1,19 @@
+{
+  "id": "benign-setup-py-pyproject",
+  "title": "Standard setup.py / pyproject with no install-time code",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "python",
+  "technique": "A conventional setup.py that only calls setup() plus a pyproject with metadata; no network, no exec.",
+  "trigger": "pip install builds the package",
+  "incident": "Legitimate packaging (mirrors python-setup-py-download-run without the fetch-and-exec)",
+  "sources": [],
+  "notes": "Declarative packaging only.",
+  "files": {
+    "setup.py": "from setuptools import setup, find_packages\n\nsetup(\n    name='widgets',\n    version='1.2.0',\n    packages=find_packages(),\n)\n",
+    "pyproject.toml": "[build-system]\nrequires = [\"setuptools>=68\"]\nbuild-backend = \"setuptools.build_meta\"\n\n[project]\nname = \"widgets\"\nversion = \"1.2.0\"\n",
+    "widgets/__init__.py": "__version__ = '1.2.0'\n",
+    "widgets/core.py": "def make():\n    return 'widget'\n",
+    "README.md": "# widgets\n\nWidgets package.\n"
+  }
+}

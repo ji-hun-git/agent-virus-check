@@ -1,0 +1,17 @@
+{
+  "id": "benign-makefile-shell-gitrev",
+  "title": "Makefile using $(shell git rev-parse --short HEAD) for a version string",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "build",
+  "technique": "A top-level $(shell ...) runs a harmless local git command to embed the commit hash; no download, no remote.",
+  "trigger": "make reads the Makefile",
+  "incident": "Legitimate Makefile (mirrors makefile-shell-download-run without the download)",
+  "sources": [],
+  "notes": "Only runs `git rev-parse` locally; no network.",
+  "files": {
+    "Makefile": "REV := $(shell git rev-parse --short HEAD 2>/dev/null || echo dev)\n\nbuild:\n\t@echo building $(REV)\n\tcc -DREV=\\\"$(REV)\\\" -o app main.c\n",
+    "main.c": "int main(void){return 0;}\n",
+    "README.md": "# app\n\nC app; version from git.\n"
+  }
+}

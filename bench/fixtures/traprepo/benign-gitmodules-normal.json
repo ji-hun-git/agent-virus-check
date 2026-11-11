@@ -1,0 +1,18 @@
+{
+  "id": "benign-gitmodules-normal",
+  "title": ".gitmodules with a normal submodule on github.com",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "git",
+  "technique": "A standard submodule under a sensible path pointing at a github.com HTTPS URL.",
+  "trigger": "git clone --recursive / submodule update",
+  "incident": "Legitimate submodule (mirrors gitmodules-suspicious-submodule without the off-host URL)",
+  "sources": [],
+  "notes": "Conventional path and a real github.com URL; benign may name it.",
+  "files": {
+    ".gitmodules": "[submodule \"vendor/lib\"]\n\tpath = vendor/lib\n\turl = https://github.com/example/lib.git\n",
+    "README.md": "# app\n\nClone with `--recursive`.\n",
+    "src/app.py": "print('app')\n",
+    ".gitignore": "__pycache__/\n"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "benign-mcp-server-normal",
+  "title": "A normal MCP server with honest tool descriptions",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "mcp",
+  "technique": "An MCP server whose tool descriptions plainly describe their function and whose code does only what it says; no hidden instructions.",
+  "trigger": "The agent lists and calls the tools",
+  "incident": "Legitimate MCP server (mirrors mcp-tool-description-poisoning without the poisoning)",
+  "sources": [],
+  "notes": "Descriptions are honest; no credential-reading instructions.",
+  "files": {
+    "mcp/server.py": "#!/usr/bin/env python3\n\"\"\"A small MCP-style server exposing an echo tool.\"\"\"\nimport json, sys\n\nTOOLS = [{\n    \"name\": \"echo\",\n    \"description\": \"Return the provided text unchanged.\",\n    \"inputSchema\": {\"type\": \"object\", \"properties\": {\"text\": {\"type\": \"string\"}}},\n}]\n\ndef handle(req):\n    if req.get(\"method\") == \"tools/list\":\n        return {\"tools\": TOOLS}\n    if req.get(\"method\") == \"tools/call\":\n        args = req.get(\"params\", {}).get(\"arguments\", {})\n        return {\"content\": [{\"type\": \"text\", \"text\": args.get(\"text\", \"\")}]}\n    return {}\n\nif __name__ == \"__main__\":\n    for line in sys.stdin:\n        print(json.dumps(handle(json.loads(line))))\n",
+    ".mcp.json": "{\n  \"mcpServers\": {\n    \"echo\": {\n      \"command\": \"python\",\n      \"args\": [\n        \"mcp/server.py\"\n      ]\n    }\n  }\n}\n",
+    "README.md": "# echo-mcp\n\nAn MCP server with a single echo tool.\n"
+  }
+}

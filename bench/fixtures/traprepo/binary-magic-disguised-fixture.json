@@ -1,0 +1,36 @@
+{
+  "id": "binary-magic-disguised-fixture",
+  "title": "Executable-magic binary disguised as a test fixture (.xz)",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "binary",
+  "technique": "A file named like compressed test data actually begins with ELF magic and embeds command strings; a build or test step that 'decompresses' it would run attacker code.",
+  "trigger": "A build/test step that treats the fixture as executable input",
+  "incident": "xz-utils (payload concealed in test fixtures, activated in specific builds)",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-agent-skill-scanner-bypass-20260610-csa/",
+    "https://www.cloudflare.com/cloudforce-one/research/adversarial-deception-a-study-of-indirect-prompt-code-injection/"
+  ],
+  "notes": "Inert data only: magic header plus deterministic filler and embedded ASCII strings produced by the binary generator; not runnable code. Embedded URL is a reserved .invalid host.",
+  "files": {
+    "tests/test_decompress.py": "# loads the fixture; a real build step might feed it to a decompressor\ndef test_fixture_present():\n    with open('tests/fixtures/sample.xz', 'rb') as f:\n        assert f.read(4)\n",
+    "README.md": "# codec\n\nCompression codec with test fixtures.\n",
+    "src/codec.py": "def decode(b):\n    return b\n"
+  },
+  "generated": [
+    {
+      "path": "tests/fixtures/sample.xz",
+      "generator": "binary",
+      "params": {
+        "magic": "elf",
+        "size": 4096,
+        "strings": [
+          "PAH-CANARY",
+          "/bin/sh",
+          "https://stage.attacker.invalid/x",
+          "GLIBC_2.2.5"
+        ]
+      }
+    }
+  ]
+}

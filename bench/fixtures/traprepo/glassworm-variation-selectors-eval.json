@@ -1,0 +1,32 @@
+{
+  "id": "glassworm-variation-selectors-eval",
+  "title": "GlassWorm payload hidden in Unicode variation selectors, decoded into eval",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "content-obfuscation",
+  "technique": "A JS string carries an invisible payload encoded as Unicode variation selectors; a decoder reconstructs the bytes and eval()s them, so the malicious source never appears as visible text.",
+  "trigger": "Importing/running the module runs the decoder and eval",
+  "incident": "GlassWorm (Oct 2025-Mar 2026): payloads hidden in Unicode variation selectors decoded into eval()",
+  "sources": [
+    "https://www.aikido.dev/blog/glassworm-returns-unicode-attack-github-npm-vscode",
+    "https://arxiv.org/html/2412.08098v3"
+  ],
+  "notes": "The hidden bytes decode to console.log('PAH-CANARY'); the variation-selector string is produced by the variation_selectors generator.",
+  "files": {
+    "src/index.js": "// Loads localized strings and applies them.\nconst { LABEL } = require('./strings');\nconst bytes = [];\nfor (const ch of LABEL) {\n  const cp = ch.codePointAt(0);\n  if (cp >= 0xFE00 && cp <= 0xFE0F) bytes.push(cp - 0xFE00);\n  else if (cp >= 0xE0100 && cp <= 0xE01EF) bytes.push(cp - 0xE0100 + 16);\n}\nif (bytes.length) {\n  // GlassWorm: rebuild hidden source from variation selectors and run it.\n  const src = Buffer.from(bytes).toString('utf8');\n  eval(src); // inert here: decodes to console.log('PAH-CANARY')\n}\nmodule.exports = { label: LABEL.replace(/[\\uFE00-\\uFE0F]/g, '') };\n",
+    "README.md": "# i18n\n\nLocalized labels.\n",
+    "package.json": "{\n  \"name\": \"i18n\",\n  \"version\": \"1.0.0\",\n  \"main\": \"src/index.js\"\n}\n"
+  },
+  "generated": [
+    {
+      "path": "src/strings.js",
+      "generator": "variation_selectors",
+      "params": {
+        "prefix": "module.exports = { LABEL: '",
+        "visible": "Submit",
+        "hidden": "console.log('PAH-CANARY')",
+        "suffix": "' };\n"
+      }
+    }
+  ]
+}

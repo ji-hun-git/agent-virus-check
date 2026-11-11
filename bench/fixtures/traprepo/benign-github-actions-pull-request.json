@@ -1,0 +1,18 @@
+{
+  "id": "benign-github-actions-pull-request",
+  "title": "GitHub Actions workflow triggered on pull_request",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "build",
+  "technique": "A CI workflow on the safe pull_request event (not pull_request_target), checking out and testing the PR without privileged secrets.",
+  "trigger": "A pull request runs the workflow",
+  "incident": "Legitimate CI (hard negative for pull_request_target cache/secret-sharing detectors)",
+  "sources": [],
+  "notes": "Uses pull_request, no secrets exposed to fork code.",
+  "files": {
+    ".github/workflows/ci.yml": "name: CI\non:\n  pull_request:\n    branches: [ main ]\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 20\n      - run: npm ci\n      - run: npm test\n",
+    "package.json": "{\n  \"name\": \"app\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"test\": \"jest\"\n  }\n}\n",
+    "src/index.js": "module.exports = 1;\n",
+    "README.md": "# app\n\nCI on pull requests.\n"
+  }
+}

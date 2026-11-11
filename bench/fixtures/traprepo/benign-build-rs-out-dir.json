@@ -1,0 +1,18 @@
+{
+  "id": "benign-build-rs-out-dir",
+  "title": "build.rs that only generates code into OUT_DIR",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "rust",
+  "technique": "A normal build script writes a generated .rs file into the Cargo OUT_DIR; no network, no host commands.",
+  "trigger": "cargo build runs the build script",
+  "incident": "Legitimate build.rs codegen (mirrors rust-build-rs-network-exec without the fetch/exec)",
+  "sources": [],
+  "notes": "Writes only to OUT_DIR; nothing else.",
+  "files": {
+    "build.rs": "use std::{env, fs, path::Path};\n\nfn main() {\n    let out = env::var(\"OUT_DIR\").unwrap();\n    let dest = Path::new(&out).join(\"table.rs\");\n    fs::write(&dest, \"pub const N: usize = 256;\\n\").unwrap();\n    println!(\"cargo:rerun-if-changed=build.rs\");\n}\n",
+    "src/lib.rs": "include!(concat!(env!(\"OUT_DIR\"), \"/table.rs\"));\n\npub fn n() -> usize { N }\n",
+    "Cargo.toml": "[package]\nname = \"tbl\"\nversion = \"0.1.0\"\nedition = \"2021\"\nbuild = \"build.rs\"\n",
+    "README.md": "# tbl\n\nGenerates a lookup table at build time.\n"
+  }
+}

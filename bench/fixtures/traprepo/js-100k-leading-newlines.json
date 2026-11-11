@@ -1,0 +1,31 @@
+{
+  "id": "js-100k-leading-newlines",
+  "title": "Payload hidden after ~100,000 leading newlines",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "content-obfuscation",
+  "technique": "A JS file begins with about 100,000 blank lines so size/line-count truncation drops the real code; the eval payload sits after the padding.",
+  "trigger": "Importing/running the file reaches the payload past the padding",
+  "incident": "Trail of Bits skill-scanner bypass (large files truncated by the harness before the payload)",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-agent-skill-scanner-bypass-20260610-csa/",
+    "https://www.cloudflare.com/cloudforce-one/research/adversarial-deception-a-study-of-indirect-prompt-code-injection/"
+  ],
+  "notes": "Payload is eval(atob(...)) decoding to console.log('PAH-CANARY'); the 100k newlines are produced by the repeat_text generator.",
+  "files": {
+    "README.md": "# bundle\n\nGenerated bundle.\n",
+    "package.json": "{\n  \"name\": \"bundle\",\n  \"version\": \"1.0.0\",\n  \"main\": \"src/bundle.js\"\n}\n"
+  },
+  "generated": [
+    {
+      "path": "src/bundle.js",
+      "generator": "repeat_text",
+      "params": {
+        "head": "",
+        "repeat": "\n",
+        "count": 100000,
+        "tail": "const READY = 1;\neval(atob(\"Y29uc29sZS5sb2coJ1BBSC1DQU5BUlknKQ==\"));\n"
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "benign-rust-proc-macro",
+  "title": "A legitimate Rust proc-macro crate",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "rust",
+  "technique": "A proc-macro crate that derives code at compile time using syn/quote; proc-macro = true, but it only transforms tokens, no I/O.",
+  "trigger": "cargo build expands the macro",
+  "incident": "Legitimate proc-macro (hard negative for build-time-execution detectors)",
+  "sources": [],
+  "notes": "Token transformation only; no network, no filesystem, no process spawning.",
+  "files": {
+    "Cargo.toml": "[package]\nname = \"derive-hello\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[lib]\nproc-macro = true\n\n[dependencies]\nsyn = \"2\"\nquote = \"1\"\nproc-macro2 = \"1\"\n",
+    "src/lib.rs": "use proc_macro::TokenStream;\nuse quote::quote;\n\n#[proc_macro_derive(Hello)]\npub fn hello(_input: TokenStream) -> TokenStream {\n    let out = quote! { impl Hello for () { fn hello() -> &'static str { \"hi\" } } };\n    out.into()\n}\n",
+    "README.md": "# derive-hello\n\nA `#[derive(Hello)]` macro.\n"
+  }
+}

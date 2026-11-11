@@ -1,0 +1,18 @@
+{
+  "id": "benign-pytest-conftest-fixtures",
+  "title": "pytest conftest.py with fixtures only (no import-time side effects)",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "python",
+  "technique": "conftest.py defines fixtures and has no module-level code that does work at collection time.",
+  "trigger": "pytest collection imports conftest.py",
+  "incident": "Legitimate conftest.py (mirrors python-conftest-beacon without the beacon)",
+  "sources": [],
+  "notes": "Only fixture definitions; nothing runs at import.",
+  "files": {
+    "tests/conftest.py": "import pytest\n\n\n@pytest.fixture\ndef client():\n    return {'session': 'test'}\n\n\n@pytest.fixture\ndef tmp_config(tmp_path):\n    p = tmp_path / 'c.ini'\n    p.write_text('[x]\\n')\n    return p\n",
+    "tests/test_client.py": "def test_client(client):\n    assert client['session'] == 'test'\n",
+    "src/client.py": "def connect():\n    return True\n",
+    "README.md": "# client\n\nRun `pytest`.\n"
+  }
+}

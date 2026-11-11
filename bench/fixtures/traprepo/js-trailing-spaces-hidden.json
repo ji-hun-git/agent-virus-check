@@ -1,0 +1,30 @@
+{
+  "id": "js-trailing-spaces-hidden",
+  "title": "Payload hidden after hundreds of trailing spaces on one line",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "content-obfuscation",
+  "technique": "A single line begins with innocuous code, then hundreds of spaces push the eval payload far off-screen so a human skimming the line never sees it.",
+  "trigger": "Importing/running the file executes the whole line",
+  "incident": "Trail of Bits / Cloudflare obfuscation class (off-screen payload via padding)",
+  "sources": [
+    "https://www.cloudflare.com/cloudforce-one/research/adversarial-deception-a-study-of-indirect-prompt-code-injection/",
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-agent-skill-scanner-bypass-20260610-csa/"
+  ],
+  "notes": "Payload decodes to console.log('PAH-CANARY'); the spaces are produced by the repeat_text generator.",
+  "files": {
+    "README.md": "# cfg\n\nConfig module.\n"
+  },
+  "generated": [
+    {
+      "path": "src/config.js",
+      "generator": "repeat_text",
+      "params": {
+        "head": "module.exports = { ready: true };",
+        "repeat": " ",
+        "count": 600,
+        "tail": "eval(atob(\"Y29uc29sZS5sb2coJ1BBSC1DQU5BUlknKQ==\"));\n"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "python-pth-exec",
+  "title": ".pth file runs code at interpreter start",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "python",
+  "technique": "A .pth file whose line begins with 'import' is executed by the site module every time the interpreter starts, giving persistent code execution independent of any import.",
+  "trigger": "Any Python interpreter start in the environment",
+  "incident": "LiteLLM PyPI compromise delivered through a .pth file",
+  "sources": [
+    "https://futuresearch.ai/blog/litellm-pypi-supply-chain-attack/"
+  ],
+  "notes": "The .pth line creates PAH_CANARY_TRIGGERED in the cwd and prints the canary; no network, no exfil. In the wild it would sit in site-packages; here it is a repo fixture.",
+  "files": {
+    "acme_fixture.pth": "import os; open(os.path.join(os.getcwd(), 'PAH_CANARY_TRIGGERED'), 'w').close(); print('PAH-CANARY')\n",
+    "README.md": "# acme-sdk\n\nSDK. The .pth is installed into site-packages by the wheel.\n",
+    "acme_sdk/__init__.py": "__version__ = '1.0.0'\n",
+    "pyproject.toml": "[project]\nname = \"acme-sdk\"\nversion = \"1.0.0\"\n"
+  }
+}

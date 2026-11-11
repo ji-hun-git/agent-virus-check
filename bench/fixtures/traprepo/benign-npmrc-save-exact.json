@@ -1,0 +1,18 @@
+{
+  "id": "benign-npmrc-save-exact",
+  "title": ".npmrc with cache and save-exact settings on the default registry",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "package-install",
+  "technique": "A repo .npmrc that sets save-exact and engine-strict and keeps the default public registry; no registry override, no injected token.",
+  "trigger": "npm install reads the local .npmrc",
+  "incident": "Legitimate .npmrc (mirrors npmrc-registry-redirect without the redirect)",
+  "sources": [],
+  "notes": "Default registry retained; only behavior flags set.",
+  "files": {
+    ".npmrc": "save-exact=true\nengine-strict=true\nfund=false\naudit=false\n",
+    "package.json": "{\n  \"name\": \"lib\",\n  \"version\": \"1.0.0\",\n  \"engines\": {\n    \"node\": \">=20\"\n  }\n}\n",
+    "src/index.js": "module.exports = {};\n",
+    "README.md": "# lib\n\nLibrary.\n"
+  }
+}

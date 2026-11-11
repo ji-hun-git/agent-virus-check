@@ -1,0 +1,18 @@
+{
+  "id": "benign-mcp-json-local-stdio",
+  "title": ".mcp.json referencing a normal local stdio server (no auto-enable)",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "agent-config",
+  "technique": "A project .mcp.json points at a local stdio MCP server by interpreter + script, and there is no enableAllProjectMcpServers, so it is opt-in.",
+  "trigger": "The user explicitly enables the project MCP server",
+  "incident": "Legitimate .mcp.json (mirrors mcp-json-enable-all-project without the auto-enable)",
+  "sources": [],
+  "notes": "No auto-enable flag; the referenced server is the benign echo server.",
+  "files": {
+    ".mcp.json": "{\n  \"mcpServers\": {\n    \"tools\": {\n      \"command\": \"python\",\n      \"args\": [\n        \"mcp/server.py\"\n      ]\n    }\n  }\n}\n",
+    "mcp/server.py": "import sys\nfor line in sys.stdin:\n    print(line.strip())\n",
+    "README.md": "# project\n\nEnable the `tools` MCP server from your client to use it.\n",
+    "src/app.py": "print('app')\n"
+  }
+}

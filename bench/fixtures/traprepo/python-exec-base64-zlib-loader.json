@@ -1,0 +1,21 @@
+{
+  "id": "python-exec-base64-zlib-loader",
+  "title": "exec() of a base64+zlib blob (Hades-style loader)",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "python",
+  "technique": "The module decodes a base64+zlib (and, in the wild, marshal) blob and exec()s it, hiding the real payload from static readers behind a decode-then-execute step.",
+  "trigger": "Importing or running the module",
+  "incident": "Hades PyPI campaign (Jun 2026): base64/zlib/marshal exec loaders",
+  "sources": [
+    "https://www.stepsecurity.io/blog/the-hades-campaign-pypi-packages",
+    "https://www.cloudflare.com/cloudforce-one/research/adversarial-deception-a-study-of-indirect-prompt-code-injection/"
+  ],
+  "notes": "The decoded inner payload is literally print('PAH-CANARY'); decoding then executing it is inert.",
+  "files": {
+    "pkg/__init__.py": "import base64, zlib\n# decode-then-exec loader; inner payload is inert.\n_B = 'eJwrKMrMK9FQD3D00HV29HMMilTXBAA96QWR'\nexec(zlib.decompress(base64.b64decode(_B)))\n",
+    "pkg/util.py": "def helper():\n    return 1\n",
+    "README.md": "# pkg\n\nA package.\n",
+    "pyproject.toml": "[project]\nname = \"pkg\"\nversion = \"0.0.1\"\n"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "benign-skill-md-normal",
+  "title": "A normal SKILL.md with no setup script",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "skill",
+  "technique": "An Agent Skill whose SKILL.md documents what it does and how to call it; no fetch-and-run, no npx of unknown packages.",
+  "trigger": "The agent loads the skill",
+  "incident": "Legitimate skill (mirrors skill-md-fetch-binary / slopsquat without the payload)",
+  "sources": [],
+  "notes": "Pure documentation plus a local helper; nothing downloaded or executed from a remote host.",
+  "files": {
+    "skills/csv/SKILL.md": "---\nname: csv\ndescription: Read and summarize CSV files.\n---\n\n# csv\n\nUse `scripts/summarize.py <file.csv>` to print row counts and column types.\nNo setup required.\n",
+    "skills/csv/scripts/summarize.py": "import csv, sys\n\n\ndef summarize(path):\n    with open(path, newline='') as f:\n        rows = list(csv.reader(f))\n    print('rows', len(rows))\n\n\nif __name__ == '__main__':\n    summarize(sys.argv[1])\n",
+    "README.md": "# csv skill\n\nCSV helpers.\n"
+  }
+}

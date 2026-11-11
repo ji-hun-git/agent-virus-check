@@ -1,0 +1,19 @@
+{
+  "id": "benign-gradle-wrapper-official",
+  "title": "Official Gradle wrapper pointing at services.gradle.org",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "build",
+  "technique": "A standard gradle-wrapper.properties whose distributionUrl is the official services.gradle.org host.",
+  "trigger": "./gradlew downloads the official distribution",
+  "incident": "Legitimate Gradle wrapper (mirrors gradle-wrapper-distributionurl-offhost with the official host)",
+  "sources": [],
+  "notes": "Official distribution host; benign may name it.",
+  "files": {
+    "gradle/wrapper/gradle-wrapper.properties": "distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.5-bin.zip\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\n",
+    "build.gradle": "plugins { id 'java' }\n",
+    "settings.gradle": "rootProject.name = 'svc'\n",
+    "src/main/java/App.java": "public class App { public static void main(String[] a){} }\n",
+    "README.md": "# svc\n\nBuild with `./gradlew build`.\n"
+  }
+}

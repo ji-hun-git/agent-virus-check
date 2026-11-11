@@ -1,0 +1,17 @@
+{
+  "id": "benign-emoji-vs16-locales",
+  "title": "Emoji with VS16 and Korean/Arabic/Hebrew UI text",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "content-obfuscation",
+  "technique": "A localization file with legitimate non-ASCII: emoji using the U+FE0F variation selector and Korean, Arabic and Hebrew strings (including RTL text).",
+  "trigger": "Importing/reading the localization file",
+  "incident": "Legitimate Unicode (hard negative for variation-selector and bidi detectors)",
+  "sources": [],
+  "notes": "Real emoji VS16 and RTL locale text; no tag characters, no hidden payload. Tests for Unicode false positives.",
+  "files": {
+    "src/i18n.json": "{\n  \"en\": {\n    \"save\": \"Save ✔️\",\n    \"warning\": \"Warning ⚠️\"\n  },\n  \"ko\": {\n    \"save\": \"저장\",\n    \"warning\": \"경고\"\n  },\n  \"ar\": {\n    \"save\": \"حفظ\",\n    \"warning\": \"تحذير\"\n  },\n  \"he\": {\n    \"save\": \"שמור\",\n    \"warning\": \"אזהרה\"\n  }\n}\n",
+    "src/i18n.js": "module.exports = require('./i18n.json');\n",
+    "README.md": "# i18n\n\nLocalized UI strings 🌍️.\n"
+  }
+}

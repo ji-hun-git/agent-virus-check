@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use personal-anti-hack, please cite it as below."
+title: "personal-anti-hack: a local shield for people who let AI agents open, install and run code"
+authors:
+  - family-names: Chae
+    given-names: Jihun
+date-released: 2026-11-11
+version: "0.1.0"
+url: "https://github.com/ji-hun-git/personal-anti-hack"
+repository-code: "https://github.com/ji-hun-git/personal-anti-hack"
+license: MIT
+keywords:
+  - software supply chain
+  - malware detection
+  - AI coding agents
+  - prompt injection
+  - MCP
+  - agent skills

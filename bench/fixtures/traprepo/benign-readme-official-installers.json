@@ -1,0 +1,18 @@
+{
+  "id": "benign-readme-official-installers",
+  "title": "README that uses official installer URLs",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "instruction-file",
+  "technique": "The README's setup references the real official installers (rustup, uv, bun) over https; no lookalike domains, no registry switching.",
+  "trigger": "A developer follows the README",
+  "incident": "Legitimate install docs (mirrors readme-curl-bash-lookalike with genuine official hosts)",
+  "sources": [],
+  "notes": "Benign cases may name real official installer hosts as text.",
+  "files": {
+    "README.md": "# toolkit\n\n## Prerequisites\n\n- Rust: `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`\n- uv: `curl -LsSf https://astral.sh/uv/install.sh | sh`\n- bun: `curl -fsSL https://bun.sh/install | bash`\n\nThen `uv sync` and `cargo build`.\n",
+    "Cargo.toml": "[package]\nname = \"toolkit\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+    "src/main.rs": "fn main() {}\n",
+    "pyproject.toml": "[project]\nname = \"toolkit\"\nversion = \"0.1.0\"\n"
+  }
+}

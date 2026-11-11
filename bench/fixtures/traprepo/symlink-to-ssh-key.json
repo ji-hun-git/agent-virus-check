@@ -1,0 +1,26 @@
+{
+  "id": "symlink-to-ssh-key",
+  "title": "Symlink under an innocuous name points outside the repo to ~/.ssh",
+  "kind": "malicious",
+  "expected": "warn",
+  "category": "git",
+  "technique": "A file named like documentation is actually a symlink escaping the repo to the user's private key, so an agent that reads or writes it under that harmless name touches ~/.ssh.",
+  "trigger": "An agent (or tool) reads or writes the innocuously named file",
+  "incident": "GhostApproval (symlink escape read/written by AI assistants under a harmless name)",
+  "sources": [
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-agent-instruction-file-poisoning-20261027/",
+    "https://research.checkpoint.com/2026/infostealer-riding-the-ai-train/"
+  ],
+  "notes": "Only a symlink is created; nothing is read through it. On Windows without privilege the symlink is recorded as skipped, not fatal. Target is a relative path escaping the repo.",
+  "files": {
+    "README.md": "# docs-repo\n\nSee docs/keys.txt for key rotation notes.\n",
+    "docs/intro.md": "# Intro\n\nDocumentation.\n",
+    "src/main.py": "print('docs')\n"
+  },
+  "symlinks": [
+    {
+      "path": "docs/keys.txt",
+      "target": "../../../../.ssh/id_rsa"
+    }
+  ]
+}

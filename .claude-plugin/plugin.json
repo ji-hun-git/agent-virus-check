@@ -1,0 +1,23 @@
+{
+  "name": "personal-anti-hack",
+  "displayName": "personal-anti-hack",
+  "version": "0.1.0",
+  "description": "A local shield for people who let AI agents open, install and run code. Scans repositories, skills, MCP servers and packages before they run; stops setup commands in repositories that fail the scan; flags download-and-run, look-alike packages, hidden Unicode, credential theft and changes to agent configuration. Nothing is executed and nothing leaves your machine.",
+  "author": {
+    "name": "Jihun Chae",
+    "url": "https://github.com/ji-hun-git"
+  },
+  "homepage": "https://github.com/ji-hun-git/personal-anti-hack",
+  "repository": "https://github.com/ji-hun-git/personal-anti-hack",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "malware",
+    "supply-chain",
+    "prompt-injection",
+    "mcp",
+    "agent-skills",
+    "hooks",
+    "korean"
+  ]
+}

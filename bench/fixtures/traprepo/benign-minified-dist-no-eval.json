@@ -1,0 +1,29 @@
+{
+  "id": "benign-minified-dist-no-eval",
+  "title": "Minified dist bundle with long lines but no eval",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "content-obfuscation",
+  "technique": "A legitimately minified bundle: long single-ish lines and short identifiers, but no eval/atob/Function dynamic execution.",
+  "trigger": "Importing the bundle",
+  "incident": "Legitimate minified output (mirrors js-multimb-single-line without any decode-then-exec)",
+  "sources": [],
+  "notes": "Long line is produced by the repeat_text generator; contains only array pushes and a return, no eval.",
+  "files": {
+    "README.md": "# ui\n\nPrebuilt UI bundle in dist/.\n",
+    "package.json": "{\n  \"name\": \"ui\",\n  \"version\": \"2.0.0\",\n  \"main\": \"dist/ui.min.js\"\n}\n",
+    "src/ui.js": "export const ui = () => 'ui';\n"
+  },
+  "generated": [
+    {
+      "path": "dist/ui.min.js",
+      "generator": "repeat_text",
+      "params": {
+        "head": "(function(){var a=[];",
+        "repeat": "a.push(1);",
+        "count": 20000,
+        "tail": "return a.length;})();\n"
+      }
+    }
+  ]
+}
