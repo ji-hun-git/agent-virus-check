@@ -1,0 +1,18 @@
+{
+  "id": "benign-workflow-issue-env",
+  "title": "Issue triage workflow that passes the title through env",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "ci",
+  "technique": "An issues workflow reads the issue title the safe way (through env:, quoted) and labels the issue.",
+  "trigger": "Issue opened",
+  "incident": "(benign twin of workflow-secrets-exfil)",
+  "sources": [
+    "https://blog.gitguardian.com/ghostaction-github-actions-supply-chain-attack-returns/"
+  ],
+  "notes": "Legitimate workflow.",
+  "files": {
+    ".github/workflows/triage.yml": "name: Triage\non:\n  issues:\n    types: [opened]\npermissions:\n  issues: write\njobs:\n  label:\n    runs-on: ubuntu-latest\n    steps:\n      - env:\n          TITLE: ${{ github.event.issue.title }}\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n        run: |\n          case \"$TITLE\" in *bug*) gh issue edit ${{ github.event.issue.number }} --add-label bug ;; esac\n",
+    "README.md": "# repo\n"
+  }
+}

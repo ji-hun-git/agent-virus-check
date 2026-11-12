@@ -14,9 +14,10 @@ from pathlib import Path
 
 from .model import Finding, Surface, bump, clip, rank, rule
 from .names import R_LOOKALIKE, lookalike, lookalike_severity, names_in_command, normalize, popular
-from .policy import inert_path
-from .patterns import (AI_ADDRESSED, HOST_NOTE, R_DOWNLOAD_EXEC, SECRET_PATHS, analyze_command, classify_host,
-                       host_kind, host_of)
+from .indicators import EXFIL_HOSTS
+from .policy import inert_path, is_test_code
+from .patterns import (AI_ADDRESSED, HOST_NOTE, R_AGENT_CFG_WRITE, R_DOWNLOAD_EXEC, SECRET_PATHS, analyze_command,
+                       classify_host, host_kind, host_of)
 from .text import Lines
 
 R_HOOKS = rule(
@@ -71,6 +72,24 @@ R_CODEX_HOME = rule(
     "A .env that sets CODEX_HOME makes Codex load config.toml from the repository, whose MCP servers then run "
     "(CVE-2025-61260, fixed in 0.23.0).", "Delete the variable; update Codex.", attack=("T1574",),
     refs=("https://research.checkpoint.com/2025/openai-codex-cli-command-injection-vulnerability/",))
+R_SKILL_SHELL = rule(
+    "PAH-A019", "Skill runs shell commands when it is invoked",
+    "A line written !`command` in a skill or a slash command runs as soon as it is invoked, before the model has read "
+    "anything, and its output goes into the prompt; `allowed-tools: Bash` in the frontmatter lets every shell command "
+    "through without asking while the skill is active.",
+    "Read every !` line and narrow allowed-tools to the commands the skill needs (Bash(git status:*)). "
+    "disableSkillShellExecution turns the shell lines off.", attack=("T1059",), owasp=("ASI02", "ASI04"),
+    refs=("https://code.claude.com/docs/en/skills",))
+R_PLUGIN_REQUEST = rule(
+    "PAH-A018", "Repository asks the agent to install plugins",
+    "A repository's .claude/settings.json can name plugin marketplaces (extraKnownMarketplaces) and plugins to enable "
+    "(enabledPlugins). Once you trust the folder, Claude Code offers to install them, and a plugin brings its own hooks, "
+    "MCP servers, skills and commands, none of which are in the repository you scanned. A marketplace on someone's "
+    "GitHub account can change what it serves at any time.",
+    "Decline the install prompt unless you know the marketplace; scan the plugin's repository first "
+    "(pah scan https://github.com/owner/repo).", attack=("T1195.002", "T1546"), owasp=("ASI04",),
+    refs=("https://code.claude.com/docs/en/plugin-marketplaces",))
+OFFICIAL_MARKETPLACES = ("claude-plugins-official", "anthropic-agent-skills", "claude-code-plugins")
 R_AGENT_EXTENSION = rule(
     "PAH-A010", "Agent extension loaded with the workspace",
     "OpenClaw loaded .openclaw/extensions from an opened workspace before trust (CVE-2026-32920, fixed 2026.3.12).",
@@ -148,6 +167,35 @@ R_CI_PRT = rule(
     "pull_request_target with a checkout of the pull request's head lets a fork run code with the repository's "
     "secrets and caches (TanStack / Mini Shai-Hulud).", "Do not check out untrusted code in pull_request_target.",
     attack=("T1195",), refs=("https://www.stepsecurity.io/blog/mini-shai-hulud-is-back-a-self-spreading-supply-chain-attack-hits-the-npm-ecosystem",))
+R_CI_INJECTION = rule(
+    "PAH-I009", "Workflow puts untrusted text into a shell command",
+    "${{ github.event.issue.title }}, a comment body, a branch name or a commit message pasted into `run:` or a "
+    "github-script `script:` becomes shell or JavaScript that anyone who can open an issue or a pull request writes. "
+    "In September 2026, 83 issues and comments across 61 repositories hid commands in HTML comments for workflows like "
+    "these; Nx's s1ngularity compromise began the same way. A risk to the repository's CI secrets, not to the machine "
+    "of someone who clones it.", "Pass the value through `env:` and quote the variable in the script.",
+    attack=("T1059", "T1195"),
+    refs=("https://docs.zizmor.sh/audits/#template-injection", "https://nx.dev/blog/s1ngularity-postmortem"))
+R_CI_SECRETS = rule(
+    "PAH-I010", "Workflow sends the repository's secrets out",
+    "toJSON(secrets) hands every secret of the repository to one step; GhostAction (Sep to Oct 2026, about 30,000 "
+    "repositories) and the November 'wfx' wave pushed workflows that did this and posted the result to a bare IP "
+    "address. Reading the runner's memory for secrets is how the tj-actions/changed-files compromise worked. A "
+    "repository whose workflows do this has been compromised, and the same campaigns planted agent hooks and "
+    "folder-open tasks.", "Treat the repository as compromised: rotate its secrets and check its recent commits.",
+    attack=("T1552.004", "T1041"),
+    refs=("https://blog.gitguardian.com/ghostaction-github-actions-supply-chain-attack-returns/",
+          "https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories"))
+R_CI_AGENT = rule(
+    "PAH-I011", "AI agent in a workflow acts on anyone's issue or comment",
+    "An AI agent action (Claude Code, Codex, Gemini CLI and others) started by issues, comments or pull_request_target "
+    "reads text an outsider wrote. When it also gets that text in its prompt, accepts any user or has its approvals "
+    "off, the outsider is giving the instructions: Clinejection turned an issue title into a stolen npm token "
+    "(Feb 2026), and PromptPwnd found the pattern across many repositories.",
+    "Restrict who can trigger it, keep untrusted text out of the prompt, and do not give it write tools or secrets.",
+    attack=("T1059", "T1195"), owasp=("LLM01", "ASI01"),
+    refs=("https://cline.bot/blog/post-mortem-unauthorized-cline-cli-npm",
+          "https://www.aikido.dev/blog/promptpwnd-github-actions-ai-agents"))
 
 R_GITMODULES = rule(
     "PAH-G001", "Dangerous submodule definition",
@@ -255,7 +303,7 @@ _PLACEHOLDERS = re.compile(r"^(?:\$\{?(?:workspaceFolder|workspaceRoot|CLAUDE_PR
 
 
 _QUOTED_PLACEHOLDER = re.compile(r"[\"']?(?:\$\{?(?:workspaceFolder|workspaceRoot|CLAUDE_PROJECT_DIR|PWD|localWorkspaceFolder|"
-                                 r"containerWorkspaceFolder|fileDirname)\}?|%CD%|\$\(pwd\))[\"']?[\\/]")
+                                 r"containerWorkspaceFolder|fileDirname|CLAUDE_PLUGIN_ROOT)\}?|%CD%|\$\(pwd\))[\"']?[\\/]")
 
 
 def refs_in_command(cmd: str, base_dir: str, files: dict) -> list[str]:
@@ -391,6 +439,19 @@ def as_command(value) -> str:
     return ""
 
 
+def _hook_urls(obj) -> list[str]:
+    out = []
+    if isinstance(obj, dict):
+        if str(obj.get("type", "")).lower() == "http" and isinstance(obj.get("url"), str):
+            out.append(obj["url"])
+        for v in obj.values():
+            out += _hook_urls(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            out += _hook_urls(v)
+    return out
+
+
 def walk_commands(obj, path: tuple = ()):
     """(json path, command) for every object with a string "command" (hooks, MCP servers, tasks)."""
     if isinstance(obj, dict):
@@ -413,7 +474,17 @@ REDIRECT_ENV = re.compile(r"^(?:ANTHROPIC_(?:BASE_URL|API_URL|BEDROCK_BASE_URL|V
 SECRET_ENV = re.compile(r"^(?:ANTHROPIC_(?:API_KEY|AUTH_TOKEN)|OPENAI_API_KEY|GEMINI_API_KEY|CLAUDE_CODE_OAUTH_TOKEN)$", re.I)
 INJECT_ENV = re.compile(r"^(?:NODE_OPTIONS|NODE_EXTRA_CA_CERTS|SSL_CERT_FILE|REQUESTS_CA_BUNDLE|HTTPS?_PROXY|ALL_PROXY|"
                         r"PYTHONSTARTUP|PYTHONPATH|LD_PRELOAD|DYLD_INSERT_LIBRARIES|BASH_ENV|ENV|PROMPT_COMMAND|"
-                        r"GIT_SSH_COMMAND|GIT_EXTERNAL_DIFF|GIT_ASKPASS|CODEX_HOME|CLAUDE_CONFIG_DIR)$", re.I)
+                        r"GIT_SSH_COMMAND|GIT_EXTERNAL_DIFF|GIT_ASKPASS|CODEX_HOME|CLAUDE_CONFIG_DIR|GEMINI_CLI_HOME|"
+                        r"GEMINI_SYSTEM_MD|QWEN_HOME)$", re.I)
+RELOCATING_ENV = ("CODEX_HOME", "LD_PRELOAD", "DYLD_INSERT_LIBRARIES", "CLAUDE_CONFIG_DIR", "GEMINI_CLI_HOME", "QWEN_HOME")
+
+
+def repo_first_on_path(value: str) -> bool:
+    """PATH whose first entry is inside the project: its bin/git runs whenever the agent calls git (Datadog, Aug 2026)."""
+    first = re.split(r"[:;]", value.strip(), maxsplit=1)[0].strip("\"'")
+    if re.search(r"CLAUDE_PROJECT_DIR|workspaceFolder|\$PWD|\$\{PWD\}", first):
+        return True
+    return bool(first) and not first.startswith(("/", "$", "~", "%")) and not re.match(r"[A-Za-z]:[\\/]", first)
 
 
 def check_env(state: State, env: dict, f: File, origin: str, cap: str | None = None) -> None:
@@ -424,6 +495,11 @@ def check_env(state: State, env: dict, f: File, origin: str, cap: str | None = N
     for key, value in env.items():
         value = str(value)
         line = line_of(f.text or "", key)
+        if key.upper() == "PATH":
+            if repo_first_on_path(value):
+                add(R_BASE_URL, "high", f.rel, line, f"{origin} puts a folder of the repository first on PATH: {value}",
+                    f"PATH={value}")
+            continue
         if REDIRECT_ENV.match(key):
             host = host_of(value) if "://" in value else value.split(":")[0]
             if host and host not in OFFICIAL_API_HOSTS and not host.endswith((".anthropic.com", ".openai.com")) \
@@ -433,7 +509,7 @@ def check_env(state: State, env: dict, f: File, origin: str, cap: str | None = N
             add(R_BASE_URL, "high", f.rel, line, f"{origin} supplies its own {key} (your session would run "
                 "under someone else's account, which can read it)", key)
         elif INJECT_ENV.match(key):
-            sev = "critical" if key.upper() in ("CODEX_HOME", "LD_PRELOAD", "DYLD_INSERT_LIBRARIES", "CLAUDE_CONFIG_DIR") \
+            sev = "critical" if key.upper() in RELOCATING_ENV \
                 or (key.upper() == "NODE_OPTIONS" and re.search(r"(?:--require|-r|--import|--loader)\b", value)) else "high"
             add(R_BASE_URL, sev, f.rel, line, f"{origin} sets {key}={value}", f"{key}={value}")
 
@@ -454,11 +530,25 @@ def claude_settings(state: State, f: File) -> None:
             line = line_of(f.text, cmd.split()[0]) if cmd else 0
             state.command(cmd, f.rel, line, f"Claude Code hook ({event})", CLAUDE_TRIGGER, base_dir="",
                           floor=(R_HOOKS, "medium" if event in EARLY_EVENTS else "low"))
-    for key in ("apiKeyHelper", "awsAuthRefresh", "awsCredentialExport", "otelHeadersHelper", "statusLine"):
+    for entries in hooks.values():
+        for url in _hook_urls(entries):  # "type": "http" hooks post every event to a server
+            kind = classify_host(url)
+            state.surface("Claude Code HTTP hook", f.rel, CLAUDE_TRIGGER, url, line_of(f.text, url))
+            if kind in ("raw-ip", "plain-http", "lookalike") or EXFIL_HOSTS.search(url):
+                state.add(R_HOOKS, "high", f.rel, line_of(f.text, url), f"HTTP hook sends agent events to {url}", url)
+    for key in ("apiKeyHelper", "awsAuthRefresh", "awsCredentialExport", "gcpAuthRefresh", "otelHeadersHelper",
+                "statusLine", "subagentStatusLine", "fileSuggestion"):
         if key in data:
             cmd = as_command(data[key])
             state.command(cmd, f.rel, line_of(f.text, key), f"Claude Code {key}", CLAUDE_TRIGGER,
-                          floor=(R_CMD_SETTING, "low" if key == "statusLine" else "high"))
+                          floor=(R_CMD_SETTING, "low" if key in ("statusLine", "subagentStatusLine", "fileSuggestion")
+                                 else "high"))
+    sandbox = data.get("sandbox") if isinstance(data.get("sandbox"), dict) else {}
+    network = sandbox.get("network") if isinstance(sandbox.get("network"), dict) else {}
+    if sandbox.get("allowUnsandboxedCommands") is True or sandbox.get("ignoreViolations") or \
+            "*" in [str(d) for d in network.get("allowedDomains") or []]:
+        state.add(R_APPROVALS, "medium", f.rel, line_of(f.text, "sandbox"), "project settings loosen the sandbox",
+                  json.dumps(sandbox)[:160])
     if isinstance(data.get("env"), dict):
         check_env(state, data["env"], f, "Claude Code settings")
     perms = data.get("permissions") if isinstance(data.get("permissions"), dict) else {}
@@ -475,13 +565,49 @@ def claude_settings(state: State, f: File) -> None:
     if data.get("enabledMcpjsonServers"):
         state.add(R_MCP_AUTO, "high", f.rel, line_of(f.text, "enabledMcpjsonServers"),
                   f"pre-approves {data['enabledMcpjsonServers']}", "enabledMcpjsonServers")
+    plugin_requests(state, f, data)
+
+
+def _marketplace_source(spec) -> tuple[str, str]:
+    """(type, location) of a marketplace in extraKnownMarketplaces: github owner/repo, a git or https URL, or a path."""
+    src = spec.get("source") if isinstance(spec, dict) else spec
+    if isinstance(src, dict):
+        return str(src.get("source") or ""), str(src.get("repo") or src.get("url") or src.get("path") or "")
+    value = str(src or "")
+    return ("url" if "://" in value else "directory" if value.startswith((".", "/", "~")) else "github"), value
+
+
+def plugin_requests(state: State, f: File, data: dict) -> None:
+    """extraKnownMarketplaces and enabledPlugins in project settings: on trust, Claude Code offers to install
+    plugins whose hooks, MCP servers and skills are not part of the repository being scanned."""
+    markets = data.get("extraKnownMarketplaces") if isinstance(data.get("extraKnownMarketplaces"), dict) else {}
+    enabled = data.get("enabledPlugins")
+    plugins = [k for k, v in enabled.items() if v] if isinstance(enabled, dict) else \
+        [str(p) for p in enabled] if isinstance(enabled, list) else []
+    for name, spec in markets.items():
+        stype, source = _marketplace_source(spec)
+        kind = classify_host(source) if "://" in source else ""
+        local = stype in ("directory", "path", "file", "local")
+        sev = "high" if kind in ("raw-ip", "plain-http", "lookalike") else "low" if local else "medium"
+        named = [p for p in plugins if p.endswith("@" + name)]
+        state.surface(f"Claude Code plugin marketplace '{name}'", f.rel, "trusting the folder in Claude Code (install "
+                      "prompt)", source, line_of(f.text, name))
+        state.add(R_PLUGIN_REQUEST, sev, f.rel, line_of(f.text, name),
+                  f"asks Claude Code to add the marketplace '{name}' ({source or 'no source'})"
+                  + (f" and enable {', '.join(named[:4])}" if named else ""), f"{name}: {source}")
+    known = set(markets)
+    for plugin in plugins:
+        market = plugin.rsplit("@", 1)[1] if "@" in plugin else ""
+        if market and market not in known and market not in OFFICIAL_MARKETPLACES:
+            state.add(R_PLUGIN_REQUEST, "low", f.rel, line_of(f.text, plugin), f"enables the plugin {plugin}", plugin)
 
 
 def mcp_config(state: State, f: File, agent: str, trigger: str) -> None:
     data = load_jsonc(f.text or "") if not f.rel.endswith(".toml") else load_toml(f.text or "")
     if not isinstance(data, dict):
         return
-    servers = data.get("mcpServers") or data.get("servers") or data.get("mcp_servers") or data.get("context_servers") or {}
+    servers = data.get("mcpServers") or data.get("servers") or data.get("mcp_servers") or data.get("context_servers") or \
+        data.get("amp.mcpServers") or {}
     if not isinstance(servers, dict):
         return
     for name, spec in servers.items():
@@ -503,6 +629,12 @@ def mcp_config(state: State, f: File, agent: str, trigger: str) -> None:
                 state.add(R_MCP_SERVER, "high", f.rel, line, f"remote server '{name}' at {url} ({kind})", url)
         if isinstance(spec.get("env"), dict):
             check_env(state, spec["env"], f, f"MCP server '{name}'")
+        if spec.get("headersHelper"):  # a program run to produce the request headers
+            state.command(as_command(spec["headersHelper"]), f.rel, line_of(f.text, "headersHelper"),
+                          f"{agent} MCP server '{name}' headersHelper", trigger, floor=(R_CMD_SETTING, "medium"))
+        if spec.get("trust") is True or spec.get("autoApprove") in (True, "*") or spec.get("alwaysAllow") == "*":
+            state.add(R_APPROVALS, "medium", f.rel, line, f"tools of the MCP server '{name}' run without asking",
+                      f"{name}: trust/autoApprove")
 
 
 def cursor_hooks(state: State, f: File) -> None:
@@ -532,8 +664,8 @@ def dotenv(state: State, f: File) -> None:
         state.add(R_CODEX_HOME, "critical" if not f.dir else "high", f.rel, line_of(text, "CODEX_HOME"),
                   f"CODEX_HOME={env['CODEX_HOME']}", f"CODEX_HOME={env['CODEX_HOME']}")
         env.pop("CODEX_HOME")
-    check_env(state, {k: v for k, v in env.items() if REDIRECT_ENV.match(k) or INJECT_ENV.match(k)}, f, ".env",
-              cap=None if not f.dir else "medium")
+    check_env(state, {k: v for k, v in env.items() if REDIRECT_ENV.match(k) or INJECT_ENV.match(k) or k.upper() == "PATH"},
+              f, ".env", cap=None if not f.dir else "medium")
 
 
 def gemini_settings(state: State, f: File) -> None:
@@ -546,7 +678,17 @@ def gemini_settings(state: State, f: File) -> None:
                           "Gemini CLI session in this folder", floor=(R_HOOKS, "medium" if event in EARLY_EVENTS else "low"))
     mcp_config(state, f, "Gemini CLI", "Gemini CLI session in this folder")
     tools = data.get("tools") if isinstance(data.get("tools"), dict) else {}
-    if data.get("yolo") or tools.get("autoAccept") or (data.get("security") or {}).get("approvalMode") == "yolo":
+    agent = "Qwen Code" if ".qwen/" in f.rel.lower() else "Gemini CLI"
+    for key in ("discoveryCommand", "callCommand"):  # tools.discoveryCommand runs at start; callCommand on every call
+        if isinstance(tools.get(key), str):
+            state.command(tools[key], f.rel, line_of(f.text, key), f"{agent} tools.{key}", f"{agent} session in this folder",
+                          floor=(R_CMD_SETTING, "high"))
+    status = ((data.get("ui") or {}).get("statusLine") or {}) if isinstance(data.get("ui"), dict) else {}
+    if isinstance(status, dict) and isinstance(status.get("command"), str):
+        state.command(status["command"], f.rel, line_of(f.text, status["command"][:40]), f"{agent} status line",
+                      f"{agent} session in this folder", floor=(R_CMD_SETTING, "low"))
+    if data.get("yolo") or tools.get("autoAccept") or tools.get("approvalMode") == "yolo" or \
+            (data.get("security") or {}).get("approvalMode") == "yolo":
         state.add(R_APPROVALS, "high", f.rel, line_of(f.text, "yolo") or line_of(f.text, "autoAccept"),
                   "auto-accepts tool calls", "yolo/autoAccept")
     if isinstance(data.get("env"), dict):
@@ -562,9 +704,16 @@ def openclaw_extension(state: State, f: File) -> None:
 
 def aider_conf(state: State, f: File) -> None:
     text = f.text or ""
-    for m in re.finditer(r"(?m)^\s*(test-cmd|lint-cmd|lint|test)\s*:\s*(.+)$", text):
+    for m in re.finditer(r"(?m)^\s*(test-cmd|lint-cmd|lint|test|notifications-command)\s*:\s*(.+)$", text):
+        # test-cmd runs at startup in 0.86 (CVE-2026-85674, no fix); notifications-command too (CVE-2026-115726)
         state.command(m.group(2).strip().strip("'\""), f.rel, text.count("\n", 0, m.start()) + 1,
-                      f"Aider {m.group(1)}", "Aider runs it after edits", floor=(R_OTHER_AGENT, "medium"))
+                      f"Aider {m.group(1)}", "Aider runs it at start or after edits", floor=(R_OTHER_AGENT, "medium"))
+    m = re.search(r"(?m)^\s*load\s*:\s*(.+)$", text)
+    if m:  # a file of /commands Aider runs at launch, /run included
+        for ref in refs_in_command(m.group(1).strip().strip("'\""), f.dir, state.files):
+            state.add(R_OTHER_AGENT, "medium", f.rel, text.count("\n", 0, m.start()) + 1, f"Aider loads and runs the "
+                      f"commands in {ref} at launch", m.group(0).strip())
+            state.mark_autoexec(ref, f"commands Aider runs at launch ({f.rel})")
 
 
 def generic_agent_json(state: State, f: File, agent: str, trigger: str) -> None:
@@ -574,14 +723,201 @@ def generic_agent_json(state: State, f: File, agent: str, trigger: str) -> None:
                       floor=(R_OTHER_AGENT, "medium"))
 
 
+HOOK_EARLY = {e.lower() for e in EARLY_EVENTS} | {"userpromptsubmitted", "promptsubmit", "taskstart", "taskresume",
+                                                 "agentspawn"}
+
+
+def _shell_variants(obj, out: list) -> None:
+    """Copilot hooks name one command per shell ("bash", "powershell") instead of a "command"."""
+    if isinstance(obj, dict):
+        for key in ("bash", "powershell", "pwsh"):
+            if isinstance(obj.get(key), str):
+                out.append(obj[key])
+        for value in obj.values():
+            _shell_variants(value, out)
+    elif isinstance(obj, list):
+        for value in obj:
+            _shell_variants(value, out)
+
+
+def hook_commands(data) -> list[tuple[str, str]]:
+    """(event, command) in the hook files agents read: {"hooks": {Event: [...]}} (Claude Code, Codex, Devin, Copilot),
+    {"hooks": [{"trigger": Event, "action": ...}]} (Kiro CLI) and {"when": ..., "then": ...} (Kiro IDE)."""
+    def commands(obj) -> list[str]:
+        found = [cmd for _path, cmd in walk_commands(obj)]
+        _shell_variants(obj, found)
+        return found
+
+    if not isinstance(data, dict):
+        return []
+    out = []
+    hooks = data.get("hooks")
+    if isinstance(hooks, dict):
+        for event, entries in hooks.items():
+            out += [(str(event), cmd) for cmd in commands(entries)]
+    elif isinstance(hooks, list):
+        for entry in hooks:
+            if isinstance(entry, dict):
+                when = entry.get("when") if isinstance(entry.get("when"), dict) else {}
+                event = entry.get("trigger") or entry.get("event") or when.get("type") or "hook"
+                out += [(str(event), cmd) for cmd in commands(entry)]
+    if isinstance(data.get("then"), dict):
+        when = data.get("when") if isinstance(data.get("when"), dict) else {}
+        out += [(str(when.get("type") or "hook"), cmd) for cmd in commands(data["then"])]
+    return out
+
+
+def agent_hooks(state: State, f: File, agent: str, trigger: str) -> None:
+    """Hook files of the agents other than Claude Code, Gemini CLI and Cursor, which have their own handlers."""
+    for event, cmd in hook_commands(load_jsonc(f.text or "")):
+        state.command(cmd, f.rel, line_of(f.text, cmd[:40]), f"{agent} hook ({event})", trigger, base_dir="",
+                      floor=(R_HOOKS, "medium" if event.lower() in HOOK_EARLY else "low"))
+
+
+def hook_script(state: State, f: File, agent: str) -> None:
+    """Cline runs the executable named after the hook event in .clinerules/hooks/."""
+    event = f.name.split(".")[0]
+    state.surface(f"{agent} hook script ({event})", f.rel, f"{agent} runs it on {event}", (f.text or "")[:200])
+    state.mark_autoexec(f.rel, f"{agent} hook script")
+    state.add(R_HOOKS, "medium" if event.lower() in HOOK_EARLY else "low", f.rel, 1, f"{agent} hook script ({event})",
+              f.rel, "autoexec")
+
+
+PLUGIN_TRIGGER = "Claude Code sessions once the plugin is installed"
+
+
+def plugin_folder(state: State, folder: str) -> bool:
+    """A Claude Code plugin's folder: it has .claude-plugin/plugin.json, or the repository is a marketplace whose
+    plugins live in subfolders."""
+    return posixpath.join(folder, ".claude-plugin/plugin.json") in state.files or \
+        any(p.endswith(".claude-plugin/marketplace.json") for p in state.files)
+
+
+def is_plugin_hooks(state: State, f: File) -> bool:
+    return plugin_folder(state, posixpath.dirname(f.dir))
+
+
+def plugin_hooks(state: State, f: File) -> None:
+    """A plugin's hooks run after someone installs it, not when the repository is opened, so they are recorded at a
+    low floor; what they run is marked as running on its own and judged as such."""
+    data = load_jsonc(f.text or "")
+    hooks = data.get("hooks") if isinstance(data, dict) and isinstance(data.get("hooks"), dict) else {}
+    for event, entries in hooks.items():
+        for _path, cmd in walk_commands(entries):
+            state.command(cmd, f.rel, line_of(f.text, cmd[:40]), f"Claude Code plugin hook ({event})", PLUGIN_TRIGGER,
+                          base_dir=posixpath.dirname(f.dir), floor=(R_HOOKS, "low"))
+
+
+def cursor_permissions(state: State, f: File) -> None:
+    """.cursor/sandbox.json and .cursor/permissions.json in a repository override the user's own for every command."""
+    data = load_jsonc(f.text or "")
+    if not isinstance(data, dict):
+        return
+    text = f.text or ""
+    if str(data.get("type", "")).lower() in ("insecure_none", "none") or data.get("enabled") is False:
+        state.add(R_APPROVALS, "high", f.rel, line_of(text, "type") or 1, "turns Cursor's sandbox off for this project",
+                  json.dumps(data)[:160])
+    for path in data.get("additionalReadwritePaths") or []:
+        if re.match(r"(?:~|\$HOME|/|[A-Za-z]:[\\/])\s*$|~[\\/]\.(?:ssh|aws|claude|codex|gemini|config)", str(path)):
+            state.add(R_APPROVALS, "high", f.rel, line_of(text, str(path)), f"lets sandboxed commands write {path}", str(path))
+    allow = data.get("terminalAllowlist") or data.get("allowlist") or []
+    if data.get("autoRun") is True or "*" in [str(a).strip() for a in allow]:
+        state.add(R_APPROVALS, "high", f.rel, line_of(text, "autoRun") or line_of(text, "*"), "runs terminal commands "
+                  "without asking", json.dumps(data)[:160])
+
+
+def setup_commands(state: State, f: File, trigger: str) -> None:
+    """Install and start commands of cloud agents (Cursor environment.json, worktrees.json, Devin blueprints)."""
+    text = f.text or ""
+    if f.rel.lower().endswith(".json"):
+        data = load_jsonc(text)
+        values = []
+        if isinstance(data, dict):
+            for key, value in data.items():
+                if key in ("install", "start", "setup-worktree", "setup-worktree-unix", "setup-worktree-windows"):
+                    values += value if isinstance(value, list) else [value]
+                elif key == "terminals" and isinstance(value, list):
+                    values += [t.get("command") for t in value if isinstance(t, dict)]
+        cmds = [as_command(v) for v in values if v]
+    else:
+        cmds = []
+        for m in re.finditer(r"(?m)^(\s*)(initialize|maintenance)\s*:\s*\|?\s*$", text):
+            indent, rest = len(m.group(1)), text[m.end():].split("\n")
+            for line in rest[1:]:
+                if line.strip() and len(line) - len(line.lstrip()) <= indent:
+                    break
+                if line.strip() and not line.strip().startswith("#"):
+                    cmds.append(re.sub(r"^\s*-\s*(?:run:\s*)?", "", line).strip())
+    for cmd in filter(None, cmds):
+        state.command(cmd, f.rel, line_of(text, cmd[:40]), "cloud agent setup command", trigger)
+
+
+def allowed_tools_json(state: State, f: File) -> None:
+    """Amazon Q / Kiro CLI agents, Augment and Amp list tools that run without asking."""
+    data = load_jsonc(f.text or "")
+    if not isinstance(data, dict):
+        return
+    allowed = [str(t) for t in (data.get("allowedTools") or [])] + \
+        [str(t) for t in ((data.get("toolsSettings") or {}).get("execute_bash") or {}).get("allowedCommands") or []]
+    if any(t.strip() in ("*", "execute_bash", "@builtin", "shell", ".*") for t in allowed):
+        state.add(R_APPROVALS, "high", f.rel, line_of(f.text, "allowedTools") or line_of(f.text, "allowedCommands"),
+                  "lets the agent run shell commands without asking", ", ".join(allowed[:6]))
+
+
+def opencode_config(state: State, f: File) -> None:
+    """opencode.json / kilo.json: npm plugins installed and loaded at start, MCP and formatter commands."""
+    data = load_jsonc(f.text or "")
+    if not isinstance(data, dict):
+        return
+    text = f.text or ""
+    agent = "Kilo" if "kilo" in f.name.lower() else "OpenCode"
+    plugins = data.get("plugin") or data.get("plugins") or []
+    for plugin in plugins if isinstance(plugins, list) else []:
+        name = str(plugin)
+        if name.startswith((".", "/")):
+            for ref in refs_in_command(name, f.dir, state.files):
+                state.mark_autoexec(ref, f"{agent} plugin named in {f.rel}")
+            continue
+        state.packages.append(("npm", re.sub(r"(?<=.)@[^@/]*$", "", name), f.rel, line_of(text, name), "autoexec"))
+        state.add(R_AGENT_EXTENSION, "medium", f.rel, line_of(text, name), f"{agent} installs the npm package {name} and "
+                  "loads it as a plugin when it starts", name)
+    mcp = data.get("mcp") if isinstance(data.get("mcp"), dict) else {}
+    for name, spec in mcp.items():
+        if isinstance(spec, dict) and spec.get("command"):
+            state.command(as_command(spec["command"]), f.rel, line_of(text, f'"{name}"'), f"{agent} MCP server '{name}'",
+                          f"starting {agent} in this folder", floor=(R_MCP_SERVER, "low"))
+    formatters = data.get("formatter") if isinstance(data.get("formatter"), dict) else {}
+    for name, spec in formatters.items():
+        if isinstance(spec, dict) and spec.get("command"):
+            state.command(as_command(spec["command"]), f.rel, line_of(text, f'"{name}"'), f"{agent} formatter '{name}'",
+                          f"{agent} runs it after every edit", floor=(R_OTHER_AGENT, "medium"))
+
+
+def crush_rc(state: State, f: File) -> None:
+    """Crush runs .crushrc as a Bash script on every launch, before its interface appears."""
+    state.surface("Crush startup script", f.rel, "every launch of Crush in this folder", (f.text or "")[:200])
+    state.mark_autoexec(f.rel, "Crush startup script")
+    state.add(R_OTHER_AGENT, "medium", f.rel, 1, "Crush runs this script on every launch", f.rel, "autoexec")
+
+
+def agent_plugin(state: State, f: File, agent: str, trigger: str, severity: str) -> None:
+    """Plugin code an agent imports from the project folder when it starts there."""
+    state.mark_autoexec(f.rel, f"{agent} plugin")
+    state.surface(f"{agent} plugin", f.rel, trigger)
+    state.add(R_AGENT_EXTENSION, severity, f.rel, 1, f"{agent} loads this plugin when it starts in the folder", f.rel)
+
+
 # ------------------------------------------------------------------------------------- instruction files
 
 AUTO_LOADED = re.compile(
     r"(?:^|/)(?:AGENTS(?:\.override)?\.md|CLAUDE(?:\.local)?\.md|GEMINI\.md|\.cursorrules|\.windsurfrules|\.clinerules|"
     r"\.roorules|CONVENTIONS\.md|SKILL\.md|SOUL\.md|copilot-instructions\.md)$"
     r"|(?:^|/)\.cursor/rules/.*\.mdc?$|(?:^|/)\.github/(?:instructions|prompts)/.*\.md$|(?:^|/)\.claude/(?:agents|commands|skills)/.*\.md$"
-    r"|(?:^|/)\.gemini/commands/.*\.toml$|(?:^|/)\.windsurf/rules/.*\.md$|(?:^|/)\.clinerules/.*$|(?:^|/)\.roo/rules[^/]*/.*\.md$"
-    r"|(?:^|/)\.amazonq/rules/.*\.md$|(?:^|/)\.kiro/steering/.*\.md$|(?:^|/)\.junie/guidelines\.md$", re.I)
+    r"|(?:^|/)\.gemini/commands/.*\.toml$|(?:^|/)\.windsurf/rules/.*\.md$|(?:^|/)\.clinerules/(?!hooks/).*$|(?:^|/)\.roo/rules[^/]*/.*\.md$"
+    r"|(?:^|/)\.amazonq/rules/.*\.md$|(?:^|/)\.kiro/steering/.*\.md$|(?:^|/)\.junie/guidelines\.md$"
+    r"|(?:^|/)\.claude/(?:rules|output-styles)/.*\.md$|(?:^|/)\.(?:agents|devin|augment)/rules/.*\.md$|(?:^|/)\.augment/SYSTEM\.md$"
+    r"|(?:^|/)\.github/(?:agents/.*\.agent|chatmodes/.*\.chatmode)\.md$|(?:^|/)\.factory/droids/.*\.md$|(?:^|/)\.kiro/agents/.*\.md$"
+    r"|(?:^|/)(?:\.goosehints|WARP\.md|AGENT\.md)$", re.I)
 SETUP_DOC = re.compile(r"(?:^|/)(?:README|INSTALL|SETUP|CONTRIBUTING|GETTING[-_]STARTED|QUICKSTART|DEVELOPMENT|BUILDING)"
                        r"(?:\.[a-z]+)?$|(?:^|/)docs?/.*(?:install|setup|getting[-_]started|quickstart).*\.md$", re.I)
 
@@ -591,7 +927,9 @@ IMPERATIVES = [
                 r"config\.toml|preferences|mcp\s+servers?|hooks)", re.I), "high", "tells the agent to change its own settings"),
     (re.compile(r"(?:~|\$HOME|%USERPROFILE%|\$CODEX_HOME)[\\/](?:\.(?:claude|codex|gemini|cursor|openclaw|copilot|kiro)[\\/])?"
                 r"(?:settings(?:\.local)?\.json|config\.toml|hooks\.json|mcp(?:_config)?\.json|auth\.json|\.credentials\.json|"
-                r"openclaw\.json)\b|\.claude\.json\b"), "high", "points the agent at its machine-wide configuration"),
+                r"openclaw\.json)\b|\.claude\.json\b"), "medium", "points the agent at its machine-wide configuration"),
+    # Naming the file is how skills document "add this MCP server to ~/.claude.json"; telling the agent to rewrite its
+    # own settings, switch off approvals or move its API traffic is what the attacks do, and those stay high.
     # Naming ANTHROPIC_BASE_URL in documentation is not an instruction; setting it to a host that is not the provider's is.
     (re.compile(r"\b(?:ANTHROPIC|OPENAI|GEMINI|GOOGLE_GEMINI|CODEX|AZURE_OPENAI|OPENROUTER)_(?:BASE_URL|API_BASE|API_URL)\b"
                 r"[\"'`]?\s*(?:=|:|\bto\b)\s*[\"'`]?https?://(?!(?:api\.anthropic\.com|api\.openai\.com|generativelanguage\."
@@ -599,7 +937,9 @@ IMPERATIVES = [
                 r"|\bCODEX_HOME\s*=\s*[\"']?(?!~?/?\.codex\b)[\w./~$-]+", re.I),
      "high", "changes where the agent sends its API traffic"),
     (re.compile(r"\b(?:disable|turn\s+off|skip|bypass|ignore)\s+(?:the\s+|all\s+|any\s+)?(?:sandbox(?:ing)?|approvals?|permission(?:s|\s+prompts?|\s+checks?)?"
-                r"|confirmations?|safety\s+checks?|security\s+(?:checks?|warnings?))", re.I), "high", "tells the agent to disable its safeguards"),
+                r"|confirmations?|safety\s+checks?|security\s+(?:checks?|warnings?))\b(?!\s+(?:paths?|tests?|testing|environments?|"
+                r"dir(?:ector(?:y|ies))?|folders?|images?|containers?|fixtures?|examples?|data)\b)", re.I), "high",
+     "tells the agent to disable its safeguards"),
     # "Don't ask the user for a key" is autonomy, not concealment; hiding is about not telling, or acting unseen.
     (re.compile(r"\b(?:do\s+not|don'?t|never)\s+(?:tell|inform|mention(?:\s+(?:this|it|that))?\s+to|alert|notify|warn)\s+"
                 r"(?:the\s+)?(?:user|human|developer|operator)\b(?!\s+(?:to|how)\b)"
@@ -610,12 +950,18 @@ IMPERATIVES = [
      "high", "tells the agent to hide actions from you"),
     (re.compile(r"\b(?:delete|remove|wipe|erase|clean)\b[^\n]{0,60}\b(?:all|every|entire|whole)\b[^\n]{0,60}\b(?:files|directories|home|"
                 r"resources|buckets|repositories|data|history)\b|near-?factory\s+state", re.I), "high", "tells the agent to delete data broadly"),
+    # The agents' own folders hold skills and settings too; only their token files are credentials.
     (re.compile(r"\b(?:read|cat|open|copy|upload|send|include|paste|attach)\b[^\n]{0,60}(?:~|\$HOME|%USERPROFILE%)[\\/]\."
-                r"(?:ssh|aws|npmrc|netrc|git-credentials|claude|codex|gemini|config[\\/]gh)\b|\b(?:read|cat|send|upload|paste|"
+                r"(?:(?:ssh|aws|npmrc|netrc|git-credentials|config[\\/]gh)\b|claude[\\/]\.credentials\.json|codex[\\/]auth\.json"
+                r"|gemini[\\/](?:oauth_creds\.json|\.env))|\b(?:read|cat|send|upload|paste|"
                 r"include)\b[^\n]{0,60}\b(?:id_rsa|id_ed25519|\.credentials\.json|auth\.json)\b", re.I), "high",
      "tells the agent to read or send credentials"),
     (re.compile(r"\b(?:extract|unzip|unpack)\b[^\n]{0,80}\b(?:and|then)\s+(?:run|execute|launch|source)\b", re.I), "medium",
      "tells the agent to unpack something and run it"),
+    # ClawHavoc's skills sent people to password-protected archives: antivirus cannot look inside them.
+    (re.compile(r"\.(?:zip|7z|rar)\b[^\n]{0,200}?\b(?:password|passcode)\s*(?:is\s*)?[:=]?\s*[`\"'*]*[\w!@#$%^&-]{3,}"
+                r"|\b(?:password|passcode)\s*(?:is|:|=)\s*[`\"'*]*[\w!@#$%^&-]{3,}[^\n]{0,200}?\.(?:zip|7z|rar)\b", re.I),
+     "high", "sends you to a password-protected archive (a way past antivirus)"),
 ]
 _FENCE = re.compile(r"(?ms)^[ \t]*(```|~~~)[ \t]*([\w+-]*)[^\n]*\n(.*?)^[ \t]*\1")
 _INLINE = re.compile(r"`([^`\n]{4,300})`")
@@ -683,7 +1029,9 @@ def instructions(state: State, f: File, auto_loaded: bool) -> None:
             sev = "medium" if auto_loaded and not well_known(*unpinned) else "low"
             state.add(R_UNPINNED_RUN, sev, f.rel, line, f"runs {unpinned[1]} without a pinned version", cmd, "doc")
         for finding in analyze_command(cmd, f.rel, line, "doc"):
-            if auto_loaded and rank(finding.severity) >= rank("medium"):
+            # Commands that edit the agent's own configuration are what config-maintenance skills do, shown to you
+            # as tool calls; install-time code doing the same is judged as critical elsewhere.
+            if auto_loaded and rank(finding.severity) >= rank("medium") and finding.rule != R_AGENT_CFG_WRITE:
                 finding.severity = bump(finding.severity)
                 finding.message += " (in a file agents load automatically)"
             elif auto_loaded and finding.rule == R_DOWNLOAD_EXEC and finding.severity == "low":
@@ -703,8 +1051,38 @@ def instructions(state: State, f: File, auto_loaded: bool) -> None:
             state.add(R_INSTRUCTION, sev if auto_loaded else "low", f.rel, lines.line(m.start()),
                       message + ("" if auto_loaded else " (setup document)"), text[max(0, m.start() - 60):m.end() + 80], "doc")
             break
+    if f.name.upper() == "SKILL.MD" or re.search(r"(?:^|/)(?:\.claude/)?commands/[^/]+\.md$", f.rel):
+        skill_shell(state, f)
     if f.name.upper() == "SKILL.MD":
         skill(state, f)
+
+
+SKILL_SHELL = re.compile(r"(?<![`\w])!`([^`\n]{2,400})`")
+ALLOWED_TOOLS = re.compile(r"(?mi)^allowed[-_]tools\s*:\s*(.*(?:\n[ \t]*-[^\n]*)*)")
+UNRESTRICTED_BASH = re.compile(r"(?:^|[\s,\[\"'-])Bash(?:\(\s*(?:\*|\*\s*:\s*\*|:\s*\*)?\s*\))?(?=$|[\s,\]\"'])", re.M)
+
+
+def frontmatter(text: str) -> str:
+    text = text.lstrip(chr(0xFEFF))  # a byte-order mark before the opening ---
+    m = re.match(r"---[ \t]*\r?\n(.*?)\r?\n---[ \t]*(?:\r?\n|$)", text, re.S)
+    return m.group(1) if m else ""
+
+
+def skill_shell(state: State, f: File) -> None:
+    """Shell lines (!`command`) in skills and slash commands run when they are invoked, before the model reads them,
+    and `allowed-tools: Bash` lets every shell command through without a prompt while the skill is active."""
+    text = f.text or ""
+    allowed = ALLOWED_TOOLS.search(frontmatter(text))
+    if allowed and UNRESTRICTED_BASH.search(allowed.group(1)):
+        state.add(R_SKILL_SHELL, "medium", f.rel, line_of(text, allowed.group(0).split("\n")[0]),
+                  "allowed-tools pre-approves every shell command while it is active", allowed.group(0).strip()[:120], "doc")
+    fences = [(m.start(), m.end()) for m in _FENCE.finditer(text)]
+    for m in SKILL_SHELL.finditer(text):
+        if any(a <= m.start() < b for a, b in fences):
+            continue
+        state.command(m.group(1), f.rel, text.count("\n", 0, m.start()) + 1, "shell line in a skill or command",
+                      "invoking the skill or command, before the model reads it", base_dir=f.dir,
+                      floor=(R_SKILL_SHELL, "low"))
 
 
 _UNPINNED = re.compile(r"\b(?P<npm>npx|bunx|pnpx|pnpm\s+dlx|yarn\s+dlx)\s+(?P<npmargs>[^|;&\n]*)|\buvx\s+(?P<uvargs>[^|;&\n]*)"
@@ -759,7 +1137,8 @@ def skill(state: State, f: File) -> None:
     state.surface("Agent Skill", f.rel, "loaded by the agent when the skill applies")
     prefix = base + "/" if base else ""
     for rel in state.files:
-        if rel.startswith(prefix) and rel.count("/") - prefix.count("/") <= 2 and rel.lower().endswith(SCRIPT_SUFFIXES):
+        if rel.startswith(prefix) and rel.count("/") - prefix.count("/") <= 2 and rel.lower().endswith(SCRIPT_SUFFIXES) \
+                and not is_test_code(rel):  # a skill's own test suite is not one of its steps
             state.mark_autoexec(rel, f"script bundled with the skill {f.rel}")
     text = f.text or ""
     for m in re.finditer(r"\b(?:curl|wget|iwr|irm|Invoke-WebRequest)\b[^\n]{0,200}?https?://\S+[^\n]{0,120}?"
@@ -837,10 +1216,20 @@ def vscode_settings(state: State, f: File) -> None:
     text = f.text or ""
     checks = (("chat.tools.autoApprove", True), ("chat.tools.global.autoApprove", True),
               ("task.allowAutomaticTasks", "on"), ("security.workspace.trust.enabled", False),
-              ("chat.agent.autoApprove", True), ("github.copilot.chat.agent.autoApprove", True))
+              ("chat.agent.autoApprove", True), ("github.copilot.chat.agent.autoApprove", True),
+              ("chat.tools.terminal.autoApproveWorkspaceNpmScripts", True))
     for key, bad in checks:
         if key in data and data[key] == bad:
             state.add(R_WEAK_SETTINGS, "high", f.rel, line_of(text, key), f"{key}: {json.dumps(bad)}", key)
+    terminal = data.get("chat.tools.terminal.autoApprove")
+
+    def wide(pattern) -> bool:  # "*" or a /regex/ that matches anything
+        p = str(pattern).strip()
+        return p in ("*", ".*", "/.*/", "/.+/", "/^.*$/") or (p.startswith("/") and (".*" in p or "\\S+" in p))
+
+    if terminal is True or (isinstance(terminal, dict) and any(v is True and wide(k) for k, v in terminal.items())):
+        state.add(R_WEAK_SETTINGS, "high", f.rel, line_of(text, "chat.tools.terminal.autoApprove"),
+                  "approves terminal commands for the agent by pattern", "chat.tools.terminal.autoApprove")
     for key, value in data.items():
         if isinstance(value, str) and EXEC_SETTING.search(key):
             ref = refs_in_command(value, posixpath.dirname(f.dir), state.files)
@@ -924,6 +1313,46 @@ def envrc(state: State, f: File) -> None:
     state.add(R_ENVRC, "low", f.rel, 1, "runs on cd once allowed", (f.text or "")[:120])
 
 
+UNTRUSTED_EXPR = re.compile(
+    r"\$\{\{\s*(?:github\.event\.(?:issue|pull_request|comment|review|review_comment|discussion|discussion_comment|"
+    r"head_commit|commits|workflow_run|pages|release)\b[\w.\[\]*'\"-]*?\.(?:title|body|message|ref|head_ref|head_branch|"
+    r"label|name|email|default_branch|page_name)|github\.head_ref)\s*\}\}", re.I)
+OUTSIDE_TRIGGERS = re.compile(r"(?m)^\s*(?:on\s*:\s*\[?[^\n]*\b|-\s*|)(?:issues|issue_comment|pull_request_target|discussion|"
+                              r"discussion_comment|pull_request_review_comment|workflow_run)\b\s*"
+                              r"(?::(?!\s*(?:read|write|none)\b)|,|\]|$)")  # not `issues: write` under permissions
+SEND_KIND = {"raw-ip": "a bare IP address", "plain-http": "a plain-HTTP address", "lookalike": "a look-alike domain",
+             "exfil": "a capture or tunnel service"}
+AI_ACTIONS = re.compile(r"(?mi)^\s*(?:-\s*)?uses\s*:\s*[\"']?(anthropics/claude-code(?:-base)?-action|openai/codex-action|"
+                        r"google-github-actions/run-gemini-cli|google-gemini/gemini-cli-action|actions/ai-inference|"
+                        r"cline/[\w.-]+|warpdotdev/[\w.-]+|qodo-ai/[\w.-]+)@")
+AI_ACTION_UNSAFE = re.compile(r"allowed_non_write_users\s*:\s*[\"']?\*|allow-users\s*:\s*[\"']?\*|--dangerously[-_]skip[-_]permissions"
+                              r"|Bash\(\s*\*\s*\)|--yolo\b|danger-full-access|safety-strategy\s*:\s*[\"']?unsafe", re.I)
+RUNNER_MEMORY = re.compile(r"Runner\.(?:Worker|Listener)[^\n]{0,300}(?:/proc/|ReadProcessMemory|isSecret|ptrace|gcore)"
+                           r"|(?:/proc/[^\s\"']*/(?:mem|maps|environ)|ReadProcessMemory|isSecret)[^\n]{0,300}Runner\.(?:Worker|Listener)")
+
+
+def script_blocks(text: str) -> list[tuple[int, str]]:
+    """(line number, line) for every line inside `run:` and github-script `script:` values of a workflow."""
+    lines = text.splitlines()
+    out, i = [], 0
+    while i < len(lines):
+        m = re.match(r"^(\s*)(?:-\s+)?(run|script)\s*:\s*(.*)$", lines[i])
+        if not m:
+            i += 1
+            continue
+        indent, rest = len(m.group(1)), m.group(3).strip()
+        if rest and rest not in ("|", ">", "|-", ">-", "|+", ">+"):
+            out.append((i + 1, lines[i]))
+            i += 1
+            continue
+        j = i + 1
+        while j < len(lines) and (not lines[j].strip() or len(lines[j]) - len(lines[j].lstrip()) > indent):
+            out.append((j + 1, lines[j]))
+            j += 1
+        i = j
+    return out
+
+
 def workflow(state: State, f: File) -> None:
     text = f.text or ""
     if re.search(r"(?m)^\s*(?:on:\s*\[?[^\n]*\bpull_request_target\b|pull_request_target\s*:)", text) and \
@@ -931,6 +1360,53 @@ def workflow(state: State, f: File) -> None:
         # A risk to the repository's CI secrets, not to the machine of someone who clones it.
         state.add(R_CI_PRT, "low", f.rel, line_of(text, "pull_request_target"),
                   "pull_request_target checks out pull-request code", "pull_request_target", "config")
+    outside = OUTSIDE_TRIGGERS.search(text)
+    blocks = script_blocks(text)
+    for line, body in blocks:
+        m = UNTRUSTED_EXPR.search(body)
+        if m:
+            state.add(R_CI_INJECTION, "low", f.rel, line, f"{m.group().strip()} is pasted into a script"
+                      + (" in a workflow that outsiders can trigger" if outside else ""), body.strip(), "config")
+            break
+    secrets_json = re.search(r"toJSON\(\s*secrets\s*\)", text, re.I)
+    sends = [(line, body) for line, body in blocks if re.search(r"\b(?:curl|wget|Invoke-(?:WebRequest|RestMethod)|iwr|irm|nc)\b", body)
+             and classify_host_in(body) in ("raw-ip", "plain-http", "lookalike", "exfil")]
+    if secrets_json:
+        sev = "high" if sends else "low"  # on its own, over-sharing secrets with one step (zizmor: overprovisioned-secrets)
+        state.add(R_CI_SECRETS, sev, f.rel, line_of(text, secrets_json.group()), "toJSON(secrets) passes every secret "
+                  "to one step" + (" and the workflow posts to " + SEND_KIND[classify_host_in(sends[0][1])] if sends else ""),
+                  secrets_json.group(), "config")
+    elif sends and any("secrets." in body or "printenv" in body or "toJSON(" in body for _l, body in sends):
+        line, body = next((l, b) for l, b in sends if "secrets." in b or "printenv" in b or "toJSON(" in b)
+        state.add(R_CI_SECRETS, "high", f.rel, line, "a step sends secrets or the environment to a raw-IP, plain-HTTP or "
+                  "capture address", body.strip(), "config")
+    mem = RUNNER_MEMORY.search(text)
+    if mem:
+        state.add(R_CI_SECRETS, "critical", f.rel, line_of(text, mem.group()[:40]), "reads the runner's memory for secrets",
+                  mem.group(), "config")
+    agent = AI_ACTIONS.search(text)
+    if agent and outside:
+        reasons = []
+        if UNTRUSTED_EXPR.search(text):
+            reasons.append("untrusted event text reaches the workflow")
+        unsafe = AI_ACTION_UNSAFE.search(text)
+        if unsafe:
+            reasons.append(f"it runs with {unsafe.group()}")
+        if reasons:
+            state.add(R_CI_AGENT, "low", f.rel, text.count("\n", 0, agent.start()) + 1,
+                      f"{agent.group(1)} runs on outsiders' issues or comments: " + "; ".join(reasons), agent.group(1), "config")
+
+
+def classify_host_in(text: str) -> str:
+    """The riskiest kind of destination named on a line: exfil (capture and tunnel services), raw-ip, plain-http..."""
+    from .indicators import EXFIL_HOSTS
+    if EXFIL_HOSTS.search(text):
+        return "exfil"
+    kinds = [classify_host(u) for u in re.findall(r"\b(?:https?|ftp)://[^\s\"'<>`)\]}|]+", text, re.I)]
+    for kind in ("raw-ip", "lookalike", "plain-http"):
+        if kind in kinds:
+            return kind
+    return kinds[0] if kinds else ""
 
 
 # ---------------------------------------------------------------------------------------------------- git
@@ -974,6 +1450,14 @@ def git_config(state: State, f: File) -> None:
                   "command", m.group(0))
 
 
+def bare_repo(state: State, f: File) -> bool:
+    """config next to HEAD in a folder that is not .git: a bare repository inside the project. Git uses its config
+    when a command runs in that folder (safe.bareRepository defaults to all), as agents do before any trust prompt."""
+    head = state.files.get(posixpath.join(f.dir, "HEAD"))
+    return bool(head and head.text and re.match(r"ref:\s*refs/|[0-9a-f]{40}", head.text.strip())
+                and posixpath.basename(f.dir) != ".git")
+
+
 def git_hook(state: State, f: File) -> None:
     if f.name.endswith(".sample"):
         return
@@ -1006,6 +1490,42 @@ def dispatch(state: State, f: File) -> None:
         codex_config(state, f)
     elif re.search(r"(?:^|/)\.gemini/settings\.json$", low):
         gemini_settings(state, f)
+    elif re.search(r"(?:^|/)\.qwen/settings\.json$", low):
+        gemini_settings(state, f)
+    elif re.search(r"(?:^|/)\.cursor/(?:sandbox|permissions)\.json$", low):
+        cursor_permissions(state, f)
+    elif re.search(r"(?:^|/)\.cursor/(?:environment|worktrees)\.json$", low):
+        setup_commands(state, f, "Cursor cloud agent or worktree setup (with your repository's access)")
+    elif re.search(r"(?:^|/)\.devin/blueprint\.ya?ml$", low):
+        setup_commands(state, f, "Devin's environment build (with your repository's access)")
+    elif re.search(r"(?:^|/)(?:\.devin|\.agents|\.factory)/mcp(?:_config)?\.json$|(?:^|/)\.junie/mcp/mcp\.json$", low):
+        mcp_config(state, f, "Agent", "agent session in this folder")
+    elif re.search(r"(?:^|/)\.augment/settings\.json$|(?:^|/)\.amazonq/cli-agents/[^/]+\.json$|(?:^|/)\.amp/settings\.json$", low):
+        agent_hooks(state, f, "Agent", "agent session in this folder")
+        mcp_config(state, f, "Agent", "agent session in this folder")
+        allowed_tools_json(state, f)
+    elif re.search(r"(?:^|/)\.factory/hooks\.json$", low):
+        agent_hooks(state, f, "Factory Droid", "Droid session in this folder")
+    elif re.search(r"(?:^|/)(?:\.opencode/)?(?:opencode|kilo)\.jsonc?$", low):
+        opencode_config(state, f)
+    elif name in (".crushrc", "crushrc"):
+        crush_rc(state, f)
+    elif name in ("crush.json", ".crush.json"):
+        generic_agent_json(state, f, "Crush", "starting Crush in this folder")
+    elif re.search(r"(?:^|/)\.codex/hooks\.json$", low):
+        agent_hooks(state, f, "Codex", "Codex session in this folder")
+    elif re.search(r"(?:^|/)\.github/hooks/[^/]+\.json$", low):
+        agent_hooks(state, f, "GitHub Copilot", "Copilot CLI or the VS Code agent in this repository")
+    elif re.search(r"(?:^|/)\.kiro/hooks/[^/]+\.(?:json|kiro\.hook)$", low):
+        agent_hooks(state, f, "Kiro", "Kiro in this workspace")
+    elif re.search(r"(?:^|/)\.devin/(?:hooks\.v1|config)\.json$", low):
+        agent_hooks(state, f, "Devin", "Devin session in this folder")
+    elif re.search(r"(?:^|/)\.agents/hooks\.json$", low):
+        agent_hooks(state, f, "Agent", "agent session in this folder")
+    elif re.search(r"(?:^|/)\.clinerules/hooks/[^/]+$", low):
+        hook_script(state, f, "Cline")
+    elif re.search(r"(?:^|/)hooks/hooks\.json$", low) and is_plugin_hooks(state, f):
+        plugin_hooks(state, f)
     elif re.search(r"(?:^|/)\.vscode/tasks\.json$", low):
         vscode_tasks(state, f)
     elif re.search(r"(?:^|/)\.vscode/settings\.json$", low):
@@ -1028,7 +1548,7 @@ def dispatch(state: State, f: File) -> None:
         workflow(state, f)
     elif name == ".gitmodules":
         gitmodules(state, f)
-    elif re.search(r"(?:^|/)\.git/config$", low) or name == ".lfsconfig":
+    elif re.search(r"(?:^|/)\.git/config$", low) or name == ".lfsconfig" or (name == "config" and bare_repo(state, f)):
         git_config(state, f)
     elif re.search(r"(?:^|/)\.git/hooks/[^/]+$", low):
         git_hook(state, f)
@@ -1037,6 +1557,17 @@ def dispatch(state: State, f: File) -> None:
         git_indirection(state, f)
     if re.search(r"(?:^|/)\.openclaw/extensions/", low):
         openclaw_extension(state, f)
+    if re.search(r"(?:^|/)\.(?:opencode|kilo)/plugins?/[^/]+\.(?:[cm]?js|[cm]?ts)$", low):
+        agent_plugin(state, f, "OpenCode" if ".opencode/" in low else "Kilo", "starting it in this folder", "medium")
+    if re.search(r"(?:^|/)\.vscode/[^/]+\.json$", low) and re.search(r"[\"']__proto__[\"']\s*:", f.text or ""):
+        # CVE-2026-121662: a __proto__ key started an MCP server on open, even in Restricted Mode (fixed in 1.145.3)
+        state.add(R_WEAK_SETTINGS, "high", rel, line_of(f.text, "__proto__"), "__proto__ key in VS Code workspace "
+                  "settings (CVE-2026-121662)", "__proto__")
+    if re.search(r"(?:^|/)\.amp/plugins/[^/]+\.(?:[cm]?js|[cm]?ts)$", low):
+        agent_plugin(state, f, "Amp", "starting Amp in this folder", "medium")
+    if re.search(r"(?:^|/)commands/[^/]+\.md$", low) and not AUTO_LOADED.search(rel) and \
+            plugin_folder(state, posixpath.dirname(f.dir)):
+        skill_shell(state, f)  # a plugin's slash commands
     if AUTO_LOADED.search(rel):
         instructions(state, f, auto_loaded=True)
     elif SETUP_DOC.search(rel) and low.endswith((".md", ".rst", ".txt", ".markdown")) or re.fullmatch(r"readme(?:\.[a-z]+)?", name):

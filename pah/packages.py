@@ -66,6 +66,25 @@ R_WRAPPER = rule(
     "PAH-P013", "Build wrapper downloads from an unofficial host",
     "gradlew/mvnw download and run the build tool from distributionUrl; pointing it elsewhere runs any code.",
     "Use the official distribution URL and verify the checksum.", attack=("T1195.002",))
+R_GUARDS_OFF = rule(
+    "PAH-P019", "Project switches off the package manager's install protections",
+    "npm 12 (July 2026) stopped running dependencies' install scripts and fetching git or URL dependencies by default; "
+    "pnpm 11 and Yarn 4.14 block build scripts, and npm, pnpm, Yarn and Bun can hold back versions published in the "
+    "last few days. A project's .npmrc, pnpm-workspace.yaml, .yarnrc.yml or bunfig.toml overrides your own settings "
+    "for every install in that folder, so one line turns those protections back off.",
+    "Remove the setting, or allow only the packages that need it (npm approve-scripts, allowBuilds).",
+    attack=("T1195.002",), refs=("https://github.blog/changelog/2026-07-08-npm-install-time-security-and-gat-bypass2fa-deprecation",
+                                 "https://pnpm.io/supply-chain-security"))
+R_BIN_SHADOW = rule(
+    "PAH-P020", "Package installs a command named like a system tool",
+    "A package's bin entry named git, curl, node, python, ssh, sudo or claude lands in node_modules/.bin, which comes "
+    "first on the PATH of every npm script: from then on the scripts run the package's program instead of the real one.",
+    "Find out why the package names a command after a system tool; do not install it if the name is not its own.",
+    attack=("T1574.007",), refs=("https://socket.dev/blog/npm-bin-script-confusion",))
+SHADOWED_COMMANDS = {"node", "npm", "npx", "pnpm", "yarn", "bun", "deno", "git", "gh", "sh", "bash", "zsh", "curl", "wget",
+                     "python", "python3", "pip", "pip3", "ssh", "scp", "sudo", "su", "env", "ls", "cat", "cp", "mv", "rm",
+                     "tar", "unzip", "openssl", "gpg", "docker", "kubectl", "aws", "gcloud", "az", "claude", "codex",
+                     "gemini", "cursor-agent", "copilot", "code"}
 
 LIFECYCLE = ("preinstall", "install", "postinstall", "preprepare", "prepare", "postprepare", "prepublish")
 KNOWN_SCRIPTS = re.compile(
@@ -130,6 +149,25 @@ def package_json(state: State, f: File) -> None:
                           f"{target} {hit[1]} from {hit[0]}", f'"{dep}": "{spec}"')
     if data.get("gypfile") or "binding.gyp" in (posixpath.basename(r) for r in state.files if posixpath.dirname(r) == f.dir):
         state.surface("node-gyp build", f.rel, TRIGGER_NPM)
+    engines = data.get("engines") if isinstance(data.get("engines"), dict) else {}
+    if "vscode" in engines and not in_node_modules:
+        # A VS Code, Cursor or Windsurf extension runs its entry point when the editor activates it, on every start for
+        # "*" and onStartupFinished (GlassWorm, SleepyDuck and the trojanized Claude Code extension, 2026). Its code is
+        # judged as code, not as install-time code: nearly every extension sends telemetry from the same file.
+        events = [str(e) for e in data.get("activationEvents") or []]
+        eager = "*" in events or "onStartupFinished" in events
+        state.surface("editor extension", f.rel, "every start of the editor" if eager else "when the editor activates "
+                      "the extension", str(data.get("main") or data.get("browser") or ""))
+    bins = data.get("bin") if isinstance(data.get("bin"), dict) else {}
+    own = str(data.get("name") or "").rsplit("/", 1)[-1]
+    for command in bins:
+        if command in SHADOWED_COMMANDS and command != own:
+            state.add(R_BIN_SHADOW, "medium", f.rel, line_of(text, f'"{command}"'), f"installs a command named {command} "
+                      f"(the package is {data.get('name') or 'unnamed'})", f'"{command}": "{bins[command]}"')
+    allow = data.get("allowScripts")
+    if (isinstance(allow, dict) and (allow.get("*") is True or allow.get("**") is True)) or allow in ("*", True):
+        state.add(R_GUARDS_OFF, "medium", f.rel, line_of(text, "allowScripts"), "allowScripts lets every dependency run "
+                  "its install scripts", "allowScripts")
     hooks = data.get("simple-git-hooks")
     if isinstance(hooks, dict) and not in_node_modules:
         for name, cmd in hooks.items():
@@ -215,6 +253,34 @@ def npmrc(state: State, f: File) -> None:
         elif key in ("script-shell", "node-options", "onload-script", "git", "shell", "userconfig", "globalconfig"):
             state.add(R_PM_RUNS_REPO, "high", f.rel, line, f"{key} = {value}", m.group(0))
             state.command(value, f.rel, line, f".npmrc {key}", TRIGGER_NPM, base_dir=f.dir)
+    guards_off(state, f, NPMRC_GUARDS)
+
+
+# Settings a project can use to undo what npm 12 (Jul 2026), pnpm 11, Yarn 4.14+ and Bun block by default or what the
+# user turned on: a project's config overrides the user's for every install run in the project.
+NPMRC_GUARDS = re.compile(r"(?mi)^\s*((?:allow-git|allow-remote)\s*=\s*(?:all|true)|min-release-age\s*=\s*0+\s*$"
+                          r"|ignore-scripts\s*=\s*false|strict-allow-scripts\s*=\s*false|dangerously-allow-all-scripts\s*=\s*true)")
+PNPM_GUARDS = re.compile(r"(?mi)^\s*((?:dangerouslyAllowAllBuilds|dangerously-allow-all-builds)\s*:\s*true|strictDepBuilds\s*:\s*false"
+                         r"|minimumReleaseAge\s*:\s*0+\s*$|blockExoticSubdeps\s*:\s*false|trustPolicy\s*:\s*[\"']?off)")
+YARN_GUARDS = re.compile(r"(?mi)^\s*(enableScripts\s*:\s*true|npmMinimalAgeGate\s*:\s*[\"']?0+[a-z]*[\"']?\s*$"
+                         r"|approvedGitRepositories\s*:\s*[\"']?\*\*[\"']?\s*$)")
+BUN_GUARDS = re.compile(r"(?mi)^\s*(minimumReleaseAge\s*=\s*0+\s*$)")
+# Turning dependency install scripts back on runs code at install: worth a warning. Turning off a cooldown or allowing
+# git sources is recorded: a lockfile still pins what gets installed.
+RUNS_SCRIPTS = re.compile(r"ignore-scripts|dangerously|strictDepBuilds|enableScripts", re.I)
+
+
+def guards_off(state: State, f: File, pattern: re.Pattern) -> None:
+    text = f.text or ""
+    for m in pattern.finditer(text):
+        setting = " ".join(m.group(1).split())
+        state.add(R_GUARDS_OFF, "medium" if RUNS_SCRIPTS.search(setting) else "low", f.rel,
+                  text.count("\n", 0, m.start()) + 1,
+                  f"{setting} undoes an install protection for everyone who installs here", m.group(1).strip())
+
+
+def pnpm_workspace(state: State, f: File) -> None:
+    guards_off(state, f, PNPM_GUARDS)
 
 
 YARN_RELEASE_MIN = 1_000_000
@@ -530,10 +596,14 @@ def dispatch_packages(state: State, f: File) -> None:
         npmrc(state, f)
     elif name in (".yarnrc.yml", ".yarnrc"):
         yarnrc(state, f)
+        guards_off(state, f, YARN_GUARDS)
+    elif name == "pnpm-workspace.yaml":
+        pnpm_workspace(state, f)
     elif name in (".pnpmfile.cjs", ".pnpmfile.js", ".pnpmfile.mjs"):
         pnpmfile(state, f)
     elif name == "bunfig.toml":
         bunfig(state, f)
+        guards_off(state, f, BUN_GUARDS)
     elif name == "setup.py":
         setup_py(state, f)
     elif name == "conftest.py":

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "personal-anti-hack"
-version = "0.1.0"
-description = "A local shield for people who let AI coding agents open, install and run code."
+version = "0.2.0"
+description = "The antivirus for people who use AI agents: full scans, real-time protection and quarantine, and a guard that reads repositories, skills, MCP servers and packages before they run."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

@@ -1,6 +1,6 @@
 # TrapRepo: the personal-anti-hack benchmark corpus
 
-82 cases (55 malicious, 27 benign) that measure whether a
+97 cases (64 malicious, 33 benign) that measure whether a
 pre-flight scanner (or a plain LLM review) catches real 2025-2026 supply-chain
 and agent-config malware techniques **before** a person or an AI coding agent
 opens, installs or runs a repo, Agent Skill, MCP server or package -- without
@@ -61,20 +61,24 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | id | kind | expected | technique | incident |
 |---|---|---|---|---|
 | `claude-apikeyhelper-command` | malicious | block | apiKeyHelper names a shell command that Claude Code runs to fetch credentials; the comman… | Claude Code project-file abuse class (CVE-2026-21852 family) |
+| `claude-plugin-hooks-sessionstart` | malicious | block | A repository published as a Claude Code plugin (.claude-plugin/plugin.json) ships hooks/h… | Plugin marketplaces as a delivery channel; Plugin4Shell (CV… |
 | `claude-settings-env-anthropic-base-url` | malicious | block | The env block sets ANTHROPIC_BASE_URL (and auth token env) to an attacker host, so the ag… | CVE-2026-21852 (Claude Code project files could leak the AP… |
 | `claude-settings-pretooluse-hook` | malicious | block | A PreToolUse hook matched to Bash runs an attacker script before each matching tool call,… | Miasma / Mini Shai-Hulud persistence through .claude/settin… |
 | `claude-settings-sessionstart-hook` | malicious | block | A SessionStart hook in .claude/settings.json runs a shell script the first time a Claude … | Miasma worm (Jun 2026) planted Claude/Gemini SessionStart h… |
 | `claude-statusline-command` | malicious | block | statusLine.command runs a shell command each time the status line renders; pointing it at… | Claude Code project-file abuse class (statusLine command ex… |
 | `codex-env-codexhome-config-toml` | malicious | block | A repo .env sets CODEX_HOME to a repo-local .codex directory; the repo's .codex/config.to… | CVE-2025-61260 (Codex CODEX_HOME / config.toml redirection) |
+| `copilot-hooks-sessionstart` | malicious | block | A .github/hooks/*.json file gives GitHub Copilot (CLI, VS Code agent, cloud agent) a sess… | testmetest worm (Oct 2026) planted hooks for several agents… |
 | `cursor-hooks-json` | malicious | block | A .cursor/hooks.json registers a command that Cursor runs around agent actions (e.g. afte… | CVE-2026-48124 (Cursor agent hooks arbitrary command execut… |
 | `cursor-mcp-json-command` | malicious | block | A .cursor/mcp.json entry uses command/args to run a shell payload; Cursor starts project … | CurXecute / MCPoison (Cursor MCP auto-execution, CVE-2025-5… |
 | `gemini-settings-hook` | malicious | block | A .gemini/settings.json registers a start-up command Gemini CLI runs when the project loa… | Miasma (Gemini SessionStart hooks) / CVE-2026-12537 |
 | `mcp-json-enable-all-project` | malicious | block | A project .mcp.json defines a stdio MCP server whose command is attacker-controlled; .cla… | CVE-2025-59536 (auto-enabled project MCP servers execute on… |
 | `openclaw-extension-autoload` | malicious | block | An extension dropped under .openclaw/extensions/ is auto-loaded by OpenClaw on launch; it… | CVE-2026-32920 (OpenClaw auto-loaded extensions) / trojaniz… |
 | `binary-magic-disguised-fixture` | malicious | warn | A file named like compressed test data actually begins with ELF magic and embeds command … | xz-utils (payload concealed in test fixtures, activated in … |
+| `git-exe-planted-root` | malicious | block | A Windows program named git.exe sits in the project folder; IDEs and agents that start gi… | CVE-2026-63093 (Cursor), CVE-2026-88066 (Claude Desktop), C… |
 | `pyc-only-payload` | malicious | block | A package ships a compiled .pyc module with no corresponding .py; Python imports the byte… | Trail of Bits skill-scanner bypass (payload in shipped .pyc… |
 | `gradle-wrapper-distributionurl-offhost` | malicious | warn | The Gradle wrapper's distributionUrl is changed to an attacker host, so ./gradlew downloa… | Gradle wrapper distributionUrl redirection (toolchain-downl… |
 | `makefile-shell-download-run` | malicious | block | A top-level $(shell ...) assignment is evaluated as soon as make parses the Makefile (inc… | Makefile $(shell ...) execution (Bagmar & Saraf setup-doc e… |
+| `workflow-secrets-exfil` | malicious | block | A workflow named like security tooling writes ${{ toJSON(secrets) }} to a file and posts … | GhostAction (Sep to Oct 2026, about 30,000 repositories) an… |
 | `date-ci-conditional-trigger` | malicious | block | The beacon runs only when it detects a CI environment or when the date is past a hardcode… | Environment/date-conditional malware (NuGet logic bombs; en… |
 | `glassworm-variation-selectors-eval` | malicious | block | A JS string carries an invisible payload encoded as Unicode variation selectors; a decode… | GlassWorm (Oct 2025-Mar 2026): payloads hidden in Unicode v… |
 | `js-100k-leading-newlines` | malicious | block | A JS file begins with about 100,000 blank lines so size/line-count truncation drops the r… | Trail of Bits skill-scanner bypass (large files truncated b… |
@@ -87,6 +91,7 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `husky-precommit-payload` | malicious | block | A .husky/pre-commit hook (installed by husky's prepare step) runs attacker code whenever … | Git-hook persistence via husky (lifecycle + commit-time exe… |
 | `symlink-to-ssh-key` | malicious | warn | A file named like documentation is actually a symlink escaping the repo to the user's pri… | GhostApproval (symlink escape read/written by AI assistants… |
 | `devcontainer-initializecommand` | malicious | block | initializeCommand executes on the host (not in the sandboxed container) during dev contai… | Dev container initializeCommand host execution (pre-flight … |
+| `vscode-folderopen-fake-font` | malicious | block | A .vscode/tasks.json task named eslint-check runs `node public/fonts/fa-solid-300.ttf` wh… | PolinRider (Oct 2026): amended commits in 188 GitHub reposi… |
 | `vscode-settings-autoapprove` | malicious | block | Workspace settings enable chat.tools.autoApprove and task.allowAutomaticTasks, so the age… | CVE-2025-53773 (workspace settings silently disable agent g… |
 | `vscode-tasks-folderopen` | malicious | block | A task with runOptions.runOn = folderOpen executes a shell command the moment the workspa… | StoatWaffle: fake job-interview repos auto-execute via .vsc… |
 | `agents-md-install-and-reconfigure` | malicious | block | A long AGENTS.md framed as mandatory engineering policy instructs the coding agent to npm… | Forever Security / Codex AGENTS.md attack (Oct 2026): a 13 … |
@@ -95,6 +100,7 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `readme-curl-bash-lookalike` | malicious | warn | The README's install step is `curl ... | bash` from a domain crafted to look like an offi… | InstallFix (Mar 2026): cloned Claude Code install pages who… |
 | `readme-nondefault-registry` | malicious | warn | The README 'Quick start' tells the reader to run commands that switch the npm registry an… | Bagmar & Saraf: agents install whatever setup docs list; re… |
 | `mcp-tool-description-poisoning` | malicious | block | The MCP server's code is benign, but one tool's description embeds hidden instructions te… | MCPTox / tool-poisoning class; first malicious MCP server (… |
+| `eth-dead-drop-loader` | malicious | block | Import-time code asks a JSON-RPC endpoint for a fixed transaction, decodes its input data… | PolinRider in hijacked npm packages (Nov 2026); EtherHiding… |
 | `agent-cli-yolo-secret-hunt` | malicious | block | A script run during install invokes a coding agent already on the machine with its guardr… | Nx / s1ngularity (Aug 2025): used Claude Code, Gemini CLI a… |
 | `binding-gyp-command-expansion` | malicious | block | A native addon's binding.gyp embeds a <!(...) command-expansion token, which node-gyp exe… | Phantom Gyp: 57 npm packages ran code through binding.gyp c… |
 | `lookalike-dep-separator-confusion` | malicious | warn | requirements.txt depends on 'azurecore', a separator-dropped look-alike of the real PyPI … | Bagmar & Saraf: near-miss names (azurecore for azure-core) … |
@@ -105,6 +111,8 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `package-lock-offregistry-resolved` | malicious | warn | The lockfile's resolved URL for a common package points at an attacker mirror, so `npm ci… | Lockfile integrity abuse (resolved URL redirection) in the … |
 | `pnpmfile-cjs-hook` | malicious | block | A .pnpmfile.cjs readPackage hook runs arbitrary code during dependency resolution and can… | pnpm lifecycle-hook abuse (install-time code execution clas… |
 | `yarnrc-yarnpath-repo-script` | malicious | block | yarnPath makes Yarn execute a JavaScript file shipped in the repo instead of a trusted Ya… | Yarn yarnPath redirection (self-hosted binary abuse, regist… |
+| `npm-worm-republish` | malicious | block | A postinstall script reads the npm token from ~/.npmrc, asks the registry who it belongs … | Shai-Hulud 2.0 and Mini Shai-Hulud self-propagation (2025-2… |
+| `npmrc-reenables-install-scripts` | malicious | warn | A committed .npmrc sets ignore-scripts=false, allow-git=all and min-release-age=0, overri… | npm 12 (Jul 2026) blocked dependency install scripts and gi… |
 | `python-conftest-beacon` | malicious | block | Module-level code in conftest.py executes during pytest collection, before any test runs,… | Import-time Python execution class (conftest / sitecustomiz… |
 | `python-exec-base64-zlib-loader` | malicious | block | The module decodes a base64+zlib (and, in the wild, marshal) blob and exec()s it, hiding … | Hades PyPI campaign (Jun 2026): base64/zlib/marshal exec lo… |
 | `python-exec-loader-ai-reviewer-comment` | malicious | block | A base64 exec loader is preceded by a comment addressed to automated reviewers asserting … | Hades campaign prompt-injection-to-scanner; Cloudflare dilu… |
@@ -115,23 +123,29 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `rust-build-rs-network-exec` | malicious | block | A Cargo build script (build.rs) runs on the host during `cargo build` (and when rust-anal… | Cargo build.rs execution class (proc-macro/build-script sup… |
 | `skill-md-fetch-binary` | malicious | block | An Agent Skill's SKILL.md instructs the agent to run a bundled setup script whose job is … | ClawHavoc (341 malicious ClawHub skills, mostly delivering … |
 | `skill-npx-nonexistent-slopsquat` | malicious | warn | A skill tells the agent to run npx on a package name that does not exist on the registry,… | react-codeshift slopsquat (a hallucinated name appeared in … |
+| `skill-shell-line-preexec` | malicious | block | A SKILL.md sets `allowed-tools: Bash` and contains a !`bash scripts/bootstrap.sh` line, w… | Skills as a delivery channel (ClawHavoc, 2026); skill shell… |
+| `benign-claude-plugin-hooks` | benign | pass | A plugin's SessionStart hook runs a short Python script that prints guidance into the ses… | (benign twin of claude-plugin-hooks-sessionstart) |
 | `benign-claude-settings-narrow` | benign | pass | A .claude/settings.json that only sets a narrow permission allowlist; no hooks, no env, n… | Legitimate .claude/settings.json (mirrors the malicious hoo… |
+| `benign-copilot-hooks-lint` | benign | pass | A .github/hooks file runs `npm run lint` after Copilot edits files: a hook, but one that … | (benign twin of copilot-hooks-sessionstart) |
 | `benign-mcp-json-local-stdio` | benign | pass | A project .mcp.json points at a local stdio MCP server by interpreter + script, and there… | Legitimate .mcp.json (mirrors mcp-json-enable-all-project w… |
 | `benign-env-local-dev` | benign | pass | A development .env with a local port, debug flag and a localhost database URL; no CODEX_H… | Legitimate dev .env (mirrors codex-env-codexhome-config-tom… |
 | `benign-github-actions-pull-request` | benign | pass | A CI workflow on the safe pull_request event (not pull_request_target), checking out and … | Legitimate CI (hard negative for pull_request_target cache/… |
 | `benign-gradle-wrapper-official` | benign | pass | A standard gradle-wrapper.properties whose distributionUrl is the official services.gradl… | Legitimate Gradle wrapper (mirrors gradle-wrapper-distribut… |
 | `benign-makefile-shell-gitrev` | benign | pass | A top-level $(shell ...) runs a harmless local git command to embed the commit hash; no d… | Legitimate Makefile (mirrors makefile-shell-download-run wi… |
+| `benign-workflow-issue-env` | benign | pass | An issues workflow reads the issue title the safe way (through env:, quoted) and labels t… | (benign twin of workflow-secrets-exfil) |
 | `benign-emoji-vs16-locales` | benign | pass | A localization file with legitimate non-ASCII: emoji using the U+FE0F variation selector … | Legitimate Unicode (hard negative for variation-selector an… |
 | `benign-minified-dist-no-eval` | benign | pass | A legitimately minified bundle: long single-ish lines and short identifiers, but no eval/… | Legitimate minified output (mirrors js-multimb-single-line … |
 | `benign-gitmodules-normal` | benign | pass | A standard submodule under a sensible path pointing at a github.com HTTPS URL. | Legitimate submodule (mirrors gitmodules-suspicious-submodu… |
 | `benign-husky-lint-staged` | benign | pass | A standard husky pre-commit hook runs lint-staged to lint staged files; no network, no pa… | Legitimate husky + lint-staged setup (mirrors husky-precomm… |
 | `benign-devcontainer-postcreate` | benign | pass | postCreateCommand runs inside the container after it is built (sandboxed), and there is n… | Legitimate devcontainer.json (mirrors devcontainer-initiali… |
+| `benign-real-font-assets` | benign | pass | Real TTF and WOFF2 fonts (with their format signatures) under public/fonts, copied by an … | (benign twin of vscode-folderopen-fake-font) |
 | `benign-vscode-build-task` | benign | pass | A normal build task invoked manually (Ctrl+Shift+B); no runOptions.runOn, so nothing runs… | Legitimate .vscode/tasks.json (mirrors vscode-tasks-foldero… |
 | `benign-agents-md-conventions` | benign | pass | AGENTS.md documents build/test/style conventions and asks the agent to run tests before c… | Legitimate AGENTS.md (mirrors agents-md-install-and-reconfi… |
 | `benign-claude-md-conventions` | benign | pass | CLAUDE.md lists how to build, test and where key modules live; no routing changes, no bas… | Legitimate CLAUDE.md (mirrors claude-md-set-base-url withou… |
 | `benign-cursor-style-rules` | benign | pass | A .cursor/rules/*.mdc with plain, visible style guidance and no hidden Unicode and no alw… | Legitimate Cursor rules (mirrors cursor-rules-mdc-tagchars … |
 | `benign-readme-official-installers` | benign | pass | The README's setup references the real official installers (rustup, uv, bun) over https; … | Legitimate install docs (mirrors readme-curl-bash-lookalike… |
 | `benign-mcp-server-normal` | benign | pass | An MCP server whose tool descriptions plainly describe their function and whose code does… | Legitimate MCP server (mirrors mcp-tool-description-poisoni… |
+| `benign-web3-rpc-client` | benign | pass | A small Ethereum client sends eth_call and eth_getTransactionByHash requests and returns … | (benign twin of eth-dead-drop-loader) |
 | `benign-native-addon-binding-gyp` | benign | pass | A normal N-API addon: binding.gyp lists sources only (no command expansion), built with n… | Legitimate node-gyp native addon (mirrors binding-gyp-comma… |
 | `benign-npmrc-save-exact` | benign | pass | A repo .npmrc that sets save-exact and engine-strict and keeps the default public registr… | Legitimate .npmrc (mirrors npmrc-registry-redirect without … |
 | `benign-package-lock-registry` | benign | pass | A normal lockfile whose resolved URLs and integrity hashes point at registry.npmjs.org. | Legitimate lockfile (mirrors package-lock-offregistry-resol… |
@@ -142,3 +156,4 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `benign-cargo-config-target-flags` | benign | pass | A .cargo/config.toml that sets rustflags/target settings only; no rustc-wrapper and no li… | Legitimate Cargo config (mirrors cargo-config-rustc-wrapper… |
 | `benign-rust-proc-macro` | benign | pass | A proc-macro crate that derives code at compile time using syn/quote; proc-macro = true, … | Legitimate proc-macro (hard negative for build-time-executi… |
 | `benign-skill-md-normal` | benign | pass | An Agent Skill whose SKILL.md documents what it does and how to call it; no fetch-and-run… | Legitimate skill (mirrors skill-md-fetch-binary / slopsquat… |
+| `benign-skill-shell-git-status` | benign | pass | A skill pre-approves only `git status` and `git diff` and uses !` lines to put the curren… | (benign twin of skill-shell-line-preexec) |

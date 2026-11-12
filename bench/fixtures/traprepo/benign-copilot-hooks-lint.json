@@ -1,0 +1,20 @@
+{
+  "id": "benign-copilot-hooks-lint",
+  "title": "Copilot hook runs the project's linter after edits",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "agent-config",
+  "technique": "A .github/hooks file runs `npm run lint` after Copilot edits files: a hook, but one that only runs a script the project defines.",
+  "trigger": "Copilot tool use",
+  "incident": "(benign twin of copilot-hooks-sessionstart)",
+  "sources": [
+    "https://docs.github.com/en/copilot/reference/hooks-reference"
+  ],
+  "notes": "Legitimate use of the same mechanism.",
+  "files": {
+    ".github/hooks/lint.json": "{\n  \"version\": 1,\n  \"hooks\": {\n    \"postToolUse\": [\n      {\n        \"type\": \"command\",\n        \"bash\": \"npm run lint --silent\",\n        \"powershell\": \"npm run lint --silent\"\n      }\n    ]\n  }\n}\n",
+    "package.json": "{\n  \"name\": \"tiny-router\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"lint\": \"eslint .\"\n  }\n}\n",
+    "index.js": "module.exports = (routes) => (path) => routes[path];\n",
+    "README.md": "# tiny-router\n"
+  }
+}

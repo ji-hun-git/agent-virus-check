@@ -105,8 +105,15 @@ SKIP_DIRS = {"node_modules", ".git", ".venv", "venv", "__pycache__", "AppData", 
 INSTRUCTION_NAMES = {"agents.md", "agents.override.md", "claude.md", "claude.local.md", "gemini.md", ".cursorrules",
                      ".windsurfrules", ".clinerules", "soul.md"}
 MIN_VERSIONS = {  # tool: (minimum safe version, reason, source)
-    "claude": ("2.1.84", "project-file trust bypasses fixed up to 2.1.84 (CVE-2025-59536, CVE-2026-21852, CVE-2026-33068, "
-               "CVE-2026-40068)", "https://advisories.gitlab.com/npm/@anthropic-ai/claude-code/CVE-2026-40068/"),
+    "claude": ("2.1.179", "project-file trust bypasses fixed up to 2.1.84 (CVE-2025-59536, CVE-2026-21852, CVE-2026-33068, "
+               "CVE-2026-40068), a worktree named .git running core.fsmonitor (CVE-2026-55607) and plugin SHA pins "
+               "resolved to a branch (CVE-2026-86063, fixed 2.1.179)", "https://www.air.security/blog-posts/plugin4shell"),
+    "goose": ("1.44.0", "git run before trust executed a repository's core.fsmonitor (CVE-2026-72718)",
+              "https://github.com/block/goose/security/advisories/GHSA-r5pp-p5r8-466r"),
+    "kiro-cli": ("2.10.0", "a planted executable in the workspace ran at start (CVE-2026-18657)",
+                 "https://aws.amazon.com/security/security-bulletins/2026-074-aws/"),
+    "code": ("1.145.3", "a __proto__ key in workspace files started an MCP server in Restricted Mode (CVE-2026-121662)",
+             "https://github.com/microsoft/vscode/security/advisories"),
     "codex": ("0.149.0", "project config command injection (CVE-2025-61260, fixed 0.23.0) and sandbox escapes fixed up to "
               "0.149.0", "https://labs.cloudsecurityalliance.org/research/csa-research-note-openai-codex-sandbox-escapes-20260922-csa/"),
     "gemini": ("0.39.1", "headless mode auto-trusted workspaces (CVE-2026-12537)", "https://github.com/advisories/GHSA-wpqr-6v78-jr5g"),
@@ -319,6 +326,30 @@ def iocs(report: Report) -> None:
         (Path("/tmp/helper"), "fake Claude Code installer dropper (macOS)", "https://www.bitdefender.com/en-us/blog/labs/fake-claude-code-google-ads-malware"),
         (Path("/tmp/osalogging.zip"), "MacSync staging archive", "https://www.huntress.com/blog/fake-claude-macsync"),
     ]
+    home = Path.home()
+    polinrider = "https://blog.gitguardian.com/ghostaction-x-polinrider/"
+    testmetest = "https://research.jfrog.com/post/beyond-testmetest-42-hijacked-github-repos/"
+    sleepyduck = "https://pluto.security/blog/sleepyduck-malware-open-vsx-extensions/"
+    trojan_ext = "https://www.stepsecurity.io/blog/claude-code-extension-trojanized"
+    apex = "https://www.elastic.co/security-labs/threat-command/apex-accelerator-malicious-npm-packages"
+    checks += [
+        (home / ".node_modules" / ".npm-ws-runner.js", "PolinRider loader (Oct 2026)", polinrider),
+        (home / ".node_modules" / ".npm-ws.json", "PolinRider loader state", polinrider),
+        (home / ".local" / "bin" / "net-health-checker.sh", "testmetest worm persistence (Oct 2026)", testmetest),
+        (home / ".local" / "share" / "runtimes" / "sync.py", "testmetest worm persistence", testmetest),
+        (Path("/var/tmp/.fontconfig_state"), "testmetest worm state file", testmetest),
+        (local / "ScopeSmart Technologies Inc", "MALFEX payload folder (Oct 2026)",
+         "https://checkmarx.com/zero-post/malfex-npm-malware-campaign-three-payloads-and-an-adversary-that-signs-their-work/"),
+        (home / ".solidity", "SleepyDuck backdoor folder (Sep 2026)", sleepyduck),
+        (home / "Library" / "LaunchAgents" / "com.solidity.langsupport.runner.plist", "SleepyDuck LaunchAgent", sleepyduck),
+        (home / ".config" / "systemd" / "user" / "solidity-langsupport-runner.service", "SleepyDuck service", sleepyduck),
+        (home / "Library" / "LaunchAgents" / "com.apple.sysmond.plist", "LaunchAgent of the trojanized Claude Code "
+         "extension (Oct 2026; Apple's own agents live in /System)", trojan_ext),
+        (Path(os.environ.get("APPDATA") or home) / "Microsoft" / "Windows" / "Start Menu" / "Programs" / "Startup" / "sysmon.cmd",
+         "startup script of the trojanized Claude Code extension", trojan_ext),
+        (home / ".apex" / "agent" / "mcp.json", "Apex Accelerator MCP configuration (Oct 2026)", apex),
+        (temp / "_apex_run.ps1", "Apex Accelerator dropper script", apex),
+    ]
     for path, what, src in checks:
         if sys.platform != "win32" and str(path).startswith("C:"):
             continue
@@ -326,6 +357,21 @@ def iocs(report: Report) -> None:
             continue
         if path.exists():
             report.findings.append(_finding(R_IOC, "critical", str(path), f"{what} ({src})"))
+    try:
+        for e in os.scandir(home / ".config"):
+            if e.name.startswith(".smt"):
+                report.findings.append(_finding(R_IOC, "high", e.path, f"hidden .smt file of the trojanized Claude Code "
+                                                f"extension ({trojan_ext})"))
+                break
+    except OSError:
+        pass
+    try:
+        keys = (home / ".ssh" / "authorized_keys").read_text(encoding="utf-8", errors="replace")
+        if re.search(r"(?m)\ssvc-telemetry\s*$", keys):
+            report.findings.append(_finding(R_IOC, "critical", str(home / ".ssh" / "authorized_keys"), "SSH key with the "
+                                            f"comment svc-telemetry, planted by the trojanized Claude Code extension ({trojan_ext})"))
+    except OSError:
+        pass
     try:
         for e in os.scandir(temp):
             if e.name.startswith("akg_"):

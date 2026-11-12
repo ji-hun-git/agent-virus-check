@@ -81,12 +81,11 @@ AGENTS = ["Claude Code", "Codex", "Gemini CLI", "Antigravity", "Cursor", "Copilo
 
 STR = {
     "en": {
-        "hero_alt": "personal-anti-hack: a shield in front of everything your AI agent opens, installs and runs",
-        "tagline": [[("A shield in front of", "fg")], [("everything your AI agent", "fg")],
-                    [("opens, installs and runs.", "accent")]],
+        "hero_alt": "personal-anti-hack: the antivirus for people who use AI agents",
+        "tagline": [[("The antivirus for", "fg")], [("people who use", "fg")], [("AI agents.", "accent")]],
         "tag_size": 31,
-        "hero_sub": "Reads repositories, skills, MCP servers and packages before they run, denies the setup commands "
-                    "of the ones that fail, and watches your agents' settings. The checks run in code, on your machine.",
+        "hero_sub": "Scans your computer, watches what arrives and quarantines what it blocks; reads repositories, "
+                    "skills, MCP servers and packages before they run. The checks run in code, on your machine.",
         "one_guard": "ONE GUARD FOR",
         "term_title": "agent session · approvals off",
         "caption": "Recorded run: Claude Code {cc}, approvals off · bench/live_drill.py",
@@ -147,20 +146,20 @@ STR = {
         "repo_sub": "{p} pass and {w} warn, across {f} files. Each warning is worth knowing before an agent sets the "
                     "project up.",
         "groups": ["JavaScript", "Python", "Rust", "AI agents, MCP", "Shell, installers", "Go, Java, containers"],
-        "repo_notes": ["ruff and the MCP servers ship Claude Code SessionStart hooks.",
-                       "A gemini-cli skill pipes a third-party install script into sh."],
+        "repo_notes": ["ruff, the MCP servers and everything-claude-code ship agent hooks;",
+                       "a gemini-cli skill pipes a third-party install script into sh."],
         "repo_legend": ["pass", "warn", "block"],
         "scan_cmd": "pah scan ./acme-utils",
         "scan_title": "Terminal",
         "scan_note": "Trimmed: each high or critical finding also prints why it matters and what to do.",
-        "social_tag": ["A shield in front of everything your", "AI agent opens, installs and runs."],
+        "social_tag": ["The antivirus for people", "who use AI agents."],
     },
     "ko": {
-        "hero_alt": "personal-anti-hack: AI 에이전트가 여는 모든 문 앞의 방어막",
-        "tagline": [[("AI 에이전트가 여는", "fg")], [("모든 문 앞의 ", "fg"), ("방어막.", "accent")]],
+        "hero_alt": "personal-anti-hack: AI 에이전트를 쓰는 사람을 위한 백신",
+        "tagline": [[("AI 에이전트를 쓰는", "fg")], [("사람을 위한 ", "fg"), ("백신.", "accent")]],
         "tag_size": 34,
-        "hero_sub": "레포지토리·스킬·MCP 서버·패키지를 실행 전에 읽고, 검사에 걸리면 설치·설정 명령을 막고, 에이전트 "
-                    "설정 변경을 감시합니다. 판정은 코드가, 내 컴퓨터에서 합니다.",
+        "hero_sub": "컴퓨터를 검사하고, 들어오는 것을 지켜보고, 막은 것은 격리합니다. 레포지토리·스킬·MCP 서버·패키지는 "
+                    "실행 전에 읽습니다. 판정은 코드가, 내 컴퓨터에서 합니다.",
         "one_guard": "하나의 가드로",
         "term_title": "에이전트 세션 · 승인 끔",
         "caption": "실제 실행 기록: Claude Code {cc}, 승인 끔 · bench/live_drill.py",
@@ -219,13 +218,13 @@ STR = {
         "repo_big": "차단 0",
         "repo_sub": "파일 {f}개, 통과 {p} · 경고 {w}. 경고는 모두 에이전트에게 설치를 맡기기 전에 알아 둘 만한 것입니다.",
         "groups": ["JavaScript", "Python", "Rust", "AI 에이전트·MCP", "셸·설치 스크립트", "Go·Java·컨테이너"],
-        "repo_notes": ["ruff와 MCP 서버 모음은 Claude Code SessionStart 훅을 넣어 두었습니다.",
+        "repo_notes": ["ruff·MCP 서버 모음·everything-claude-code는 에이전트 훅을 넣어 두었고,",
                        "gemini-cli의 스킬 하나는 제3자 설치 스크립트를 sh로 바로 실행시킵니다."],
         "repo_legend": ["통과", "경고", "차단"],
         "scan_cmd": "pah scan ./acme-utils --lang ko",
         "scan_title": "터미널",
         "scan_note": "일부 생략: high·critical 항목은 위험한 이유와 조치도 함께 출력합니다.",
-        "social_tag": ["AI 에이전트가 여는", "모든 문 앞의 방어막."],
+        "social_tag": ["AI 에이전트를 쓰는", "사람을 위한 백신."],
     },
 }
 
@@ -377,7 +376,11 @@ def flow(items: list[str], x0: float, y0: float, width: float, size: float, gap:
 # Data
 
 def load(name: str) -> dict:
-    return json.loads((RESULTS / f"{DATE}-{name}.json").read_text(encoding="utf-8"))
+    """The latest dated result of a kind. Model runs are not repeated for every rule change, so each kind carries
+    its own date, and comparisons with the models use only the cases the models saw."""
+    found = sorted(RESULTS.glob(f"20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-{name}.json"))
+    path = found[-1] if found else RESULTS / f"{DATE}-{name}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 def headline() -> dict:
@@ -653,8 +656,9 @@ def results_rows(lang: str) -> tuple[list[dict], int]:
     s = STR[lang]
     models = load("models")
     rules = load("rules")
-    mal = [r for r in rules["rows"] if r["kind"] == "malicious"]
-    ben = [r for r in rules["rows"] if r["kind"] == "benign"]
+    seen = {r["id"] for r in models["rows"]}  # the cases the models were given
+    mal = [r for r in rules["rows"] if r["kind"] == "malicious" and r["id"] in seen and not r.get("skipped")]
+    ben = [r for r in rules["rows"] if r["kind"] == "benign" and r["id"] in seen]
     rows = [{"name": "personal-anti-hack", "note": s["res_rules"], "all": sum(r["pah"] in ("block", "warn") for r in mal),
              "some": 0, "missed": sum(r["pah"] not in ("block", "warn") for r in mal), "refused": 0,
              "false": sum(r["pah"] in ("block", "warn") for r in ben), "benign": len(ben), "total": len(mal)}]
@@ -854,12 +858,13 @@ REPO_GROUPS = [
     ["psf/requests", "pallets/flask", "fastapi/fastapi", "pytest-dev/pytest", "python-poetry/poetry", "astral-sh/ruff"],
     ["BurntSushi/ripgrep", "serde-rs/serde", "tokio-rs/tokio"],
     ["anthropics/claude-code", "openai/codex", "google-gemini/gemini-cli", "modelcontextprotocol/servers",
-     "anthropics/skills"],
+     "anthropics/skills", "affaan-m/everything-claude-code"],
     ["ohmyzsh/ohmyzsh", "nvm-sh/nvm", "Homebrew/install"],
     ["cli/cli", "spring-projects/spring-petclinic", "microsoft/vscode-remote-try-node"],
 ]
 REPO_NAMES = {"modelcontextprotocol/servers": "MCP servers", "anthropics/skills": "Anthropic skills",
-              "Homebrew/install": "Homebrew install", "cli/cli": "GitHub CLI"}
+              "Homebrew/install": "Homebrew install", "cli/cli": "GitHub CLI",
+              "affaan-m/everything-claude-code": "everything-claude-code"}
 
 
 def _k(n: int) -> str:

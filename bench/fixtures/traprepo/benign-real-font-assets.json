@@ -1,0 +1,37 @@
+{
+  "id": "benign-real-font-assets",
+  "title": "Web project with real font files and a build script",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "ide",
+  "technique": "Real TTF and WOFF2 fonts (with their format signatures) under public/fonts, copied by an ordinary build script.",
+  "trigger": "npm run build",
+  "incident": "(benign twin of vscode-folderopen-fake-font)",
+  "sources": [
+    "https://blog.gitguardian.com/ghostaction-x-polinrider/"
+  ],
+  "notes": "Legitimate font assets.",
+  "files": {
+    "package.json": "{\n  \"name\": \"shop-front\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"build\": \"node scripts/build.js\"\n  }\n}\n",
+    "scripts/build.js": "const fs = require('fs');\nfs.mkdirSync('dist/fonts', { recursive: true });\nfor (const f of fs.readdirSync('public/fonts')) fs.copyFileSync('public/fonts/' + f, 'dist/fonts/' + f);\n",
+    "README.md": "# shop-front\n"
+  },
+  "generated": [
+    {
+      "path": "public/fonts/inter.ttf",
+      "generator": "binary",
+      "params": {
+        "magic": "ttf",
+        "size": 2048
+      }
+    },
+    {
+      "path": "public/fonts/inter.woff2",
+      "generator": "binary",
+      "params": {
+        "magic": "woff2",
+        "size": 1024
+      }
+    }
+  ]
+}

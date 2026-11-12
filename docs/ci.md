@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ji-hun-git/personal-anti-hack@v0.1.0
+      - uses: ji-hun-git/personal-anti-hack@v0.2.0
 ```
 
 The step fails when the verdict is BLOCK (a high or critical finding). High and critical findings appear as errors and
@@ -35,7 +35,7 @@ permissions:
   security-events: write
 steps:
   - uses: actions/checkout@v7
-  - uses: ji-hun-git/personal-anti-hack@v0.1.0
+  - uses: ji-hun-git/personal-anti-hack@v0.2.0
     with:
       fail-on: none
   - uses: github/codeql-action/upload-sarif@v4
@@ -50,11 +50,23 @@ steps:
 A workflow that installs a third-party tool, builds a submodule or opens a downloaded archive can scan it first:
 
 ```yaml
-- uses: ji-hun-git/personal-anti-hack@v0.1.0
+- uses: ji-hun-git/personal-anti-hack@v0.2.0
   with:
     path: vendor/some-tool          # or an archive, or https://github.com/owner/repo
     sarif: ""
 ```
+
+### What it reads in your own workflows
+
+| Rule | What it means for you |
+| --- | --- |
+| [PAH-I010](rules.md#pah-i010) | A workflow sends `toJSON(secrets)` or other secrets to a bare IP, plain HTTP or a capture service, or reads the runner's memory. This is how GhostAction and the 'wfx' wave (Sep to Nov 2026) looked; it blocks, because the repository has been compromised. |
+| [PAH-I009](rules.md#pah-i009) | `${{ github.event.issue.title }}` or a similar value is pasted into `run:` or `script:`. Pass it through `env:` instead. |
+| [PAH-I011](rules.md#pah-i011) | An AI agent action runs on issues or comments and also gets untrusted text in its prompt, accepts any user or has its approvals off (Clinejection). |
+| [PAH-I008](rules.md#pah-i008) | `pull_request_target` checks out the pull request's code. |
+
+PAH-I009, PAH-I011 and PAH-I008 are risks to the repository's CI, not to the machine of someone who clones it, so they
+are reported at low severity: they appear in the Security tab through the SARIF upload and do not change the verdict.
 
 ### Inputs
 
@@ -81,7 +93,7 @@ The scan step also sets `critical`, `high`, `medium` and `low` counts.
 ```yaml
 repos:
   - repo: https://github.com/ji-hun-git/personal-anti-hack
-    rev: v0.1.0
+    rev: v0.2.0
     hooks:
       - id: personal-anti-hack
         # stages: [pre-push]   # in a large repository, scan before each push instead of each commit
@@ -92,7 +104,7 @@ The hook scans the whole repository and stops the commit on BLOCK, printing the 
 ## Any other CI
 
 ```sh
-python -m pip install https://github.com/ji-hun-git/personal-anti-hack/archive/refs/tags/v0.1.0.tar.gz
+python -m pip install https://github.com/ji-hun-git/personal-anti-hack/archive/refs/tags/v0.2.0.tar.gz
 pah scan . --fail-on block --sarif-out personal-anti-hack.sarif
 ```
 

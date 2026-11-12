@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc" font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif'>
-<title id="title">personal-anti-hack</title><desc id="desc">Reads repositories, skills, MCP servers and packages before they run, denies the setup commands of the ones that fail, and watches your agents' settings. The checks run in code, on your machine.</desc>
+<title id="title">personal-anti-hack</title><desc id="desc">Scans your computer, watches what arrives and quarantines what it blocks; reads repositories, skills, MCP servers and packages before they run. The checks run in code, on your machine.</desc>
 <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13213d"/><stop offset="0.6" stop-color="#0d1117"/></linearGradient><pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#8fb4ff" fill-opacity="0.12"/></pattern><radialGradient id="glow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#4c8df6" stop-opacity="0.35"/><stop offset="1" stop-color="#4c8df6" stop-opacity="0"/></radialGradient></defs>
 <rect x="0" y="0" width="1280" height="640" rx="0" fill="url(#bg)"/>
 <rect x="0" y="0" width="1280" height="640" rx="0" fill="url(#dots)"/>
@@ -7,13 +7,13 @@
 <g transform="translate(842 70) scale(4.6)" opacity="0.13" fill="none" stroke="#8fb4ff" stroke-width="0.9" stroke-linejoin="round"><path d="M50 17 L76 26 L76 50 Q74 72 50 84 Q26 72 24 50 L24 26 Z"/><path d="M36 50 L43 43 L48 49 L60 35 L67 42 L48 62 Z"/></g>
 <g transform="translate(96 92) scale(0.9600)"><rect width="100" height="100" rx="18" fill="#4c8df6"/><path d="M50 17 L76 26 L76 50 Q74 72 50 84 Q26 72 24 50 L24 26 Z" fill="#ffffff"/><path d="M36 50 L43 43 L48 49 L60 35 L67 42 L48 62 Z" fill="#4c8df6"/></g>
 <text x="96" y="300" font-size="76" font-weight="800" fill="#f0f6fc" letter-spacing="-1.5">personal-anti-hack</text>
-<text x="96" y="368" font-size="38" font-weight="500" fill="#c9d6ee">A shield in front of everything your</text>
-<text x="96" y="416" font-size="38" font-weight="500" fill="#9fb8e6">AI agent opens, installs and runs.</text>
-<text x="96" y="534" font-size="40" font-weight="700" fill="#f0f6fc">54/54</text>
+<text x="96" y="368" font-size="38" font-weight="500" fill="#c9d6ee">The antivirus for people</text>
+<text x="96" y="416" font-size="38" font-weight="500" fill="#9fb8e6">who use AI agents.</text>
+<text x="96" y="534" font-size="40" font-weight="700" fill="#f0f6fc">63/63</text>
 <text x="96" y="566" font-size="20" fill="#8b949e">malicious repos caught</text>
-<text x="372.7" y="534" font-size="40" font-weight="700" fill="#f0f6fc">0/27</text>
+<text x="372.7" y="534" font-size="40" font-weight="700" fill="#f0f6fc">0/33</text>
 <text x="372.7" y="566" font-size="20" fill="#8b949e">false alarms</text>
-<text x="548.8" y="534" font-size="40" font-weight="700" fill="#f0f6fc">0/29</text>
+<text x="548.8" y="534" font-size="40" font-weight="700" fill="#f0f6fc">0/30</text>
 <text x="548.8" y="566" font-size="20" fill="#8b949e">popular repos blocked</text>
 <text x="817.4" y="534" font-size="40" font-weight="700" fill="#f0f6fc">9</text>
 <text x="817.4" y="566" font-size="20" fill="#8b949e">agents, one guard</text>

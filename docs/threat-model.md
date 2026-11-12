@@ -55,3 +55,9 @@ tokens, which infostealers now collect on purpose.
   OpenClaw, opencode and Amp take plugins rather than command hooks; the MCP server and skills work there.
 - **It does not replace the agents' own protections.** Keep approval prompts and sandboxes on; run unfamiliar code in
   a disposable environment; keep secrets out of plain files.
+- **The antivirus duties run in user space.** `pah protect` polls the places it watches every few seconds, so it
+  notices a new download or extension shortly after it lands instead of blocking the write, and a file that runs the
+  moment it is written can act first; the agents' hooks are what stop commands before they run. Binaries are judged
+  by the engine built into the operating system (Microsoft Defender) or ClamAV, so on a machine with neither, known
+  malware binaries go unchecked and the sweep says so. Quarantine moves files; it does not undo what a program already
+  did, which is what `pah checkup` and the incident-response skill are for.

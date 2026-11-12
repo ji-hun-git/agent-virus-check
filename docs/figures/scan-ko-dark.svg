@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="636" viewBox="0 0 960 636" role="img" aria-labelledby="title desc" font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif'>
-<title id="title">$ pah scan ./acme-utils --lang ko</title><desc id="desc">personal-anti-hack 0.1.0  ·  ./acme-utils
+<title id="title">$ pah scan ./acme-utils --lang ko</title><desc id="desc">personal-anti-hack 0.2.0  ·  ./acme-utils
  BLOCK   아래 항목이 설명되기 전에는 에이전트로 열거나 설치하거나 실행하지 마세요
    1 critical, 2 high, 1 medium  ·  6 files  ·  0.0s
 
@@ -29,7 +29,7 @@
 <circle cx="54" cy="18.5" r="5.5" fill="#28c840"/>
 <text x="480" y="23" font-size="12" font-weight="500" fill="#8b949e" text-anchor="middle">터미널</text>
 <text x="22" y="64" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#7ee787" font-weight="700">$ </tspan><tspan fill="#e6edf3">pah scan ./acme-utils --lang ko</tspan></text>
-<text x="22" y="93.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">personal-anti-hack 0.1.0  ·  ./acme-utils</tspan></text>
+<text x="22" y="93.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">personal-anti-hack 0.2.0  ·  ./acme-utils</tspan></text>
 <rect x="22" y="100.8" width="52.1" height="17.9" rx="3" fill="#da3633"/>
 <text x="48" y="112.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' text-anchor="middle" xml:space="preserve"><tspan fill="#ffffff" font-weight="700">BLOCK</tspan></text>
 <text x="74.1" y="112.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">  아래 항목이 설명되기 전에는 에이전트로 열거나 설치하거나 실행하지 마세요</tspan></text>

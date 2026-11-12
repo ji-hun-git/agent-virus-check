@@ -1,0 +1,1348 @@
+{
+ "name": "2026-11-12-rules",
+ "date": "2026-11-12",
+ "platform": "win32",
+ "code": "208aaf39d687",
+ "budget_chars": 100000,
+ "trials": 1,
+ "cases": 96,
+ "skipped": {
+  "symlink-to-ssh-key": "could not create symlink docs/keys.txt on this system"
+ },
+ "summaries": [
+  {
+   "tool": "personal-anti-hack (rules)",
+   "malicious": 63,
+   "benign": 33,
+   "detected": 63,
+   "blocked": 60,
+   "false_block": 0,
+   "false_warn": 0,
+   "missed": [],
+   "false_alarms": []
+  }
+ ],
+ "rows": [
+  {
+   "id": "agent-cli-yolo-secret-hunt",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.015,
+   "pah_rules": [
+    "PAH-C010"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "agents-md-install-and-reconfigure",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "instruction-file",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-A011"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-agents-md-conventions",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "instruction-file",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-build-rs-out-dir",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "rust",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-cargo-config-target-flags",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "rust",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-claude-md-conventions",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "instruction-file",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-claude-plugin-hooks",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "agent-config",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-claude-settings-narrow",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "agent-config",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-copilot-hooks-lint",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "agent-config",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-cursor-style-rules",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "instruction-file",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-devcontainer-postcreate",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "ide",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-emoji-vs16-locales",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "content-obfuscation",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-env-local-dev",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "build",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-github-actions-pull-request",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "build",
+   "pah": "pass",
+   "pah_seconds": 0.015,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-gitmodules-normal",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "git",
+   "pah": "pass",
+   "pah_seconds": 0.016,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-gradle-wrapper-official",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "build",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-husky-lint-staged",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "git",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-makefile-shell-gitrev",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "build",
+   "pah": "pass",
+   "pah_seconds": 0.015,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-mcp-json-local-stdio",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "agent-config",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-mcp-server-normal",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "mcp",
+   "pah": "pass",
+   "pah_seconds": 0.016,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-minified-dist-no-eval",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "content-obfuscation",
+   "pah": "pass",
+   "pah_seconds": 0.094,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-native-addon-binding-gyp",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "package-install",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-npmrc-save-exact",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "package-install",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-package-lock-registry",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "package-install",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-pytest-conftest-fixtures",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "python",
+   "pah": "pass",
+   "pah_seconds": 0.015,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-readme-official-installers",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "instruction-file",
+   "pah": "pass",
+   "pah_seconds": 0.016,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-real-font-assets",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "ide",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-requirements-hashes",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "python",
+   "pah": "pass",
+   "pah_seconds": 0.016,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-rust-proc-macro",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "rust",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-setup-py-pyproject",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "python",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-skill-md-normal",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "skill",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-skill-shell-git-status",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "skill",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-vscode-build-task",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "ide",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-web3-rpc-client",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "obfuscation",
+   "pah": "pass",
+   "pah_seconds": 0.016,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "benign-workflow-issue-env",
+   "kind": "benign",
+   "expected": "pass",
+   "category": "ci",
+   "pah": "pass",
+   "pah_seconds": 0.0,
+   "pah_rules": [],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "binary-magic-disguised-fixture",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "binary",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-F002"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "binding-gyp-command-expansion",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "cargo-config-rustc-wrapper",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "rust",
+   "pah": "block",
+   "pah_seconds": 0.015,
+   "pah_rules": [
+    "PAH-C004",
+    "PAH-P011"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "claude-apikeyhelper-command",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-A002",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "claude-md-set-base-url",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "instruction-file",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-A011"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "claude-plugin-hooks-sessionstart",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "claude-settings-env-anthropic-base-url",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-A003"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "claude-settings-pretooluse-hook",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "claude-settings-sessionstart-hook",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-A001",
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "claude-statusline-command",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "codex-env-codexhome-config-toml",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-A008",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "copilot-hooks-sessionstart",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.031,
+   "pah_rules": [
+    "PAH-A001",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "cursor-hooks-json",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-A007",
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "cursor-mcp-json-command",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "cursor-rules-mdc-tagchars",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "instruction-file",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-T001"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "date-ci-conditional-trigger",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "content-obfuscation",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C016"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "devcontainer-initializecommand",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "ide",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004",
+    "PAH-I004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "docx-hidden-script-skill",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "docs",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-A011",
+    "PAH-F005"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "eth-dead-drop-loader",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "obfuscation",
+   "pah": "block",
+   "pah_seconds": 0.015,
+   "pah_rules": [
+    "PAH-C001",
+    "PAH-C002",
+    "PAH-C023"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "gemini-settings-hook",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-A001",
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "git-dir-hookspath-fsmonitor",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "git",
+   "pah": "block",
+   "pah_seconds": 0.031,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004",
+    "PAH-G002",
+    "PAH-G003"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "git-exe-planted-root",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "binary",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-F006"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "gitmodules-suspicious-submodule",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "git",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-G001"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "glassworm-variation-selectors-eval",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "content-obfuscation",
+   "pah": "block",
+   "pah_seconds": 0.015,
+   "pah_rules": [
+    "PAH-T002"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "gradle-wrapper-distributionurl-offhost",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "build",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P013"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "husky-precommit-payload",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "git",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "js-100k-leading-newlines",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "content-obfuscation",
+   "pah": "block",
+   "pah_seconds": 0.078,
+   "pah_rules": [
+    "PAH-C002",
+    "PAH-T005"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "js-multimb-single-line",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "content-obfuscation",
+   "pah": "block",
+   "pah_seconds": 1.172,
+   "pah_rules": [
+    "PAH-C002",
+    "PAH-T007"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "js-trailing-spaces-hidden",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "content-obfuscation",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C002",
+    "PAH-T006"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "lookalike-dep-separator-confusion",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "package-install",
+   "pah": "warn",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P007"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "makefile-shell-download-run",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "build",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "mcp-json-enable-all-project",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-A006",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "mcp-tool-description-poisoning",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "mcp",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C003"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "npm-postinstall-beacon",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "npm-prepare-script",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.015,
+   "pah_rules": [
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "npm-url-dependency",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P002"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "npm-worm-republish",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "packages",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C018",
+    "PAH-C024"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "npmrc-reenables-install-scripts",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "packages",
+   "pah": "warn",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P019"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "npmrc-registry-redirect",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "obfuscatorio-js-loader",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "content-obfuscation",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C012"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "openclaw-extension-autoload",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "agent-config",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-A010",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "package-lock-offregistry-resolved",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P003"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "pnpmfile-cjs-hook",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.015,
+   "pah_rules": [
+    "PAH-C004",
+    "PAH-P006"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "pyc-only-payload",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "binary",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C004",
+    "PAH-F003"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "python-conftest-beacon",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "python",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "python-exec-base64-zlib-loader",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "python",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C002"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "python-exec-loader-ai-reviewer-comment",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "python",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C002"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "python-pth-exec",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "python",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P008"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "python-requirements-index-url",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "python",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-P004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "python-setup-py-download-run",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "python",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C001",
+    "PAH-C002"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "readme-curl-bash-lookalike",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "instruction-file",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C001",
+    "PAH-C013"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "readme-nondefault-registry",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "instruction-file",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C018"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "rust-build-rs-network-exec",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "rust",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C001"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "skill-md-fetch-binary",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "skill",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-C001"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "skill-npx-nonexistent-slopsquat",
+   "kind": "malicious",
+   "expected": "warn",
+   "category": "skill",
+   "pah": "warn",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-A017"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "skill-shell-line-preexec",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "skill",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-A019",
+    "PAH-C003",
+    "PAH-C004"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "vscode-folderopen-fake-font",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "ide",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C004",
+    "PAH-C022",
+    "PAH-F002",
+    "PAH-I001"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "vscode-settings-autoapprove",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "ide",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004",
+    "PAH-I001",
+    "PAH-I002"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "vscode-tasks-folderopen",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "ide",
+   "pah": "block",
+   "pah_seconds": 0.015,
+   "pah_rules": [
+    "PAH-C003",
+    "PAH-C004",
+    "PAH-I001"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "workflow-secrets-exfil",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "ci",
+   "pah": "block",
+   "pah_seconds": 0.0,
+   "pah_rules": [
+    "PAH-I010"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  },
+  {
+   "id": "yarnrc-yarnpath-repo-script",
+   "kind": "malicious",
+   "expected": "block",
+   "category": "package-install",
+   "pah": "block",
+   "pah_seconds": 0.016,
+   "pah_rules": [
+    "PAH-C004",
+    "PAH-P006"
+   ],
+   "skipped": null,
+   "models": {},
+   "deep": {}
+  }
+ ]
+}

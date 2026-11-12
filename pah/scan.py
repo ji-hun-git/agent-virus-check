@@ -44,6 +44,16 @@ R_NATIVE = rule(
     "PAH-F004", "Native binary shipped in the repository",
     "Prebuilt executables and native modules run without any source to review.",
     "Prefer packages that build from source, or verify the binary's origin.", attack=("T1204.002",))
+R_PLANTED = rule(
+    "PAH-F006", "Program named after a system tool at the top of the repository",
+    "Windows looks in the current folder first, and tools that start git or node from the project folder ran a "
+    "planted git.exe as soon as the folder was opened: Cursor 3.2.16 (CVE-2026-63093), Claude Desktop before "
+    "1.8089.0 (CVE-2026-88066), Kiro IDE and CLI (CVE-2026-18656).", "Delete the file; update the tool.",
+    attack=("T1574.008",), refs=("https://github.com/advisories/GHSA-prfr-jc65-hr23",
+                                  "https://aws.amazon.com/security/security-bulletins/2026-074-aws/"))
+PLANTED_TOOL = re.compile(r"(?:git|node|npm|npx|pnpm|yarn|python3?|py|pip3?|uv|bun|deno|code|cursor|claude|codex|gemini|kiro|"
+                          r"rg|where|cmd|powershell|pwsh|bash|sh|ssh|curl|wget|tar|cargo|rustc|go|java|dotnet|docker|gh)"
+                          r"\.(?:exe|com|bat|cmd)", re.I)
 R_ARCHIVE_SCRIPT = rule(
     "PAH-F005", "Script hidden inside a document or archive",
     "Office documents are zip files. Trail of Bits hid scripts inside a DOCX and had the skill tell the agent to "
@@ -92,6 +102,28 @@ def _magic(data: bytes) -> str | None:
     if data[:4] == b"\xca\xfe\xba\xbe" and int.from_bytes(data[4:8], "big") < 30:
         return "Mach-O"
     return None
+
+
+MEDIA_MAGIC = {".ttf": (b"\x00\x01\x00\x00", b"true", b"OTTO", b"ttcf"), ".otf": (b"OTTO", b"\x00\x01\x00\x00"),
+               ".woff": (b"wOFF",), ".woff2": (b"wOF2",), ".png": (b"\x89PNG",), ".jpg": (b"\xff\xd8\xff",),
+               ".jpeg": (b"\xff\xd8\xff",), ".gif": (b"GIF8",), ".ico": (b"\x00\x00\x01\x00",), ".bmp": (b"BM",),
+               ".webp": (b"RIFF",), ".mp3": (b"ID3", b"\xff\xfb", b"\xff\xf3"), ".wav": (b"RIFF",), ".avi": (b"RIFF",),
+               ".mp4": (), ".mov": (), ".m4a": (), ".eot": ()}
+CODE_TOKENS = re.compile(r"\b(?:function\s*\w*\s*\(|require\s*\(|import\s+[\w{*]|eval\s*\(|exec\s*\(|const\s+\w+\s*=|"
+                         r"var\s+\w+\s*=|let\s+\w+\s*=|def\s+\w+\s*\(|child_process|subprocess|atob\s*\()|=>")
+
+
+def _disguised_text(state: State, f: File) -> None:
+    """A font, image or video that decodes as program text: PolinRider's loader was saved as fa-solid-300.ttf."""
+    ext = posixpath.splitext(f.rel.lower())[1]
+    magic = MEDIA_MAGIC.get(ext)
+    if magic is None or (magic and f.data.startswith(magic)) or (ext in (".mp4", ".mov", ".m4a") and f.data[4:8] == b"ftyp"):
+        return
+    m = CODE_TOKENS.search(f.text or "")
+    if m:
+        state.add(R_DISGUISED_BINARY, "high", f.rel, (f.text or "").count("\n", 0, m.start()) + 1,
+                  f"program code saved as a {ext} file", (f.text or "")[m.start():m.start() + 120], "code")
+        state.mark_autoexec(f.rel, f"code disguised as a {ext} file")
 
 
 def _is_pyc(f: File) -> bool:
@@ -441,8 +473,14 @@ def _analyze(state: State, target: str, started: float, max_seconds: float | Non
             continue
         dispatch(state, f)
         dispatch_packages(state, f)
+        if "/" not in f.rel and PLANTED_TOOL.fullmatch(f.name):
+            state.add(R_PLANTED, "critical", f.rel, 0, f"{f.name} in the project folder runs in place of the real "
+                      f"{f.name.split('.')[0]} in tools that start it from there", f.rel, "code")
+            state.mark_autoexec(f.rel, "program named after a system tool in the project folder")
         if f.text is None:
             _binary_checks(state, f)
+        else:
+            _disguised_text(state, f)
     _propagate(state)
     scanned = 0
     for f in state.files.values():

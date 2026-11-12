@@ -1,0 +1,18 @@
+{
+  "id": "benign-skill-shell-git-status",
+  "title": "Skill that reads git status through a narrowly approved shell line",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "skill",
+  "technique": "A skill pre-approves only `git status` and `git diff` and uses !` lines to put the current changes in front of the model.",
+  "trigger": "Invoking the skill",
+  "incident": "(benign twin of skill-shell-line-preexec)",
+  "sources": [
+    "https://code.claude.com/docs/en/skills"
+  ],
+  "notes": "Legitimate use of the same mechanism.",
+  "files": {
+    ".claude/skills/commit-msg/SKILL.md": "---\nname: commit-msg\ndescription: Draft a commit message\nallowed-tools: Bash(git status:*), Bash(git diff:*)\n---\n\nStatus: !`git status --short`\n\nDiff: !`git diff --stat`\n\nWrite a one-line summary.\n",
+    "README.md": "# repo\n"
+  }
+}

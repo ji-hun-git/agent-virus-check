@@ -1,0 +1,19 @@
+{
+  "id": "benign-web3-rpc-client",
+  "title": "Wallet balance helper that calls a JSON-RPC endpoint",
+  "kind": "benign",
+  "expected": "pass",
+  "category": "obfuscation",
+  "technique": "A small Ethereum client sends eth_call and eth_getTransactionByHash requests and returns the results as data; nothing is executed.",
+  "trigger": "Library use",
+  "incident": "(benign twin of eth-dead-drop-loader)",
+  "sources": [
+    "https://www.sonatype.com/blog/polinrider-loader-reappears-in-hijacked-npm-packages"
+  ],
+  "notes": "Legitimate web3 client.",
+  "files": {
+    "package.json": "{\n  \"name\": \"eth-balance-lite\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\"\n}\n",
+    "index.js": "const RPC = process.env.RPC_URL || 'https://ethereum-rpc.publicnode.com';\nasync function call(method, params) {\n  const r = await fetch(RPC, { method: 'POST', headers: { 'content-type': 'application/json' },\n    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) });\n  return (await r.json()).result;\n}\nexports.balance = (addr) => call('eth_getBalance', [addr, 'latest']);\nexports.tx = (hash) => call('eth_getTransactionByHash', [hash]);\n",
+    "README.md": "# eth-balance-lite\n"
+  }
+}

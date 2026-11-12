@@ -1,6 +1,6 @@
 # Research behind personal-anti-hack
 
-The evidence this tool is designed from, current to 2026-11-11: how malware reaches people who use AI coding agents (Claude Code, Codex, Cursor, Gemini CLI, OpenClaw, MCP servers, Agent Skills), why language-model review misses it, what existing defenses cover, and what the strongest security projects have in common. Every rule in [rules.md](rules.md) cites the incident or study it comes from; this page collects them.
+The evidence this tool is designed from, current to 2026-11-12: how malware reaches people who use AI coding agents (Claude Code, Codex, Cursor, Gemini CLI, OpenClaw, MCP servers, Agent Skills), why language-model review misses it, what existing defenses cover, and what the strongest security projects have in common. Every rule in [rules.md](rules.md) cites the incident or study it comes from; this page collects them.
 
 **Legend.** **[V]** checked against the primary source. **[R]** as reported by the linked source, not independently re-checked. **[?]** unverified or conflicting.
 
@@ -26,6 +26,19 @@ The evidence this tool is designed from, current to 2026-11-11: how malware reac
 - Aokigahara's `aisessions` module reads `.claude.json`, `.codex/auth.json`, Cursor/Windsurf/VS Code `state.vscdb`, `.gemini/.env`, `.copilot/hosts.json` and the Claude/ChatGPT Store-app caches [R] ([Check Point](https://research.checkpoint.com/2026/infostealer-riding-the-ai-train/)).
 - A Vidar variant took `openclaw.json` (with the gateway token), `device.json` and `MEMORY.md` [R] ([Hudson Rock](https://www.infostealers.com/article/hudson-rock-identifies-real-world-infostealer-infection-targeting-openclaw-configurations/)). ACRStealer takes Cline and Continue keys [R].
 - A password change does not cancel stolen tokens; sessions must be revoked and tokens rotated [R] (SpyCloud, above).
+
+### September to November 2026 (rules added in 0.2.0) [R]
+
+| Campaign or flaw | What it did | Source |
+|---|---|---|
+| PolinRider (Oct to Nov) | Amended and force-pushed commits in 188 GitHub repositories: a folder-open task named `eslint-check` ran a loader saved as `fa-solid-300.ttf`. Hijacked npm packages read their server from an Ethereum transaction and piped it into a detached `node -i` | [GitGuardian](https://blog.gitguardian.com/ghostaction-x-polinrider/), [Sonatype](https://www.sonatype.com/blog/polinrider-loader-reappears-in-hijacked-npm-packages) |
+| GhostAction and "wfx" (Sep to Nov) | Stolen tokens pushed workflows named like security tooling that sent `toJSON(secrets)` to a bare IP; about 30,000 repositories | [GitGuardian](https://blog.gitguardian.com/ghostaction-github-actions-supply-chain-attack-returns/), [Aikido](https://www.aikido.dev/blog/compromised-github-accounts-push-ci-secret-stealer-to-tens-of-thousands-of-repositories) |
+| testmetest worm (Oct) | `binding.gyp` loader, then SessionStart hooks, Cursor rules, MCP entries and folder-open tasks for several agents at once, and a wiper that fires when the stolen token is revoked | [JFrog](https://research.jfrog.com/post/beyond-testmetest-42-hijacked-github-repos/) |
+| MALFEX, Apex Accelerator, SleepyDuck (Sep to Oct) | Padding past the editor edge and a scheduled task; a fake AI agent that set `OPENROUTER_BASE_URL`, wrote an MCP server and added a Defender exclusion; Open VSX extensions with a payload appended to an MP4 | [Checkmarx](https://checkmarx.com/zero-post/malfex-npm-malware-campaign-three-payloads-and-an-adversary-that-signs-their-work/), [Elastic](https://www.elastic.co/security-labs/threat-command/apex-accelerator-malicious-npm-packages), [Pluto](https://pluto.security/blog/sleepyduck-malware-open-vsx-extensions/) |
+| Planted programs and relocated configs (Jun to Nov) | A repository's `git.exe` ran on open in Cursor, Claude Desktop and Kiro (CVE-2026-63093, CVE-2026-88066, CVE-2026-18656); `GEMINI_CLI_HOME` in `.env` started an MCP server (CVE-2026-13745); a `__proto__` key in `.vscode/mcp.json` did the same in Restricted Mode (CVE-2026-121662); `PATH` pointing at a repository `bin/git` ran through Claude Code's startup git probes | [GHSA-prfr-jc65-hr23](https://github.com/advisories/GHSA-prfr-jc65-hr23), [GHSA-2255-3477-vp73](https://github.com/advisories/GHSA-2255-3477-vp73), [Datadog](https://securitylabs.datadoghq.com/articles/coding-agent-project-trust-code-execution-before-first-prompt/) |
+| Install protections (Jul) | npm 12 stopped running dependencies' install scripts and fetching git or URL dependencies by default; a project's `.npmrc` can switch both back on | [GitHub](https://github.blog/changelog/2026-07-08-npm-install-time-security-and-gat-bypass2fa-deprecation) |
+
+Heuristics adopted from other scanners in 0.2.0: template injection and over-shared secrets in workflows (zizmor), worm self-propagation and silent processes (GuardDog), bin-name shadowing (Socket), AI agent actions on untrusted triggers (Trail of Bits' agentic-actions-auditor), skill shell lines and pre-approved tools (Snyk agent-scan, Cisco skill-scanner), terminal escape codes (Trail of Bits).
 
 ## 2. Why conventional LLMs miss it
 

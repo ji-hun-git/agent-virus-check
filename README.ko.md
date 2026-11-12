@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/figures/hero-ko-dark.svg">
-    <img src="docs/figures/hero-ko-light.svg" width="100%" alt="personal-anti-hack: AI 에이전트가 여는 모든 문 앞의 방어막. 실제 실행 기록: 승인을 끈 에이전트에게 클론한 프로젝트를 설정하라고 하자, postinstall 스크립트가 데이터를 밖으로 보내기 때문에 personal-anti-hack이 npm install을 막았고 에이전트는 멈춰서 이유를 설명했습니다. 결과: 악성 테스트 레포지토리 54개 중 54개 탐지, 비슷한 정상 레포지토리 27개 중 0개 오탐, 널리 쓰이는 레포지토리 29개 중 0개 차단, 실제 에이전트 실행 12번 중 페이로드 실행 0번."/>
+    <img src="docs/figures/hero-ko-light.svg" width="100%" alt="personal-anti-hack: AI 에이전트를 쓰는 사람을 위한 백신. 실제 실행 기록: 승인을 끈 에이전트에게 클론한 프로젝트를 설정하라고 하자, postinstall 스크립트가 데이터를 밖으로 보내기 때문에 personal-anti-hack이 npm install을 막았고 에이전트는 멈춰서 이유를 설명했습니다. 결과: 악성 테스트 레포지토리 63개 중 63개 탐지, 비슷한 정상 레포지토리 33개 중 0개 오탐, 널리 쓰이는 레포지토리 30개 중 0개 차단, 실제 에이전트 실행 12번 중 페이로드 실행 0번."/>
   </picture>
 </p>
 
@@ -17,7 +17,7 @@
   <img src="https://img.shields.io/badge/MCP-server-2f6fde" alt="MCP 서버"/>
   <img src="https://img.shields.io/badge/python-3.10%20to%203.14-2f6fde" alt="Python 3.10~3.14"/>
   <img src="https://img.shields.io/badge/dependencies-none-2f6fde" alt="의존성 없음"/>
-  <a href="#벤치마크"><img src="https://img.shields.io/badge/TrapRepo-54%2F54%20caught%2C%200%2F27%20false%20alarms-2f6fde" alt="TrapRepo: 악성 54개 중 54개 탐지, 정상 27개 중 0개 오탐"/></a>
+  <a href="#벤치마크"><img src="https://img.shields.io/badge/TrapRepo-63%2F63%20caught%2C%200%2F33%20false%20alarms-2f6fde" alt="TrapRepo: 악성 63개 중 63개 탐지, 정상 33개 중 0개 오탐"/></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-5d5d58" alt="MIT 라이선스"/></a>
 </p>
 
@@ -35,11 +35,29 @@
 </p>
 
 <p align="center">
-  레포지토리, 스킬, MCP 서버, 패키지가 실행되기 전에 읽고, 검사에 걸린 곳에서는 설치·설정 명령을 막고, 내 컴퓨터의
-  백신과 알려진 취약점 데이터로도 확인하고, 내가 하지 않은 에이전트 설정 변경을 감시합니다. Claude Code, Codex,
-  Gemini CLI, Antigravity, Cursor, Copilot, Devin, Kiro, Cline을 하나의 가드로 지킵니다. 판정은 코드가, 내 컴퓨터에서
-  합니다.
+  <b>AI 에이전트를 쓰는 사람을 위한 백신.</b> 설치형 백신처럼 컴퓨터를 검사하고, 들어오는 것을 실시간으로 지켜보고,
+  막은 것은 격리합니다. 그리고 그 백신이 열어 보지 않는 것, 곧 레포지토리·스킬·MCP 서버·패키지·에이전트 설정을 실행
+  전에 읽습니다. Claude Code, Codex, Gemini CLI, Antigravity, Cursor, Copilot, Devin, Kiro, Cline을 하나의 가드로
+  지킵니다. 판정은 코드가, 내 컴퓨터에서 합니다.
 </p>
+
+## 별도 백신 대신
+
+기존 백신은 이미 알려진 악성 파일을 찾습니다. AI 에이전트 사용자를 노리는 공격은 대부분 그런 파일이 아닙니다.
+`.claude/settings.json`의 훅, `AGENTS.md`의 문장 하나, 스킬의 설치 단계, 토큰을 읽는 설치 스크립트, 비밀값을
+보내는 워크플로입니다. personal-anti-hack은 그 공격이 들어오는 곳에서 백신이 하는 일을 하고, 시그니처 엔진이 잘하는
+실행 파일 검사는 운영체제에 이미 들어 있는 엔진에 맡깁니다. 그래서 별도 백신 제품을 더 설치할 이유가 거의 없습니다.
+
+| | 기존 백신 | personal-anti-hack |
+| --- | --- | --- |
+| 전체 검사 | 모든 파일을 시그니처와 비교 | `pah sweep`: 다운로드·바탕화면, 코드 폴더의 모든 프로젝트, 설치된 에이전트 스킬·플러그인·확장, 에디터 확장, 시작 프로그램, 노출된 키와 알려진 흔적. 실행 파일은 Microsoft Defender(Windows 기본 탑재) 또는 ClamAV로 |
+| 실시간 감시 | 파일 시스템에 연결 | `pah protect`: 새 다운로드·클론·확장·스킬·시작 프로그램을 몇 초 안에 검사, `--install`로 로그인할 때마다 시작. 위험한 명령은 에이전트 훅이 실행 전에 막음 |
+| 격리 | 감염 파일을 옮김 | `pah quarantine`: 막힌 다운로드·확장·스킬은 통째로, 프로젝트는 페이로드 파일만 옮기고 요청하면 되돌림 |
+| 에이전트 훅·스킬·MCP 서버·프롬프트 인젝션 | 읽지 않음 | 2025~2026년 사고에 근거한 규칙 108개. 함정 레포 63개 중 63개 탐지, 정상 33개 중 0개 오탐 |
+| 알려진 악성 실행 파일(랜섬웨어, 드로퍼) | 시그니처 엔진 | 컴퓨터에 이미 있는 엔진을 로컬에서 호출 (`pah audit`, `pah sweep`) |
+
+하지 않는 일: 커널 드라이버가 없어서 실시간 감시는 파일 쓰기를 막는 대신 도착 후 몇 초 안에 알아차리고, 이미 실행 중인
+악성 코드를 제거하지는 않습니다. 무엇을 바꾸고 정리해야 하는지는 `pah checkup`과 사고 대응 스킬이 알려 줍니다.
 
 ## 문제
 
@@ -77,13 +95,14 @@
 
 | | |
 | --- | --- |
-| **`pah scan`**: 열거나 설치하기 전에 | 레포지토리·스킬·MCP 서버·패키지·압축 파일·git URL에서 **읽지 않아도 실행되는 것**을 모두 찾습니다. 에이전트 훅과 설정(Claude Code, Cursor, Codex, Gemini CLI, OpenClaw, Aider, Zed, Continue), 폴더 열기 작업, dev container, `.envrc`, npm 라이프사이클 스크립트와 `binding.gyp`, `.pth`, `setup.py`, `conftest.py`, `build.rs`, Cargo 설정, Makefile, 빌드 래퍼, Visual Studio·Xcode 빌드 단계, git 훅과 서브모듈, 지시 파일과 그 파일이 실행시키는 스크립트까지. 그다음 모든 파일을 끝까지 읽고, 스스로 실행되는 파일은 가장 엄격하게, 테스트 픽스처·CI 파이프라인·컨테이너 빌드는 실제로 실행되는 곳에 맞게 판단합니다. 규칙 91개, 각각 실제 사고나 연구에 근거합니다. |
+| **`pah scan`**: 열거나 설치하기 전에 | 레포지토리·스킬·MCP 서버·패키지·압축 파일·git URL에서 **읽지 않아도 실행되는 것**을 모두 찾습니다. 에이전트 훅·플러그인·설정(Claude Code와 그 플러그인·마켓플레이스, Codex, Gemini CLI, Qwen Code, Copilot, Cursor, Kiro, Devin, Cline, OpenCode, Kilo, Amp, Crush, Factory, Augment, Amazon Q, OpenClaw, Aider, Zed, Continue), 스킬의 셸 줄과 미리 허용된 도구, 폴더 열기 작업, dev container, 클라우드 에이전트 설정 파일, `.envrc`, npm 라이프사이클 스크립트와 `binding.gyp`, `.pth`, `setup.py`, `conftest.py`, `build.rs`, Cargo 설정, Makefile, 빌드 래퍼, Visual Studio·Xcode 빌드 단계, git 훅·서브모듈·bare 레포지토리, 시스템 도구 이름으로 심어 둔 프로그램, 지시 파일과 그 파일이 실행시키는 스크립트까지. 그다음 모든 파일을 끝까지 읽고, 스스로 실행되는 파일은 가장 엄격하게, 테스트 픽스처·CI 파이프라인·컨테이너 빌드는 실제로 실행되는 곳에 맞게 판단합니다. 2026년 공격의 모양도 압니다: 글꼴로 위장한 로더, 블록체인 dead drop, 내 토큰으로 다시 배포하는 웜, 토큰이 막히면 지우는 와이퍼, 지갑 주소 바꿔치기, 비밀값을 내보내는 워크플로. 규칙 108개, 각각 실제 사고나 연구에 근거합니다. |
 | **`pah audit`**: 대상 하나에 대한 판정 하나 | 검사에 더해 **이미 설치된 백신 엔진**(Microsoft Defender 또는 ClamAV, 로컬에서, 치료 기능은 끈 채로), `--online`이면 악성·없는·갓 올라온 패키지와 **고정된 의존성 버전의 알려진 취약점**(OSV, 올려야 할 버전까지)을 확인하고, 다음에 할 일을 쉬운 말로 알려 줍니다. |
 | **가드**: 에이전트 훅 | Claude Code(플러그인 또는 훅), Codex, Gemini CLI, Antigravity, Cursor, Copilot, Devin, Kiro, Cline을 각자의 훅 프로토콜로 지킵니다([docs/agent-setup.md](docs/agent-setup.md)). 명령 실행 전: 다운로드 후 실행, 디코드 후 실행, 자격 증명 읽기, 지속성 설치, 승인 없이 에이전트 실행, 비슷한 이름의 패키지, 레지스트리 변경. 설치·설정(`npm install`, `pip install -e .`, `make`, `pytest`, `cargo build`, dev container) 전: 프로젝트를 검사하고 **차단 판정이면 명령을 거부**합니다. 에이전트 설정·셸 프로필·git 훅을 고치려 하면 승인을 받게 합니다. Claude Code에서는 새로 클론한 레포와 세션 시작 시 폴더도 검사합니다. 가드는 더 엄격하게만 만들 뿐, "허용"으로 답하지 않습니다. |
 | **보안 스킬**: 어떤 에이전트에서든 | Agent Skills 4개: 일상 규칙, 전체 **악성코드 감사** 절차(실행 표면, 정적 디코딩, 행위 분류, 출처 확인, 판정), 악용 가능한 버그와 취약한 의존성을 찾는 **보안 리뷰**(LLM 기능의 프롬프트 인젝션·과도한 권한 포함), 이미 실행돼 버렸을 때의 **사고 대응**. |
+| **`pah sweep`**, **`pah protect`**, **`pah quarantine`** | 백신이 하는 일. `pah sweep`은 다운로드·바탕화면, 코드 폴더의 모든 프로젝트, 설치된 에이전트 스킬·플러그인·확장, 에디터 확장을 하나씩 검사하고, checkup과 운영체제 기본 엔진을 더하고, 바뀌지 않은 것은 기억해 둡니다. `pah protect`는 들어오는 즉시 같은 일을 하고 로그인할 때 시작할 수 있습니다. 막힌 항목은 격리할 수 있습니다(다운로드·확장·스킬은 통째로, 프로젝트는 페이로드 파일만). `pah quarantine restore`로 되돌립니다. |
 | **`pah watch`** | 모든 에이전트의 설정·훅·MCP 서버·API 주소·승인 모드(Claude Code, Codex, Gemini CLI, Cursor, OpenClaw, Claude Desktop, VS Code, Windsurf)와 셸 프로필, git·npm 설정, 시작 프로그램, LaunchAgents, Run 키의 기준선을 만들고 무엇이 바뀌었는지 보여 줍니다. 비밀 값은 해시로만 저장합니다. |
 | **`pah checkup`** | 이 컴퓨터가 이미 노출됐는지: 평문 파일에 저장된 API 키, 위험한 에이전트 설정, 다운로드·바탕화면에 심어진 `AGENTS.md`/`CLAUDE.md`, 셸·Win+R 기록의 `curl \| sh`와 ClickFix 흔적, AI 도구 사용자를 노린 캠페인의 알려진 흔적, 알려진 취약점이 고쳐지지 않은 에이전트와 git. 키 값은 절대 보여 주지 않습니다. |
-| **CI와 커밋 전** | 풀 리퀘스트의 해당 줄에 발견 사항을 표시하고, 작업 요약과 코드 스캐닝용 SARIF 보고서를 남기고, BLOCK이면 실패하는 GitHub Action. pre-commit 훅. 다른 CI에서는 종료 코드로 ([docs/ci.md](docs/ci.md)). |
+| **CI와 커밋 전** | 풀 리퀘스트의 해당 줄에 발견 사항을 표시하고, 작업 요약과 코드 스캐닝용 SARIF 보고서를 남기고, BLOCK이면 실패하는 GitHub Action. pre-commit 훅. 다른 CI에서는 종료 코드로 ([docs/ci.md](docs/ci.md)). 워크플로도 읽습니다: 비밀값 유출, 이슈 제목 같은 외부 텍스트를 스크립트에 그대로 넣는 경우, 아무나 쓴 이슈로 움직이는 AI 에이전트 액션. |
 | **`--online`** (선택) | 존재하지 않는 패키지(slopsquat, "유령" 의존성), 최근 일주일 안에 생긴 패키지, OSV가 악성으로 등록한 패키지, 잠금 파일이 고정한 버전의 알려진 취약점. 패키지 이름과 버전만 보냅니다. |
 | **`--deep`** (선택) | 규칙이 준비한 증거를 모델이 검토합니다. 실제 줄을 인용한 주장으로 판정을 올릴 수만 있고 내릴 수는 없으며, 거절은 "검토 안 됨"으로 처리합니다. |
 
@@ -112,6 +131,13 @@ pah install --skills --mcp          # 찾은 에이전트 전부; 적용하려�
 pah install codex cursor gemini --yes
 ```
 
+**백신으로 쓰기** (지금 전체 검사, 그다음 로그인할 때마다 실시간 감시):
+
+```
+pah sweep                           # 막은 것을 옮기려면 --quarantine
+pah protect --install --quarantine  # 바뀌는 내용을 먼저 보여 줌, 적용은 --yes
+```
+
 **CI와 커밋 전** (SARIF 업로드, 입력값, 다른 CI는 [docs/ci.md](docs/ci.md)):
 
 ```yaml
@@ -124,14 +150,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ji-hun-git/personal-anti-hack@v0.1.0
+      - uses: ji-hun-git/personal-anti-hack@v0.2.0
 ```
 
 ```yaml
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/ji-hun-git/personal-anti-hack
-    rev: v0.1.0
+    rev: v0.2.0
     hooks:
       - id: personal-anti-hack
 ```
@@ -159,7 +185,7 @@ repos:
 
 ```
 $ pah scan ./acme-utils --lang ko
-personal-anti-hack 0.1.0  ·  ./acme-utils
+personal-anti-hack 0.2.0  ·  ./acme-utils
  BLOCK   아래 항목이 설명되기 전에는 에이전트로 열거나 설치하거나 실행하지 마세요
    1 critical, 2 high, 1 medium  ·  6 files  ·  0.02s
 
@@ -195,11 +221,13 @@ incomplete는 절대 깨끗하다고 보고하지 않습니다. 종료 코드는
 
 ## 벤치마크
 
-**TrapRepo**([`bench/fixtures/traprepo/`](bench/fixtures/traprepo/))는 악성 55개, 정상 27개 레포지토리입니다. 악성 사례는 각각 2025~2026년의
+**TrapRepo**([`bench/fixtures/traprepo/`](bench/fixtures/traprepo/))는 악성 64개, 정상 33개 레포지토리입니다. 악성 사례는 각각 2025~2026년의
 사고·CVE·논문에 나온 기법 하나를 무해한 페이로드로 재현합니다(표식 문자열만 출력하고, URL은 모두 예약된 `.invalid`
 도메인). 정상 사례는 같은 메커니즘을 정상적으로 씁니다(네이티브 애드온, husky, pytest 픽스처, 공식 설치 스크립트,
 이모지와 오른쪽에서 왼쪽으로 쓰는 문자). 사례는 데이터로 저장되고 벤치마크를 돌릴 때만 임시 폴더에 만들어집니다.
-스캐너와 따로 작성했고, 검토 후 고친 두 사례는 각 사례 설명에 기록했습니다.
+스캐너와 따로 작성했고, 검토 후 고친 두 사례는 각 사례 설명에 기록했습니다. 0.2.0에서 2026년 9~11월 공격을 위한 사례 15개(악성 9개,
+정상 짝 6개)를 더했습니다: Copilot 훅, Claude Code 플러그인, 스킬 셸 줄, 글꼴로 위장한 로더, 비밀값을 내보내는 워크플로,
+웜, 이더리움 dead drop, 심어 둔 `git.exe`, npm 12의 보호를 되돌리는 `.npmrc`.
 
 <p align="center">
   <picture>
@@ -208,7 +236,7 @@ incomplete는 절대 깨끗하다고 보고하지 않습니다. 종료 코드는
   </picture>
 </p>
 
-| 악성 54개, 정상 27개 | 매 실행 탐지 | 한 번 이상 탐지 | "안전" 답변 | 거절 | 정상 오탐 |
+| 첫 릴리스의 악성 54개, 정상 27개 | 매 실행 탐지 | 한 번 이상 탐지 | "안전" 답변 | 거절 | 정상 오탐 |
 | --- | --- | --- | --- | --- | --- |
 | **personal-anti-hack**, 규칙만, 오프라인 | **54** (차단 52, 경고 2: 그 사례들이 기대하는 판정) | 54 | 0 | 0 | **0** |
 | **personal-anti-hack + Claude Opus 5.5 검토**¹ | **54** (차단 53) | 54 | 0 | 0 (51건은 fallback으로 답변) | **0** |
@@ -228,6 +256,8 @@ incomplete는 절대 깨끗하다고 보고하지 않습니다. 종료 코드는
   규칙만으로 차단합니다.
 - 집계에서 빠진 악성 사례 하나는 `~/.ssh`로 가는 심볼릭 링크입니다. Windows에서는 만들려면 관리자 권한이 필요해서,
   CI의 Linux·macOS에서 확인합니다.
+- **0.2.0에서 더한 사례 15개:** 규칙만으로 악성 9개를 모두 잡았고(차단 8, 기대대로 경고 1) 정상 짝 6개는 하나도
+  오탐하지 않아, 전체는 악성 63개 중 63개 탐지, 정상 33개 중 0개 오탐입니다. 모델은 이 사례로 다시 돌리지 않았습니다.
 - ¹ 모델 검토 행은 인기 레포지토리 오탐 작업 전의 첫 규칙(코드 `4ae527ce9ad3`)으로 측정했습니다. 규칙만 쓴 행과 아래
   훈련 결과는 현재 코드입니다.
 
@@ -239,21 +269,23 @@ incomplete는 절대 깨끗하다고 보고하지 않습니다. 종료 코드는
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/figures/repos-ko-dark.svg">
-    <img src="docs/figures/repos-ko-light.svg" width="100%" alt="널리 쓰이는 레포지토리 29개를 통째로 검사(파일 61,908개): 통과 26, 경고 3, 차단 0. JavaScript: express, got, husky, sharp, node-addon-examples, puppeteer, esbuild, prettier, vite. Python: requests, flask, fastapi, pytest, poetry, ruff(경고). Rust: ripgrep, serde, tokio. AI 에이전트·MCP: claude-code, codex, gemini-cli(경고), MCP 서버 모음(경고), Anthropic 스킬. 셸·설치 스크립트: Oh My Zsh, nvm, Homebrew 설치 스크립트. Go·Java·컨테이너: GitHub CLI, spring-petclinic, vscode-remote-try-node."/>
+    <img src="docs/figures/repos-ko-light.svg" width="100%" alt="널리 쓰이는 레포지토리 30개를 통째로 검사(파일 66,610개): 통과 26, 경고 4, 차단 0. JavaScript: express, got, husky, sharp, node-addon-examples, puppeteer, esbuild, prettier, vite. Python: requests, flask, fastapi, pytest, poetry, ruff(경고). Rust: ripgrep, serde, tokio. AI 에이전트·MCP: claude-code, codex, gemini-cli(경고), MCP 서버 모음(경고), Anthropic 스킬, everything-claude-code(경고). 셸·설치 스크립트: Oh My Zsh, nvm, Homebrew 설치 스크립트. Go·Java·컨테이너: GitHub CLI, spring-petclinic, vscode-remote-try-node."/>
   </picture>
 </p>
 
-**인기 레포지토리**(오탐 확인, [`bench/real_repos.py`](bench/real_repos.py)): 널리 쓰이는 29개 프로젝트를 통째로
+**인기 레포지토리**(오탐 확인, [`bench/real_repos.py`](bench/real_repos.py)): 널리 쓰이는 30개 프로젝트를 통째로
 검사했습니다. express, got, husky, sharp, node-addon-examples, puppeteer, esbuild, prettier, requests, flask, fastapi,
 pytest, poetry, ruff, ripgrep, serde, tokio, Claude Code, Codex, Gemini CLI, MCP 공식 서버 모음, Anthropic 스킬,
-Oh My Zsh, nvm, Homebrew 설치 스크립트, GitHub CLI, spring-petclinic, vscode-remote-try-node, Vite.
-**통과 26, 경고 3, 차단 0.** 경고는 모두 에이전트에게 설치를 맡기기 전에 알아 둘 만한 것입니다: ruff와 MCP 서버
+everything-claude-code, Oh My Zsh, nvm, Homebrew 설치 스크립트, GitHub CLI, spring-petclinic, vscode-remote-try-node,
+Vite. **통과 26, 경고 4, 차단 0.** 경고는 모두 에이전트에게 설치를 맡기기 전에 알아 둘 만한 것입니다: ruff와 MCP 서버
 모음은 Claude Code `SessionStart` 훅을 넣어 두었고, Gemini CLI의 스킬 하나는 GitHub의 제3자 설치 스크립트를 `sh`로
-바로 실행시킵니다(같은 레포는 `@google` npm 스코프를 기본이 아닌 레지스트리로 지정합니다). 같은 날 첫 실행에서는
+바로 실행시킵니다(같은 레포는 `@google` npm 스코프를 기본이 아닌 레지스트리로 지정합니다). everything-claude-code는 Cursor 훅과 OpenCode
+플러그인, 셸 명령을 미리 허용하거나 에이전트 설정을 고치는 스킬을 담고 있습니다. 같은 날 첫 실행에서는
 25개 중 11개를 차단했고, 이번 릴리스에 고친 내용이 들어 있습니다: 테스트 픽스처·CI 파이프라인·컨테이너 빌드를 실제
 실행되는 곳에 맞게 판단, 호스트에 따라 달라지는 다운로드 규칙, 데이터인 문자열과 주석 인식, 자리 잡은 패키지를 비슷한
-이름으로 오인하지 않기. 30번째 레포인 everything-claude-code는 시험 환경의 네트워크로 내려받지 못했습니다. 레포별
-커밋까지 담긴 결과: [`bench/results/2026-11-11-real-repos.json`](bench/results/2026-11-11-real-repos.json).
+이름으로 오인하지 않기. 0.2.0 규칙도 everything-claude-code를 더한 같은 레포들로 확인했고, 처음
+나온 prettier 경고 두 개는 규칙을 조정해 없앴습니다. 레포별 커밋까지 담긴 결과:
+[`bench/results/2026-11-12-real-repos.json`](bench/results/2026-11-12-real-repos.json).
 
 ## 공격 훈련
 
@@ -267,10 +299,10 @@ Oh My Zsh, nvm, Homebrew 설치 스크립트, GitHub CLI, spring-petclinic, vsco
 
 | 에이전트 프로토콜 | 악성 설치 차단 | 정상 설치 통과 | 위험·무해 동작 처리 |
 | --- | --- | --- | --- |
-| Claude Code, Antigravity, Cursor, Copilot | **54 / 54** (거부 52, 확인 요청 2) | **27 / 27** | 10 / 10 |
-| Codex, Gemini CLI, Devin, Kiro, Cline (훅에서 "확인 요청" 불가) | **54 / 54** (모두 거부) | **27 / 27** | 10 / 10 (읽기를 못 보는 훅은 9 / 9) |
+| Claude Code, Antigravity, Cursor, Copilot | **63 / 63** (거부 60, 확인 요청 3) | **33 / 33** | 10 / 10 |
+| Codex, Gemini CLI, Devin, Kiro, Cline (훅에서 "확인 요청" 불가) | **63 / 63** (모두 거부) | **33 / 33** | 10 / 10 (읽기를 못 보는 훅은 9 / 9) |
 
-판정 816건, 예상과 다른 결과 0건. `python bench/drill.py --subprocess`는 에이전트가 부르는 방식 그대로 매번 별도
+판정 951건, 예상과 다른 결과 0건. `python bench/drill.py --subprocess`는 에이전트가 부르는 방식 그대로 매번 별도
 프로세스로 다시 실행합니다.
 
 **실제 에이전트, 승인 끔** ([`bench/live_drill.py`](bench/live_drill.py)): Claude Code 2.1.310(Sonnet)을 부주의한
@@ -312,6 +344,9 @@ Oh My Zsh, nvm, Homebrew 설치 스크립트, GitHub CLI, spring-petclinic, vsco
 | --- | --- |
 | `pah audit <폴더\|파일\|압축 파일\|git URL>` | 검사 + 로컬 백신 엔진(`--no-av`로 생략) + `--online`이면 악성·없는·갓 올라온·취약한 패키지; 마지막에 다음 단계 |
 | `pah scan <폴더\|파일\|압축 파일\|git URL>` | `--json`, `--sarif`, `-o FILE`, `--fail-on block\|warn\|incomplete`, `--online`, `--av`, `--deep [--provider anthropic\|openai\|meta\|ollama] [--model ID]`, `--lang ko`, `-v`, `--sarif-out FILE`, `--github`(GitHub Actions에서 줄 표시, 단계 출력값, 작업 요약) |
+| `pah sweep [--only downloads code agent extensions] [--quarantine] [--fresh] [--no-engine] [--no-checkup]` | 이 컴퓨터 전체 검사. `--json`, `--lang ko` |
+| `pah protect [--quarantine] [--interval 초] [--install \| --uninstall] [--yes]` | 실시간 감시. `--install`은 로그인 시 시작(작업 스케줄러, LaunchAgent, systemd 사용자 서비스), 바뀌는 내용을 먼저 보여 줌 |
+| `pah quarantine list \| restore ID \| delete ID --yes \| add 경로` | 격리 목록, 되돌리기, 삭제 |
 | `pah check-command "<명령>"` | 명령 하나에 대한 가드의 판정 (`--cwd`, `--json`, `--no-scan`) |
 | `pah watch init \| check \| accept` | 에이전트·셸 설정의 기준선과 변경 |
 | `pah checkup` | 이 컴퓨터: 파일 속 키, 위험한 설정, 심어진 지시 파일, 흔적, 오래된 에이전트 |

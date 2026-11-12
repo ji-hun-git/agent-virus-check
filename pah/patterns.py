@@ -16,7 +16,7 @@ import time
 from dataclasses import dataclass
 from urllib.parse import urlsplit
 
-from .model import Finding, clip, rank, rule
+from .model import Finding, bump, clip, rank, rule
 from .indicators import EXFIL_HOSTS, RAW_IP_URL, SECRET_PATHS, is_private_ip  # noqa: F401
 from .policy import is_test_code
 from .text import Lines, decode_blobs, in_comment, in_string_literal, invisible, line_at, long_lines, padding
@@ -190,6 +190,65 @@ R_HIDDEN_COMMENT = rule(
     "PAH-T008", "Instructions hidden in an HTML comment",
     "Markdown comments do not render, so a person reviewing the page does not see what an agent reads.",
     "Read the comment; remove instructions you did not write.", attack=("T1027",), owasp=("LLM01",))
+R_TERMINAL = rule(
+    "PAH-T009", "Terminal escape codes that hide text",
+    "Escape sequences can conceal text, erase a line or move the cursor back over it, so a terminal shows a person "
+    "something other than what an agent reads. Trail of Bits hid instructions in MCP tool descriptions this way.",
+    "View the file with escape codes shown (cat -v) and remove what you did not write.", attack=("T1027", "T1036"),
+    owasp=("LLM01",), refs=("https://blog.trailofbits.com/2025/04/29/deceiving-users-with-ansi-terminal-codes-in-mcp/",))
+TERMINAL_HIDE = re.compile("\x1b\\[(?:8m|[0-2]?K|\\d*[AF]|2J)")
+R_DISGUISED_RUN = rule(
+    "PAH-C022", "Runs a file disguised as a font, image or media file",
+    "An interpreter has no reason to run a .ttf, .woff2, .png or .mp4. PolinRider (Oct 2026) amended and force-pushed "
+    "commits in 188 GitHub repositories; their folder-open task ran a loader saved as fa-solid-300.ttf.",
+    "Do not run it. A real font or image starts with its format's signature; open it in a hex viewer.",
+    attack=("T1036.008", "T1059"), refs=("https://blog.gitguardian.com/ghostaction-x-polinrider/",))
+R_DEAD_DROP = rule(
+    "PAH-C023", "Gets its instructions from a dead drop and runs them",
+    "Reading a blockchain transaction, a JSON-storage site, a calendar invite or a GitHub search result and executing "
+    "what comes back lets an attacker swap the payload or the server address without publishing anything new. "
+    "PolinRider took its server from an Ethereum transaction (Nov 2026); GlassWorm and SleepyDuck used contracts and "
+    "Solana memos; Contagious Interview used JSON-storage sites.",
+    "Treat it as malicious: legitimate code does not execute what it reads from a blockchain or a paste site.",
+    attack=("T1102.001", "T1059"),
+    refs=("https://www.sonatype.com/blog/polinrider-loader-reappears-in-hijacked-npm-packages",
+          "https://blog.nviso.eu/2025/11/13/contagious-interview-actors-now-utilize-json-storage-services-for-malware-delivery/"))
+R_WORM = rule(
+    "PAH-C024", "Publishes packages with your credentials",
+    "Code that reads your npm or PyPI token, finds the packages you maintain and publishes new versions of them is how "
+    "Shai-Hulud spread to hundreds of packages within hours.",
+    "Do not install it. If it ran, revoke your registry tokens and check the latest versions of your packages.",
+    attack=("T1195.002", "T1078"), refs=("https://securitylabs.datadoghq.com/articles/shai-hulud-2.0-npm-worm/",))
+R_CI_BACKDOOR = rule(
+    "PAH-C025", "Plants a CI backdoor",
+    "Writing a workflow into .github/workflows or registering a self-hosted GitHub runner from code that runs on your "
+    "machine gives the attacker a foothold in every repository your credentials reach (Shai-Hulud; Miasma).",
+    "Do not run it; look for workflows and runners you did not add.", attack=("T1053", "T1098"),
+    refs=("https://securitylabs.datadoghq.com/articles/shai-hulud-2.0-npm-worm/",))
+R_DEADMAN = rule(
+    "PAH-C026", "Wipes your files when its token stops working",
+    "A loop that checks a stolen GitHub or npm token and deletes your home folder once the check fails punishes "
+    "rotating credentials (gh-token-monitor in Mini Shai-Hulud and Miasma; the testmetest worm, Oct 2026).",
+    "Remove its persistence first, then revoke the tokens.", attack=("T1485",),
+    refs=("https://research.jfrog.com/post/beyond-testmetest-42-hijacked-github-repos/",))
+R_WALLET = rule(
+    "PAH-C027", "Swaps crypto wallet addresses",
+    "Replacing fetch, XMLHttpRequest or the wallet's request function and matching wallet-address formats is how the "
+    "September 2025 chalk/debug compromise redirected payments in every page that bundled those packages.",
+    "Do not ship or install it.", attack=("T1565.002",),
+    refs=("https://cycode.com/blog/npm-debug-chalk-supply-chain-attack-the-complete-guide/",))
+R_HIDDEN_PROC = rule(
+    "PAH-C028", "Starts a hidden process while installing or opening",
+    "A detached child with its output discarded, a process with no window, or `node -i` fed through a pipe keeps "
+    "running after the install has finished and shows nothing (MALFEX and PolinRider, Oct to Nov 2026).",
+    "Find out what the process runs before installing.", attack=("T1564.003", "T1059"),
+    refs=("https://checkmarx.com/zero-post/malfex-npm-malware-campaign-three-payloads-and-an-adversary-that-signs-their-work/",))
+R_SWEEP = rule(
+    "PAH-C029", "Hunts for secrets while installing or opening",
+    "Running TruffleHog or Gitleaks over your files, asking the cloud metadata service for credentials or listing a "
+    "secrets manager from an install script is credential harvesting (Shai-Hulud ran TruffleHog on the home folder).",
+    "Do not install it; rotate cloud and CI credentials if it ran.", attack=("T1552", "T1552.005"),
+    refs=("https://securitylabs.datadoghq.com/articles/shai-hulud-2.0-npm-worm/",))
 
 
 @dataclass
@@ -293,6 +352,10 @@ COMMAND_PATTERNS = [
     _p(R_REVERSE_SHELL, r"\bbash\s+-i\s+>&\s*/dev/tcp/|/dev/tcp/[\w.-]+/\d+|\bnc(?:at)?\b[^\n]{0,60}\s-e\s+(?:/bin/)?(?:ba)?sh\b|"
        r"\bsocat\b[^\n]{0,100}\bexec:|import\s+socket\s*,\s*subprocess\s*,\s*os", S("critical", "critical", "high", "critical"),
        "opens a reverse shell"),
+    # The trojanized Claude Code extension (Oct 2026) switched on the SSH server and held a reverse tunnel to port 22.
+    _p(R_REVERSE_SHELL, r"\b(?:auto)?ssh\b[^\n]{0,160}\s-R\s*['\"]?(?:\*:)?\d+:(?:localhost|127\.0\.0\.1):22\b"
+       r"|\bsystemsetup\s+-setremotelogin\s+on\b|\bAdd-WindowsCapability\b[^\n]{0,80}OpenSSH\.Server",
+       S("critical", "high", "medium", "high"), "opens remote access to this machine (SSH server or reverse tunnel)"),
     _p(R_DESTRUCTIVE, r"\brm\s+-[a-z]*(?:rf|fr)[a-z]*\s+(?:--no-preserve-root\s+)?(?:/(?:\s|$|\*)|~/?(?:\s|$|\*)|\$HOME/?(?:\s|$|\*)|\$\{HOME\}|/\*)|"
        r"\bdel\s+/[sfq]\s+/[sfq]\b[^\n]{0,40}(?:[A-Za-z]:\\|%USERPROFILE%)|\bformat\s+[a-z]:\s*/[qy]|"
        r"\bRemove-Item\b[^\n]{0,100}-Recurse[^\n]{0,100}(?:\$env:USERPROFILE|[A-Z]:\\\s|~[\\/]?\s)|"
@@ -309,6 +372,10 @@ COMMAND_PATTERNS = [
        r"(?:github|gitlab|bitbucket):\S+)|\bpip[0-9.]*\s+install\b[^\n]{0,200}\s(?:https?://\S+|git\+\S+)|"
        r"\bnpx\s+(?:-y\s+|--yes\s+)?(?:https?://|github:|git\+)", S("high", "low", "medium", "medium"),
        "installs from a URL or git"),
+    _p(R_DISGUISED_RUN, r"(?<![\w.-])(?:node|nodejs|bun|deno|python[0-9.]*|py|ruby|perl|php|(?:ba|z)?sh|pwsh|powershell|wscript|"
+       r"cscript)(?:\.exe)?\s+(?:-[-\w]+\s+)*[\"']?[^\s\"'|;&<>]+\.(?:ttf|otf|woff2?|eot|png|jpe?g|gif|ico|bmp|webp|mp3|mp4|"
+       r"m4a|wav|avi|mov|mkv|lkf)[\"']?(?=$|[\s;&|)])", S("critical", "high", "high", "high"),
+       "runs a font, image or media file with an interpreter"),
 ]
 
 _NEEDS = {
@@ -332,9 +399,116 @@ _NEEDS = {
     "python -c with network access": ("python", "py "), "node -e with network or process access": ("node",),
     "PowerShell one-liner with a download": ("powershell", "pwsh"), "asks for your password in a fake dialog": ("osascript", "dscl"),
     "opens a reverse shell": ("/dev/tcp", "nc", "socat", "socket"),
+    "opens remote access to this machine (SSH server or reverse tunnel)": ("ssh", "setremotelogin", "openssh.server"),
     "deletes a home directory, drive or disk": ("rm ", "del ", "format ", "remove-item", "dd "),
     "sends data to a remote host": ("curl", "wget", "invoke-"), "installs from a URL or git": ("npm", "pnpm", "yarn", "bun", "pip", "npx"),
+    "runs a font, image or media file with an interpreter": ("node", "bun", "deno", "py", "ruby", "perl", "php", "sh",
+                                                             "pwsh", "powershell", "wscript", "cscript"),
 }
+
+# Shapes of 2025-2026 campaigns that need two pieces of evidence near each other in one file.
+DEAD_DROP = re.compile(
+    r"\beth_(?:call|getTransactionByHash|getTransactionReceipt|getStorageAt|getLogs)\b|\bgetSignaturesForAddress\b"
+    r"|\bgetConfirmedSignaturesForAddress2\b|api\.trongrid\.io|bsc-dataseed|\b(?:etherscan|bscscan|polygonscan|arbiscan)\."
+    r"(?:io|com)/api|api\.mainnet-beta\.solana\.com|\bjsonkeeper\.com|\bjsonsilo\.com|\bapi\.npoint\.io|\bapi\.jsonbin\.io"
+    r"|\bcalendar\.app\.google|api\.github\.com/search/(?:commits|issues|code)", re.I)
+DEAD_DROP_NEED = ("eth_", "getsignatures", "getconfirmedsignatures", "trongrid", "bsc-dataseed", "scan.io/api",
+                  "scan.com/api", "solana.com", "jsonkeeper", "jsonsilo", "npoint", "jsonbin", "calendar.app.google",
+                  "api.github.com/search")
+CODE_SINK = re.compile(r"(?<![.\w$])(?:exec|eval)\s*\(\s*(?!['\"`)])|\bnew\s+Function\s*\((?!\s*['\"]return this)"
+                       r"|\bvm\.run\w*\s*\(|\bexec\s*\(\s*compile\s*\(")
+PROCESS_SINK = re.compile(r"\bchild_process\b|\bexecSync\s*\(|\bspawn(?:Sync)?\s*\(|\bsubprocess\.\w+\s*\(|\bos\.system\s*\(")
+PUBLISH = re.compile(r"\b(?:npm|pnpm|yarn)\s+publish\b|\btwine\s+upload\b|upload\.pypi\.org/legacy", re.I)
+REGISTRY_TOKEN = re.compile(r"_authToken|\bNPM_TOKEN\b|\bNODE_AUTH_TOKEN\b|\.npmrc\b|\.pypirc\b|\bPYPI_TOKEN\b|\bTWINE_PASSWORD\b", re.I)
+WORM_EXTRA = re.compile(r"/-/whoami\b|/-/v1/search\?text=maintainer|\bmaintainer:\$?\{?[\w.]|/-/user/|\bnpm\s+owner\s+ls\b"
+                        r"|\bnpm\s+access\s+(?:ls-packages|list\s+packages)\b", re.I)
+WORKFLOW_PATH = re.compile(r"\.github[\\/]workflows[\\/][^\s\"'`]*\.ya?ml", re.I)
+RUNNER_SETUP = re.compile(r"\bconfig\.(?:sh|cmd)\b[^\n]{0,200}--url\s+\S*github\.com[^\n]{0,200}--token\b|\bRUNNER_ALLOW_RUNASROOT\b"
+                          r"|actions-runner-(?:linux|osx|win)-[\w.-]+\.(?:tar\.gz|zip)", re.I)
+TOKEN_CHECK = re.compile(r"api\.github\.com/user\b|/-/whoami\b|\bgh\s+auth\s+status\b", re.I)
+WIPE_HOME = re.compile(r"\brm\s+-[a-z]*[rR][a-z]*\s+(?:-[a-z]+\s+)*[\"']?(?:~|\$HOME|\$\{HOME\})|rmSync\([^)]{0,80}(?:homedir|HOME)"
+                       r"|\b(?:shutil\.)?rmtree\([^)]{0,80}(?:home|expanduser)|\bshred\s+-|\bcipher(?:\.exe)?\s+/w\b"
+                       r"|Remove-Item[^\n]{0,80}(?:\$HOME|USERPROFILE)[^\n]{0,80}-Recurse|\bfs\.(?:promises\.)?rm\([^)]{0,80}(?:homedir|HOME)", re.I)
+TOKEN_FAILED = re.compile(r"\b40[13]\b|status(?:Code)?\s*!==?\s*200|!\s*[\w.]+\.ok\b|\.ok\s*===?\s*false|\bnot\s+[\w.]+\.ok\b", re.I)
+FETCH_HOOK = re.compile(r"\b(?:window|globalThis|self)\.fetch\s*=(?!=)|XMLHttpRequest\.prototype\.(?:open|send)\s*=(?!=)"
+                        r"|\bethereum\.request\s*=(?!=)", re.I)
+WALLET_FORMAT = re.compile(r"0x\[(?:a-fA-F0-9|0-9a-fA-F|a-f0-9|0-9a-f)\]\{40\}|\bbc1\[|\[13\]\[a-km-zA-HJ-NP-Z1-9\]|T\[A-Za-z1-9\]\{33\}")
+WALLET_LITERAL = re.compile(r"['\"]0x[a-fA-F0-9]{40}['\"]")
+HIDDEN_PROCESS = re.compile(
+    r"detached\s*:\s*true[\s\S]{0,200}?stdio\s*:\s*['\"]ignore['\"]|stdio\s*:\s*['\"]ignore['\"][\s\S]{0,200}?detached\s*:\s*true"
+    r"|windowsHide\s*:\s*true[\s\S]{0,200}?detached\s*:\s*true|detached\s*:\s*true[\s\S]{0,200}?windowsHide\s*:\s*true"
+    r"|creationflags\s*=\s*[^\n]{0,80}(?:CREATE_NO_WINDOW|DETACHED_PROCESS|0x0*8000000\b)"
+    r"|start_new_session\s*=\s*True[\s\S]{0,200}?DEVNULL|DEVNULL[\s\S]{0,200}?start_new_session\s*=\s*True"
+    r"|\bnohup\b[^\n]{0,200}>\s*/dev/null\s+2>&1\s*&|\bspawn\(\s*(?:['\"]node['\"]|process\.execPath)\s*,\s*\[\s*['\"]-i['\"]"
+    r"|Start-Process[^\n]{0,200}-WindowStyle\s+Hidden", re.I)
+SECRET_SWEEP = re.compile(r"\btrufflehog\b|\bgitleaks\b|169\.254\.169\.254|169\.254\.170\.2|metadata\.google\.internal"
+                          r"|\bListSecrets\b|\bGetSecretValue\b|secretmanager\.googleapis\.com|vault\.azure\.net", re.I)
+PIXEL_READ = re.compile(r"\bJimp\.read\b|\bgetPixelColou?r\b|\bsharp\([^)]*\)[\s\S]{0,80}?\.raw\(|\bPNG\.sync\.read\b"
+                        r"|\bImage\.open\([^)]*\)[\s\S]{0,80}?\.getdata\(|\.getpixel\(", re.I)
+RUNTIME_BOOTSTRAP = re.compile(r"bun\.sh/install|oven-sh/bun/releases|deno\.land/(?:x/)?install|denoland/deno/releases", re.I)
+
+
+def _campaign_shapes(col: Collector, text: str, context: str, low: str, live, nets: list[int]) -> None:
+    """Dead drops, worms, CI backdoors, dead-man switches, wallet hijackers, hidden processes and secret sweeps."""
+    auto = context == "autoexec"
+    if has(low, DEAD_DROP_NEED):
+        drops = [m.start() for m in live(DEAD_DROP.finditer(text), 20)]
+        sinks = [m.start() for m in live(CODE_SINK.finditer(text), 50)]
+        if auto:
+            sinks += [m.start() for m in live(PROCESS_SINK.finditer(text), 50)]
+        hit = _close(drops, sinks, 3000) if drops and sinks else None
+        if hit is not None:
+            col.add(R_DEAD_DROP, "critical" if auto else "high", hit, "reads a blockchain, paste-site or search result "
+                    "and executes code next to it", context)
+    if has(low, ("publish", "twine", "upload.pypi")):
+        pub = next(iter(live(PUBLISH.finditer(text), 1)), None)
+        token = next(iter(live(REGISTRY_TOKEN.finditer(text), 1)), None) if pub else None
+        extra = next(iter(live(WORM_EXTRA.finditer(text), 1)), None) if token else None
+        if pub and token and (auto or extra):
+            col.add(R_WORM, "critical" if auto and extra else "high", pub.start(), "publishes packages with the registry "
+                    "token it finds" + (" after listing the packages you maintain" if extra else ""), context)
+    if auto and has(low, (".github", "runner")):
+        for m in live(WORKFLOW_PATH.finditer(text), 20):
+            start = text.rfind("\n", 0, text.rfind("\n", 0, m.start())) + 1
+            stop = text.find("\n", text.find("\n", m.end()) + 1)
+            if WRITE_OP.search(text[start:stop if stop >= 0 else len(text)]):
+                col.add(R_CI_BACKDOOR, "high", m.start(), "writes a GitHub Actions workflow", context)
+                break
+        runner = next(iter(live(RUNNER_SETUP.finditer(text), 1)), None)
+        if runner:
+            col.add(R_CI_BACKDOOR, "critical", runner.start(), "registers a self-hosted GitHub Actions runner", context)
+    if has(low, ("whoami", "api.github.com/user", "gh auth")):
+        checks = [m.start() for m in live(TOKEN_CHECK.finditer(text), 20)]
+        wipes = [m.start() for m in live(WIPE_HOME.finditer(text), 20)] if checks else []
+        fails = [m.start() for m in TOKEN_FAILED.finditer(text)] if wipes else []
+        hit = _close(wipes, checks, 2000) if wipes else None
+        if hit is not None and _close([hit], fails, 1500) is not None:
+            col.add(R_DEADMAN, "critical", hit, "deletes the home folder when a token check fails", context)
+    if has(low, ("fetch", "xmlhttprequest", "ethereum")):
+        hook = next(iter(live(FETCH_HOOK.finditer(text), 1)), None)
+        if hook and (WALLET_FORMAT.search(text) or len(WALLET_LITERAL.findall(text)) >= 10):
+            col.add(R_WALLET, "critical" if auto else "high", hook.start(), "replaces the page's network or wallet calls "
+                    "and matches wallet addresses", context)
+    if auto:
+        hidden = next(iter(live(HIDDEN_PROCESS.finditer(text), 1)), None)
+        if hidden:
+            col.add(R_HIDDEN_PROC, "high" if nets else "medium", hidden.start(), "starts a hidden or detached process"
+                    + (" and the file talks to the network" if nets else ""), context)
+        sweep = next(iter(live(SECRET_SWEEP.finditer(text), 1)), None)
+        if sweep:
+            col.add(R_SWEEP, "high", sweep.start(), f"uses {sweep.group()} while installing or opening", context)
+        boot = next(iter(live(RUNTIME_BOOTSTRAP.finditer(text), 1)), None)
+        if boot:
+            col.add(R_NET_AUTO, "medium", boot.start(), "installs another JavaScript runtime while installing (Shai-Hulud "
+                    "2.0 brought Bun along to run its payload)", context)
+    if has(low, ("jimp", "pixel", "sharp(", "png.sync", "getdata", "getpixel")):
+        pixels = [m.start() for m in live(PIXEL_READ.finditer(text), 20)]
+        sinks = [m.start() for m in live(CODE_SINK.finditer(text), 50)] + \
+            ([m.start() for m in live(PROCESS_SINK.finditer(text), 50)] if auto else [])
+        hit = _close(pixels, sinks, 2000) if pixels and sinks else None
+        if hit is not None:
+            col.add(R_DECODE_EXEC, "critical" if auto else "high", hit, "reads code out of an image's pixels and runs it",
+                    context)
 for _pat in COMMAND_PATTERNS:
     _pat.need = _NEEDS[_pat.message]
 
@@ -385,7 +559,8 @@ NETWORK = re.compile(
     r"|\breqwest::|\bureq::|std::net::TcpStream|Command::new\(\s*\"(?:curl|wget)\"|\bhttp\.(?:Get|Post)\s*\(", re.I)
 
 SEND_DATA = re.compile(
-    r"method\s*:\s*['\"]POST['\"]|\breq(?:uest)?\.write\s*\(|\.end\s*\(\s*[\w.$]+\s*\)|\bnavigator\.sendBeacon\s*\("
+    r"method\s*:\s*['\"]POST['\"]|\breq(?:uest)?\.write\s*\(|(?<!\bres)(?<!\bresponse)(?<!\breply)\.end\s*\(\s*[\w.$]+\s*\)"
+    r"|\bnavigator\.sendBeacon\s*\("
     r"|\b(?:axios|got|needle|superagent|request|ky)\.post\s*\(|\bfetch\s*\([^)]{0,300}method\s*:\s*['\"](?:POST|PUT)['\"]"
     r"|\brequests\.(?:post|put)\s*\(|\burlopen\s*\([^)]{0,300}\bdata\s*=|urllib\.request\.Request\s*\([^)]{0,300}\bdata\s*="
     r"|\.request\s*\(\s*['\"](?:POST|PUT)['\"]|\bhttpx\.(?:post|put)\s*\(|\bInvoke-(?:WebRequest|RestMethod)\b[^\n]{0,200}-(?:Method\s+Post|Body)"
@@ -569,6 +744,8 @@ def classify_host(url: str) -> str:
         return "unknown"
     if re.fullmatch(r"(?:\d{1,3}\.){3}\d{1,3}", host):
         return "official" if is_private_ip(host) and host.startswith("127.") else "raw-ip"
+    if re.fullmatch(r"(?:0x[0-9a-f]+|\d+)(?:\.(?:0x[0-9a-f]+|\d+)){0,3}", host, re.I):
+        return "raw-ip"  # an IPv4 address written as one number or in hex or octal: only used to disguise it
     if host in ("localhost", "::1") or host.endswith(".localhost"):
         return "official"
     path = urlsplit(url).path
@@ -734,11 +911,41 @@ def _triple_quoted(text: str, pos: int) -> str | None:
     return None
 
 
+_REGEX_LITERAL = re.compile(r"(?:^|[=(,:;!&|?{}\[]|\breturn)\s*/(?![/*\s])((?:\\.|\[(?:\\.|[^\]\\\n])*\]|[^/\\\n\[])+)/"
+                            r"[dgimsuyv]*(?=\s*(?:[,;)\]}.]|$))", re.M)
+_TEMPLATE_HOST = re.compile(r"[a-z][a-z0-9+.-]*://(?:\$\{|\{\{|\{[\w.]+\}|<|%\()", re.I)
+JS_SUFFIXES = (".js", ".mjs", ".cjs", ".jsx", ".ts", ".mts", ".cts", ".tsx")
+
+
+_RULE_ENTRY = re.compile(r"\b(?:re|regex|regexp|pattern|rx|match|test|detect)\s*:\s*/(?![/*\s])")
+
+
+def _line_has_regex(text: str, pos: int) -> bool:
+    """A detection-table entry ({ re: /.../, label: '...' }): its strings describe the pattern."""
+    start = text.rfind("\n", 0, pos) + 1
+    end = text.find("\n", pos)
+    end = len(text) if end < 0 else end
+    return end - start <= LONG_LINE and _RULE_ENTRY.search(text[start:end]) is not None
+
+
+def _in_regex_literal(text: str, pos: int) -> bool:
+    """pos sits inside a JavaScript regular-expression literal: /curl[^|]*\\|\\s*sh/ in a detection rule."""
+    start = text.rfind("\n", 0, pos) + 1
+    end = text.find("\n", pos)
+    end = len(text) if end < 0 else end
+    if end - start > LONG_LINE:
+        return False
+    return any(m.start(1) <= pos - start < m.end(1) for m in _REGEX_LITERAL.finditer(text[start:end]))
+
+
 def data_string(text: str, pos: int, path: str, context: str) -> bool:
     """A match that is data rather than behavior: inside a regular expression, inside a sentence of prose, or inside
     a string in a test file, on a line whose code does not hand strings to a shell, eval or exec. Detection tools,
     linters and test suites are full of these; a payload passed to exec() is not."""
     literal = _enclosing_string(text, pos)
+    if path.lower().endswith(JS_SUFFIXES) and (_in_regex_literal(text, pos) or (literal is not None and _line_has_regex(text, pos))):
+        # a detection table: { re: /curl[^|]*\|\s*sh/, label: 'pipe-to-shell (curl|sh)' }
+        return not EXEC_ON_LINE.search(_code_part(text, pos))
     if literal is None and path.lower().endswith((".py", ".pyw")):
         literal = _triple_quoted(text, pos)
     if literal is None or EXEC_ON_LINE.search(_code_part(text, pos)):
@@ -799,6 +1006,8 @@ def _apply(patterns, col: Collector, text: str, context: str, low: str | None = 
             message, severity = pat.message, sev
             if pat.rule == R_URL_INSTALL and _url_is_index_value(m.group(0)):
                 continue
+            if pat.rule == R_URL_INSTALL and re.search(r"[@#][0-9a-f]{40}\b", m.group(0)):
+                severity, message = bump(severity, -1), message + " (pinned to a commit)"
             commented = code_file and in_comment(text, m.start(), col.path)
             if pat.message == "pipes a download into an interpreter" and INLINE_PROGRAM.match(text, m.end()):
                 continue  # `curl page | perl -ne '...'`: the download is input to a program written on the line
@@ -987,11 +1196,18 @@ def scan_text(text: str, path: str, context: str, *, decode: bool = True, struct
     if nets and context == "autoexec":
         url_matches = live(_URL.finditer(text), 2000)
         foreign = [m for m in url_matches if classify_host(m.group()) not in ("official", "reference")]
+        # `http://${HOST}:${port}`: the destination is decided at run time, often a server the script started itself
+        templated = [m for m in foreign if _TEMPLATE_HOST.match(m.group())]
+        foreign = [m for m in foreign if not _TEMPLATE_HOST.match(m.group())]
         # The request and its destination sit together in a beacon; a reference link elsewhere in the file is not one.
         near = _close([m.start() for m in sends], [m.start() for m in foreign], 3000)
+        near_template = _close([m.start() for m in sends], [m.start() for m in templated], 3000)
         if near is not None:
             host = host_of(min(foreign, key=lambda m: abs(m.start() - near)).group())
             col.add(R_EXFIL, "high", near, f"sends data out while installing or opening (to {host})", context)
+        elif near_template is not None:
+            col.add(R_EXFIL, "medium", near_template, "sends data out while installing or opening, to a host decided at "
+                    "run time", context)
         elif sends and not url_matches:
             col.add(R_EXFIL, "high", sends[0].start(), "sends data out while installing or opening (to an address "
                     "assembled at run time)", context)
@@ -1041,6 +1257,8 @@ def scan_text(text: str, path: str, context: str, *, decode: bool = True, struct
                     + (f" ({len(kinds)} kinds of credentials)" if len(kinds) > 1 else ""), context)
     for m in live(PERSIST.finditer(text), 1) if has(low, PERSIST_NEED) else ():
         col.add(R_PERSIST, PERSIST_SEV.get(context), m.start(), "sets up persistence", context)
+    if is_code:
+        _campaign_shapes(col, text, context, low, live, nets)
     for m in live(AGENT_CONFIG.finditer(text), 50) if is_code and has(low, AGENT_NEED) else ():
         # the write and the path belong to the same statement: this line and its neighbours
         start = text.rfind("\n", 0, text.rfind("\n", 0, m.start())) + 1
@@ -1048,6 +1266,9 @@ def scan_text(text: str, path: str, context: str, *, decode: bool = True, struct
         window = text[start:stop if stop >= 0 else len(text)]
         if not WRITE_OP.search(window):
             continue
+        if m.group().lower() == "core.hookspath" and (re.match(r"[\"'`]?\s*(?:\|\||;|&&|\)|$)", text[m.end():m.end() + 40], re.M)
+                                                      or re.search(r"--get\b", window)):
+            continue  # `git config core.hooksPath || true` reads the setting
         # Changing the agent configuration in your home folder reaches every project and session; a project's own
         # instruction files are its maintainers' business unless install-time code rewrites them.
         home = bool(GLOBAL_HINT.search(window))
@@ -1151,6 +1372,15 @@ def _structural(col: Collector, text: str, path: str, context: str) -> None:
         elif kind == "filler":
             col.add(R_ZERO_WIDTH, "high" if is_code else "medium", pos, f"{item['count']} Hangul filler characters "
                     "(invisible identifiers)", context)
+    if "\x1b" in text:
+        hides = list(TERMINAL_HIDE.finditer(text))
+        if hides:
+            sev = "high" if context in ("doc", "config", "autoexec") else "medium"
+            note = ""
+            if context == "code" and is_test_code(path):
+                sev, note = "low", " (in a test file)"
+            col.add(R_TERMINAL, sev, hides[0].start(), f"{len(hides)} escape codes that conceal, erase or overwrite "
+                    f"text{note}", context)
     for item in padding(text, doc=context == "doc"):
         if item["kind"] == "blank-lines":
             sev = "high" if context in ("autoexec", "doc") or item["count"] >= 2000 else "medium"

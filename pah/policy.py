@@ -36,6 +36,7 @@ CONTAINER = re.compile(r"(?:^|/)(?:[^/]*\.)?(?:dockerfile|containerfile)(?:\.[^/
 VENDORED_TOOL = re.compile(r"(?:^|/)\.yarn/(?:releases|plugins|sdks)/|(?:^|/)\.pnp\.c?js$|(?:^|/)\.pnp\.loader\.mjs$", re.I)
 
 NEVER_ADJUSTED = {"PAH-F001", "PAH-F002", "PAH-F003", "PAH-F005"}
+CI_COMPROMISE = {"PAH-I010"}
 HIDDEN_TEXT = {"PAH-T001", "PAH-T002", "PAH-T003", "PAH-T005", "PAH-T008"}
 FILE_WIDE = ("reads secrets or the environment and makes network requests", "sends data out while installing or opening",
              "serializes the environment", "network call in code that runs automatically",
@@ -96,6 +97,8 @@ def adjust(findings: list[Finding], autoexec: dict, sizes: dict | None = None) -
         if cat == "inert":
             f.severity = _cap(f.severity, "low")
         elif cat == "ci":
+            if f.rule in CI_COMPROMISE and not inert_path(f.path):
+                continue  # a workflow that steals the repository's secrets means the repository itself is compromised
             f.severity = _cap(f.severity, "medium" if f.rule in HIDDEN_TEXT else "low")
         elif cat == "container":
             if f.rule not in HIDDEN_TEXT:

@@ -85,7 +85,7 @@ def gen_zip(params: dict) -> bytes:
     return buf.getvalue()
 
 
-_MAGIC = {"elf": b"\x7fELF", "pe": b"MZ", "macho": b"\xcf\xfa\xed\xfe"}
+_MAGIC = {"elf": b"\x7fELF", "pe": b"MZ", "macho": b"\xcf\xfa\xed\xfe", "ttf": b"\x00\x01\x00\x00", "woff2": b"wOF2"}
 
 
 def gen_binary(params: dict) -> bytes:
