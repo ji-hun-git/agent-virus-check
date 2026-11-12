@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run the TrapRepo benchmark.
 
-    python bench/run.py                                   # personal-anti-hack rules only (offline, seconds)
+    python bench/run.py                                   # agent-virus-check rules only (offline, seconds)
     python bench/run.py --models anthropic:claude-opus-5-5 openai:gpt-6-astra meta:muse-spark-1.3 --trials 3
     python bench/run.py --deep anthropic:claude-opus-5-5   # rules + model review of the evidence
     python bench/run.py --markdown                         # print the summary as a Markdown table
@@ -194,7 +194,7 @@ def main(argv=None) -> int:
             return "block" if res and res["verdict"] == "unsafe" else ("none" if res and res["verdict"] else "error")
         return f
 
-    summaries = [summarize(rows, "personal-anti-hack (rules)", lambda r: r["pah"])]
+    summaries = [summarize(rows, "agent-virus-check (rules)", lambda r: r["pah"])]
     if args.guarddog:
         summaries.append(summarize(rows, "GuardDog", lambda r: "block" if r.get("guarddog") == "flagged" else "pass"))
     for spec in args.models:
@@ -205,7 +205,7 @@ def main(argv=None) -> int:
             summaries.append(s)
     for spec in args.deep:
         for t in range(args.trials):
-            summaries.append(summarize(rows, f"personal-anti-hack + {spec} review (trial {t + 1})",
+            summaries.append(summarize(rows, f"agent-virus-check + {spec} review (trial {t + 1})",
                                        lambda r, spec=spec, t=t: (r["deep"][spec][t] or {}).get("verdict")))
 
     RESULTS.mkdir(exist_ok=True)

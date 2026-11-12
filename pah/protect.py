@@ -8,7 +8,7 @@
                      scanned within seconds; --quarantine moves blocked ones away. --install starts it at login.
     pah quarantine   list | restore ID | delete ID
 
-Nothing is executed. Quarantine moves a file or folder into the personal-anti-hack folder, renamed so that nothing
+Nothing is executed. Quarantine moves a file or folder into the agent-virus-check folder, renamed so that nothing
 loads or runs it, and records where it came from so that `pah quarantine restore` can put it back.
 """
 from __future__ import annotations
@@ -414,7 +414,7 @@ def check_new(before: dict, after: dict, pending: dict, *, do_quarantine: bool, 
             reason = item.findings[0]["message"] if item.findings else item.note
             _log(f"{item.verdict.upper():5} {kind:10} {key}  {reason}" + (f"  (quarantined: {', '.join(item.quarantined)})"
                                                                             if item.quarantined else ""))
-            alert("personal-anti-hack: " + ("blocked" if item.verdict == "block" else "check this"),
+            alert("agent-virus-check: " + ("blocked" if item.verdict == "block" else "check this"),
                   f"{path.name}: {reason}"[:200])
         out.append(item)
     return out
@@ -442,13 +442,13 @@ def protect(interval: float = 5.0, *, do_quarantine: bool = False, cycles: int |
                 for change in watch.check():
                     if change["severity"] in ("high", "critical"):
                         _log(f"WATCH {change['label']}: {change['change']}")
-                        alert("personal-anti-hack: agent settings changed", f"{change['label']}: {change['change']}"[:200])
+                        alert("agent-virus-check: agent settings changed", f"{change['label']}: {change['change']}"[:200])
 
 
 # --------------------------------------------------------------------------------------------- start at login
 
-TASK_NAME = "personal-anti-hack protect"
-PLIST = "dev.personal-anti-hack.protect"
+TASK_NAME = "agent-virus-check protect"
+PLIST = "dev.agent-virus-check.protect"
 
 
 def login_plan(command: list[str], remove: bool = False) -> list[dict]:
@@ -471,10 +471,10 @@ def login_plan(command: list[str], remove: bool = False) -> list[dict]:
                 "<key>RunAtLoad</key><true/><key>KeepAlive</key><true/>"
                 f"<key>StandardOutPath</key><string>{PROTECT_LOG}</string></dict></plist>\n")
         return [{"write": str(plist), "text": text}, {"run": ["launchctl", "load", "-w", str(plist)]}]
-    unit = home / ".config" / "systemd" / "user" / "personal-anti-hack-protect.service"
+    unit = home / ".config" / "systemd" / "user" / "agent-virus-check-protect.service"
     if remove:
         return [{"run": ["systemctl", "--user", "disable", "--now", unit.name]}, {"delete": str(unit)}]
-    text = ("[Unit]\nDescription=personal-anti-hack real-time protection\n\n[Service]\n"
+    text = ("[Unit]\nDescription=agent-virus-check real-time protection\n\n[Service]\n"
             f"ExecStart={subprocess.list2cmdline(command)}\nRestart=on-failure\n\n[Install]\nWantedBy=default.target\n")
     return [{"write": str(unit), "text": text}, {"run": ["systemctl", "--user", "daemon-reload"]},
             {"run": ["systemctl", "--user", "enable", "--now", unit.name]}]

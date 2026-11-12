@@ -7,7 +7,7 @@ personal attacks, and publishing anyone's private information are not acceptable
 discussions or anywhere else the project is represented.
 
 Security research is welcome here, within limits. Share bypasses privately through a
-[security advisory](https://github.com/ji-hun-git/personal-anti-hack/security/advisories/new), and never post live
+[security advisory](https://github.com/ji-hun-git/agent-virus-check/security/advisories/new), and never post live
 malware, working credentials or payloads aimed at real systems.
 
 To report unacceptable behavior, open a private advisory on this repository and say that it is about conduct, or use

@@ -59,5 +59,5 @@
 <text x="744" y="386" font-size="12" fill="#9198a1">any run</text>
 <rect x="836" y="357" width="96" height="8" rx="4" fill="#262c36"/>
 <line x1="28" y1="412" x2="932" y2="412" stroke="#262c36"/>
-<text x="28" y="440" font-size="12.5" fill="#9198a1">A refused review is not a clean result: personal-anti-hack reports it as “not reviewed”. Every case, run and answer is in bench/results/.</text>
+<text x="28" y="440" font-size="12.5" fill="#9198a1">A refused review is not a clean result: agent-virus-check reports it as “not reviewed”. Every case, run and answer is in bench/results/.</text>
 </svg>

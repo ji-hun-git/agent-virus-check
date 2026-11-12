@@ -10,9 +10,11 @@ A severity of None means the pattern is not reported in that context.
 """
 from __future__ import annotations
 
+import ast
 import bisect
 import re
 import time
+import warnings
 from dataclasses import dataclass
 from urllib.parse import urlsplit
 
@@ -1148,8 +1150,91 @@ def _close(anchors: list[int], others: list[int], limit: int) -> int | None:
     return None
 
 
+_LIT = r"(?:'(?:[^'\\\n]|\\.){0,200}'|\"(?:[^\"\\\n]|\\.){0,200}\")"
+SPLIT_STRINGS = re.compile(
+    rf"\[[ \t]*{_LIT}(?:[ \t]*,[ \t]*{_LIT})+[ \t]*,?[ \t]*\][ \t]*\.[ \t]*join\([ \t]*(?:''|\"\")[ \t]*\)"  # a list of quoted pieces joined with ''
+    rf"|(?:''|\"\")[ \t]*\.[ \t]*join\([ \t]*[\[(][ \t]*{_LIT}(?:[ \t]*,[ \t]*{_LIT})+[ \t]*,?[ \t]*[\])][ \t]*\)"  # Python's ''.join over quoted pieces
+    rf"|{_LIT}(?:[ \t]*\+[ \t]*{_LIT})+")  # quoted pieces added together
+SPLIT_HINT = re.compile(r"['\"][ \t]*\+[ \t]*['\"]|\][ \t]*\.[ \t]*join\([ \t]*(?:''|\"\")|(?:''|\"\")[ \t]*\.[ \t]*join\(")
+SENSITIVE_NAMES = {"eval", "function", "constructor", "child_process", "exec", "execsync", "execfile", "execfilesync",
+                   "spawn", "spawnsync", "fork", "http", "https", "net", "dns", "tls", "dgram", "env", "process", "require",
+                   "atob", "fromcharcode", "writefilesync", "appendfilesync", "system", "popen", "subprocess",
+                   "__import__", "__builtins__", "builtins", "getattr", "compile", "b64decode", "urlopen", "urllib",
+                   "socket", "powershell", "invoke-expression", "iex", "curl", "wget", "globalthis", "xmlhttprequest",
+                   "sendbeacon", "websocket", "importscripts", "settimeout", "setinterval"}
+FUNCTION_ALIAS = re.compile(r"\.constructor\s*\.\s*constructor\b(?!\s*\(\s*['\"]return this)"
+                            r"|\.constructor\s*\[\s*['\"]constructor['\"]\s*\]|\bFunction\.prototype\.constructor\b"
+                            r"|\bReflect\.construct\s*\(\s*Function\b")
+FOLD_LIMIT = 2_000_000
+
+
+HASH_COMMENT = (".py", ".pyw", ".sh", ".bash", ".zsh", ".rb", ".pl", ".r", ".yml", ".yaml", ".toml", ".ps1")
+SLASH_COMMENT = JS_SUFFIXES + (".go", ".rs", ".java", ".c", ".cc", ".cpp", ".h", ".cs", ".kt", ".swift", ".php", ".dart")
+
+
+def _after_trailing_comment(text: str, pos: int, path: str) -> bool:
+    """pos follows a # or // comment marker on its own line, outside every string. Quotes are tracked, so code cannot
+    hide behind a quote the way it could if any # counted."""
+    low = path.lower()
+    marker = "#" if low.endswith(HASH_COMMENT) else "//" if low.endswith(SLASH_COMMENT) else None
+    if marker is None:
+        return False
+    i, quote = text.rfind("\n", 0, pos) + 1, None
+    while i < pos:
+        ch = text[i]
+        if quote:
+            if ch == "\\":
+                i += 2
+                continue
+            if ch == quote:
+                quote = None
+        elif ch in "'\"`":
+            quote = ch
+        elif text.startswith(marker, i):
+            return True
+        i += 1
+    return False
+
+
+def _in_other_string(text: str, pos: int, path: str) -> bool:
+    """pos sits inside a string that began earlier: an example in a docstring or a message, not code."""
+    if path.lower().endswith((".py", ".pyw")) and _triple_quoted(text, pos) is not None:
+        return True
+    start = text.rfind("\n", 0, pos) + 1
+    end = text.find("\n", pos)
+    end = len(text) if end < 0 else end
+    if end - start > LONG_LINE:
+        return False
+    col = pos - start
+    return any(m.start() < col < m.end() for m in _STRING.finditer(text[start:end]))
+
+
+def _literal(lit: str) -> str:
+    """The value of a quoted literal. JavaScript escapes Python does not know (\\[) would print a SyntaxWarning."""
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            value = ast.literal_eval(lit)
+        return value if isinstance(value, str) else lit[1:-1]
+    except (ValueError, SyntaxError):
+        return lit[1:-1]
+
+
+def fold_strings(text: str) -> tuple[str, list[tuple[int, str]]]:
+    """Join string literals that code splits apart (quoted pieces added together, or joined from a list). Returns the text with the
+    pieces joined, every line kept in place, and (position in the original, joined value) for each join."""
+    joins: list[tuple[int, str]] = []
+
+    def joined(m: re.Match) -> str:
+        value = "".join(_literal(p) for p in re.findall(_LIT, m.group()))
+        joins.append((m.start(), value))
+        return repr(value.replace("\n", " "))
+
+    return SPLIT_STRINGS.sub(joined, text), joins
+
+
 def scan_text(text: str, path: str, context: str, *, decode: bool = True, structural: bool = True,
-              note: str = "", line_offset: int = 0) -> list[Finding]:
+              note: str = "", line_offset: int = 0, fold: bool = True) -> list[Finding]:
     """All content rules for one text. Structural checks (invisible characters, padding) run on original text only."""
     col = Collector(path, text, line_offset=line_offset, note=note)
     is_code = context in ("code", "autoexec")
@@ -1316,6 +1401,32 @@ def scan_text(text: str, path: str, context: str, *, decode: bool = True, struct
                     "(a logic bomb)", context)
         elif date_gate and nets:
             col.add(R_CONDITIONAL, "medium", date_gate.start(), "network code gated on a date that has not come yet", context)
+    if is_code and fold and len(text) <= FOLD_LIMIT and SPLIT_HINT.search(text):
+        # Attackers split names so that patterns miss them: a module, eval or env spelled in pieces.
+        # The joined pieces are judged like everything else, and building a sensitive name from pieces is itself
+        # a sign: legitimate code writes 'https' and 'eval' in one piece.
+        folded, joins = fold_strings(text)
+        built = [(pos, value) for pos, value in joins if value.lower() in SENSITIVE_NAMES
+                 and not in_comment(text, pos, path) and not _after_trailing_comment(text, pos, path)
+                 and not _in_other_string(text, pos, path) and not (context == "code" and is_test_code(path))]
+        if built:
+            pos, value = built[0]
+            col.add(R_OBFUSCATED, "critical" if context == "autoexec" else "high", pos,
+                    f"builds the name {value!r} out of pieces ({len(built)} such name{'s' if len(built) > 1 else ''})",
+                    context)
+        if folded != text:
+            known = {(f.rule, f.line) for f in col.items}
+            for f in scan_text(folded, path, context, decode=False, structural=False, note=note, line_offset=line_offset,
+                               fold=False):
+                if (f.rule, f.line) not in known:
+                    f.message += " (after joining split strings)"
+                    col.items.append(f)
+    if is_code:
+        alias = next((m for m in live(FUNCTION_ALIAS.finditer(text), 20)
+                      if not _after_trailing_comment(text, m.start(), path)), None)
+        if alias:
+            col.add(R_OBFUSCATED, "critical" if context == "autoexec" else "high", alias.start(),
+                    "reaches the Function constructor through an alias (runs code without writing eval)", context)
     if decode:
         for blob in decode_blobs(text):
             found = scan_text(blob["text"], path, context if context != "doc" else "code", decode=False,

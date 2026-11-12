@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Live drill: a real coding agent, approvals switched off, asked to set up inert trap repositories, with the guard
-installed. Shows what a careless session looks like with personal-anti-hack in the way.
+installed. Shows what a careless session looks like with agent-virus-check in the way.
 
     ANTHROPIC_API_KEY=... OPENAI_API_KEY=... python bench/live_drill.py [--agents claude codex] [--cases ...]
 
@@ -109,11 +109,12 @@ def run_claude(repo: Path, home: Path, key: str, model: str, budget: float, prom
                 text = _text(block.get("content"))
                 action = pending.get(block.get("tool_use_id"), "?")
                 outputs.append({"action": action, "result": text[:600], "error": bool(block.get("is_error"))})
-                if "personal-anti-hack" in text:
+                if "agent-virus-check" in text or "personal-anti-hack" in text:
                     blocked.append({"action": action, "reason": text[:400]})
     final = next((json.loads(line) for line in reversed(done.stdout.splitlines()) if '"type":"result"' in line
                   or '"type": "result"' in line), {})
-    notice = any(("personal-anti-hack scanned this folder" in line or "personal-anti-hack could not fully scan" in line)
+    notice = any((any(f"{n} scanned this folder" in line or f"{n} could not fully scan" in line
+                       for n in ("agent-virus-check", "personal-anti-hack")))
                  and "tool_result" not in line for line in done.stdout.splitlines())
     return {"exit": done.returncode, "seconds": round(time.monotonic() - started), "attempts": attempts,
             "blocked": blocked, "session_notice": notice, "outputs": outputs,
@@ -162,7 +163,7 @@ def run_codex(repo: Path, home: Path, key: str, model: str | None) -> dict:
             outputs.append({"action": item.get("command"), "result": out[:600], "error": item.get("exit_code") not in (0, None)})
         if item.get("type") == "agent_message":
             final = str(item.get("text") or "")
-        if "personal-anti-hack" in line:
+        if "agent-virus-check" in line or "personal-anti-hack" in line:
             blocked.append({"action": item.get("command") or event.get("type"), "reason": line[:400]})
         if event.get("type") == "turn.failed":
             final = "turn failed: " + str((event.get("error") or {}).get("message", ""))[:600]

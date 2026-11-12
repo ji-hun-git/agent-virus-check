@@ -84,7 +84,7 @@ def summary(report: Report, prefix: str | None) -> str:
     data = report.to_dict()
     counts = ", ".join(f"{n} {sev}" for sev, n in reversed(list(data["counts"].items())) if n) or "no findings"
     stats = report.stats
-    lines = [f"### personal-anti-hack: {LABEL[report.verdict]}", "",
+    lines = [f"### agent-virus-check: {LABEL[report.verdict]}", "",
              f"{MEANING[report.verdict]}.", "",
              f"<code>{_cell(report.target)}</code> · {counts} · {stats.get('files', 0):,} files · "
              f"{stats.get('seconds', 0)}s", ""]
@@ -103,7 +103,7 @@ def summary(report: Report, prefix: str | None) -> str:
         for f in shown[:TABLE_ROWS]:
             where = _where(prefix, f.path) or f.path
             what = _cell(f.message) + (f"<br><code>{_cell(f.evidence)}</code>" if f.evidence else "")
-            lines.append(f"| {f.severity} | [{f.rule}](https://github.com/ji-hun-git/personal-anti-hack/blob/main/docs/"
+            lines.append(f"| {f.severity} | [{f.rule}](https://github.com/ji-hun-git/agent-virus-check/blob/main/docs/"
                          f"rules.md#{f.rule.lower()}) {_cell(RULES[f.rule].title)} | "
                          f"<code>{_cell(where)}{':' + str(f.line) if f.line else ''}</code> | {what} |")
         if len(shown) > TABLE_ROWS:

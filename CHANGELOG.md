@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.2.1 (2026-11-12)
+
+**Renamed to agent-virus-check.** The repository, the package and the plugin's display name are now agent-virus-check,
+the antivirus for people who use AI agents. The plugin's ID, the `pah` command, the `PAH-` rule IDs, the
+`~/.personal-anti-hack` folder and the default SARIF file name keep the old name, so installed hooks and CI keep
+working; the pre-commit hook is `agent-virus-check` and still answers to `personal-anti-hack`; GitHub redirects the
+old repository URL.
+
+**A white-hat round against our own rules.** Three of six evasive variants of an install-time payload got past 0.2.0:
+module and host names built from pieces (`require(['ht','tps'].join(''))`), `eval` reached through
+`globalThis[['ev','al'].join('')]`, and the `Function` constructor reached through `[].constructor.constructor`.
+Split string literals are now joined before the rules run, a sensitive name built from pieces is flagged on its own,
+and the `Function` alias is caught. The variants are kept as tests; every bypass found from now on joins them.
+The same round found that the guard let an agent delete its whole folder (`rm -rf ~/.personal-anti-hack`: only paths
+inside it were caught), which holds the quarantine, the trusted projects and the configuration baseline; it now asks.
+
+**Measured:** TrapRepo 63 of 63 malicious repositories caught, 0 of 33 benign flagged; attack drill 951 decisions,
+0 unexpected; 30 popular repositories 26 pass, 4 warn, none blocked (the same verdicts as 0.2.0, so the new checks
+added no false alarms).
+
 ## 0.2.0 (2026-11-12)
 
 personal-anti-hack now does an antivirus's job for people who use AI agents, and new checks cover the attacks

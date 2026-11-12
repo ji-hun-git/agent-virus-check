@@ -1,4 +1,4 @@
-"""personal-anti-hack as an MCP server over stdio, for any MCP host (Codex, Cursor, Gemini CLI, VS Code, Claude).
+"""agent-virus-check as an MCP server over stdio, for any MCP host (Codex, Cursor, Gemini CLI, VS Code, Claude).
 
 Tools: scan_path, check_command, checkup, watch_check. All are read-only and local.
 Protocol: JSON-RPC 2.0, one message per line; speaks the 2026-07-28 revision and the earlier handshake revisions.
@@ -70,7 +70,7 @@ def call_tool(name: str, args: dict) -> tuple[str, bool]:
 
 
 def server_info() -> dict:
-    return {"name": "personal-anti-hack", "title": "personal-anti-hack", "version": __version__}
+    return {"name": "personal-anti-hack", "title": "agent-virus-check", "version": __version__}
 
 
 def handle(method: str, params: dict) -> dict:

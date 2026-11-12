@@ -1,13 +1,13 @@
 cff-version: 1.2.0
-message: "If you use personal-anti-hack, please cite it as below."
-title: "personal-anti-hack: a local shield for people who let AI agents open, install and run code"
+message: "If you use agent-virus-check, please cite it as below."
+title: "agent-virus-check: a local shield for people who let AI agents open, install and run code"
 authors:
   - family-names: Chae
     given-names: Jihun
 date-released: 2026-11-12
-version: "0.2.0"
-url: "https://github.com/ji-hun-git/personal-anti-hack"
-repository-code: "https://github.com/ji-hun-git/personal-anti-hack"
+version: "0.2.1"
+url: "https://github.com/ji-hun-git/agent-virus-check"
+repository-code: "https://github.com/ji-hun-git/agent-virus-check"
 license: MIT
 keywords:
   - software supply chain

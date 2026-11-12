@@ -8,7 +8,7 @@ import sys
 from . import __version__
 from .model import RULES, SEVERITIES, Report, rank
 
-HOMEPAGE = "https://github.com/ji-hun-git/personal-anti-hack"
+HOMEPAGE = "https://github.com/ji-hun-git/agent-virus-check"
 VERDICT_TEXT = {
     "block": "BLOCK: do not open, install or run this with an agent until the findings below are explained",
     "warn": "WARN: review the findings below before you let an agent set this up",
@@ -64,7 +64,7 @@ def text(report: Report, *, lang: str = "en", color: bool | None = None, limit: 
     else:
         label, sentence = verdict.upper(), (VERDICT_KO if lang == "ko" else VERDICT_TEXT)[verdict].split(": ", 1)[1]
         size = f"  ·  {report.stats.get('files', 0):,} files"
-    lines = [f"personal-anti-hack {__version__}  ·  {report.target}",
+    lines = [f"agent-virus-check {__version__}  ·  {report.target}",
              paint(verdict, f" {label} ") + "  " + sentence,
              f"   {counts or '0 findings'}{size}  ·  {report.stats.get('seconds', 0)}s", ""]
     if report.surfaces:
@@ -186,7 +186,7 @@ def sarif(report: Report, base: str = "") -> str:
                         "message": {"text": f"{f.message}" + (f" — {f.evidence}" if f.evidence else "")},
                         "locations": [loc], "properties": {"severity": f.severity, "context": f.context}})
     doc = {"version": "2.1.0", "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
-           "runs": [{"tool": {"driver": {"name": "personal-anti-hack", "version": __version__, "informationUri": HOMEPAGE,
+           "runs": [{"tool": {"driver": {"name": "agent-virus-check", "version": __version__, "informationUri": HOMEPAGE,
                                          "rules": rules}},
                      "results": results,
                      "properties": {"verdict": report.verdict, "incomplete": report.incomplete}}]}
@@ -194,7 +194,7 @@ def sarif(report: Report, base: str = "") -> str:
 
 
 def rules_markdown() -> str:
-    lines = ["# Rules", "", "Every rule personal-anti-hack reports, with the incident or study behind it.", "",
+    lines = ["# Rules", "", "Every rule agent-virus-check reports, with the incident or study behind it.", "",
              "| Rule | What it means | ATT&CK | OWASP |", "| --- | --- | --- | --- |"]
     for rid in sorted(RULES):
         r = RULES[rid]

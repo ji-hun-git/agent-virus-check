@@ -1,6 +1,6 @@
 # Notices
 
-personal-anti-hack is released under the MIT License (see `LICENSE`). It includes the following data from others.
+agent-virus-check is released under the MIT License (see `LICENSE`). It includes the following data from others.
 
 - **`pah/data/popular-npm.txt`**: the names of the 5,000 most-downloaded npm packages, taken from
   [npm-high-impact](https://github.com/wooorm/npm-high-impact) 1.13.0 by Titus Wormer, MIT License, sorted by name.

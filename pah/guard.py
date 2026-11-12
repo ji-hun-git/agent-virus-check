@@ -86,7 +86,7 @@ SETUP = re.compile(
     r"|\bdeno\s+(?:task|run)\b|\bbundle\s+(?:install|exec)\b|\bcomposer\s+install\b|\bdotnet\s+(?:build|run|restore)\b", re.I)
 SELF_CONTROL = re.compile(
     r"\b(?:pah|pah_entry\.py)\b[^\n|;&]{0,80}\b(?:trust|untrust|install)\b|\b(?:pah|pah_entry\.py)\b[^\n|;&]{0,40}\bwatch\s+(?:accept|init)\b"
-    r"|\.personal-anti-hack[\\/]|\bPAH_HOME\s*=|\bclaude\s+plugin\s+(?:disable|uninstall|remove)\b[^\n]{0,80}personal-anti-hack", re.I)
+    r"|\.personal-anti-hack(?![\w.-])|\bPAH_HOME\s*=|\bclaude\s+plugin\s+(?:disable|uninstall|remove)\b[^\n]{0,80}(?:personal-anti-hack|agent-virus-check)", re.I)
 CD_PREFIX = re.compile(r"^\s*(?:cd|pushd|Set-Location)\s+(\"[^\"]+\"|'[^']+'|\S+)\s*(?:&&|;)")
 
 
@@ -219,12 +219,12 @@ def check_command(command: str, cwd: str = "", *, scan_repos: bool = True, max_s
     decision.findings = findings
     action = _action_for(findings)
     if action != "defer":
-        decision.stricter(action, "personal-anti-hack: " + _summary(findings))
+        decision.stricter(action, "agent-virus-check: " + _summary(findings))
     if re.search(r"\bgit\s+clone\b[^\n]*--(?:recurse-submodules|recursive)\b", command):
-        decision.stricter("ask", "personal-anti-hack: clone without submodules first and scan the repository "
+        decision.stricter("ask", "agent-virus-check: clone without submodules first and scan the repository "
                                  "(submodule tricks have run code on clone: CVE-2024-32002, CVE-2025-48384)")
     if SELF_CONTROL.search(command):
-        decision.stricter("ask", "personal-anti-hack: trusting a project, accepting configuration changes, changing the "
+        decision.stricter("ask", "agent-virus-check: trusting a project, accepting configuration changes, changing the "
                                  "guard's state or disabling it is the user's decision, not the agent's")
     if scan_repos and SETUP.search(command) and not re.match(r"\s*git\s+clone\b", command):
         root = project_root(target_dir(command, cwd))
@@ -238,15 +238,15 @@ def check_command(command: str, cwd: str = "", *, scan_repos: bool = True, max_s
             verdict = entry.get("verdict")
             where = str(root)
             if verdict == "block":
-                decision.stricter("deny", f"personal-anti-hack scanned {where} and blocked running its setup: "
+                decision.stricter("deny", f"agent-virus-check scanned {where} and blocked running its setup: "
                                           f"{entry.get('summary')}. Show the user these findings; they can review them with "
                                           f"`pah scan \"{where}\"` and, only if it is their own project, run "
                                           f"`pah trust \"{where}\"` themselves.")
             elif verdict == "warn":
-                decision.stricter("ask", f"personal-anti-hack found things to review in {where} before running it: "
+                decision.stricter("ask", f"agent-virus-check found things to review in {where} before running it: "
                                          f"{entry.get('summary')}")
             elif verdict == "incomplete":
-                decision.stricter("ask", f"personal-anti-hack could not scan all of {where} "
+                decision.stricter("ask", f"agent-virus-check could not scan all of {where} "
                                          f"({'; '.join(entry.get('incomplete') or [])}); review before running it")
     return decision
 
@@ -279,16 +279,16 @@ def check_write(path: str, content: str | None = None, cwd: str = "") -> Decisio
     except (OSError, ValueError):
         own_state = False
     if own_state or re.search(r"[\\/]\.personal-anti-hack[\\/]", norm):
-        decision.stricter("deny", "personal-anti-hack: the agent may not edit the guard's own state (scan cache, trusted "
+        decision.stricter("deny", "agent-virus-check: the agent may not edit the guard's own state (scan cache, trusted "
                                   "projects, configuration baseline)")
     elif GLOBAL_AGENT_FILES.search(norm):
-        decision.stricter("ask", f"personal-anti-hack: the agent is changing machine-wide agent configuration ({norm}). "
+        decision.stricter("ask", f"agent-virus-check: the agent is changing machine-wide agent configuration ({norm}). "
                                  "A planted instruction file made Codex rewrite its own settings this way.")
     elif PERSISTENCE_FILES.search(norm):
-        decision.stricter("ask", f"personal-anti-hack: writing {norm} changes what runs at login, on git commands or on "
+        decision.stricter("ask", f"agent-virus-check: writing {norm} changes what runs at login, on git commands or on "
                                  "package installs")
     elif PROJECT_AGENT_FILES.search(norm):
-        decision.stricter("ask", f"personal-anti-hack: {norm} makes commands run automatically for agents or editors")
+        decision.stricter("ask", f"agent-virus-check: {norm} makes commands run automatically for agents or editors")
     if content:
         from .model import rank
         from .patterns import scan_text
@@ -298,7 +298,7 @@ def check_write(path: str, content: str | None = None, cwd: str = "") -> Decisio
                  if f.rule in ("PAH-T001", "PAH-T002", "PAH-T003", "PAH-T005", "PAH-T006") and rank(f.severity) >= rank("high")]
         if found:
             decision.findings = found
-            decision.stricter("deny", "personal-anti-hack: the content hides text or code: " + _summary(found))
+            decision.stricter("deny", "agent-virus-check: the content hides text or code: " + _summary(found))
     return decision
 
 
@@ -306,19 +306,19 @@ def check_read(path: str, cwd: str = "") -> Decision:
     decision = Decision()
     norm = str(Path(path).expanduser())
     if SECRET_PATHS.search(norm.replace("\\", "/")) or re.search(r"[\\/]\.ssh[\\/]|[\\/]\.gnupg[\\/]|[\\/]\.aws[\\/]", norm):
-        decision.stricter("ask", f"personal-anti-hack: the agent wants to read a credential store ({norm})")
+        decision.stricter("ask", f"agent-virus-check: the agent wants to read a credential store ({norm})")
     return decision
 
 
 def check_fetch(url: str) -> Decision:
     decision = Decision()
     if EXFIL_HOSTS.search(url):
-        decision.stricter("ask", f"personal-anti-hack: {url[:120]} is a request-capture or tunnel service")
+        decision.stricter("ask", f"agent-virus-check: {url[:120]} is a request-capture or tunnel service")
     m = RAW_IP_URL.search(url)
     if m and not is_private_ip(m.group(1)):
-        decision.stricter("ask", f"personal-anti-hack: fetching a raw IP address ({m.group(1)})")
+        decision.stricter("ask", f"agent-virus-check: fetching a raw IP address ({m.group(1)})")
     if re.search(r"[?&#/=][A-Za-z0-9+/_=-]{120,}", url):
-        decision.stricter("ask", "personal-anti-hack: the URL carries a long encoded value, a common way to leak data "
+        decision.stricter("ask", "agent-virus-check: the URL carries a long encoded value, a common way to leak data "
                                  "through a fetch")
     return decision
 

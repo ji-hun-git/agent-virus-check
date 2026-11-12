@@ -1,4 +1,4 @@
-# Research behind personal-anti-hack
+# Research behind agent-virus-check
 
 The evidence this tool is designed from, current to 2026-11-12: how malware reaches people who use AI coding agents (Claude Code, Codex, Cursor, Gemini CLI, OpenClaw, MCP servers, Agent Skills), why language-model review misses it, what existing defenses cover, and what the strongest security projects have in common. Every rule in [rules.md](rules.md) cites the incident or study it comes from; this page collects them.
 
@@ -145,7 +145,7 @@ npm 12 (Jul 2026) blocks dependency install scripts, `binding.gyp` and URL/git d
 
 Sources: [AIxCC SoK](https://arxiv.org/html/2602.07666), [Team Atlanta](https://team-atlanta.github.io/blog/post-afc), [Trail of Bits](https://blog.trailofbits.com/2025/08/09/trail-of-bits-buttercup-wins-2nd-place-in-aixcc-challenge/), [ROSS index](https://runacap.com/ross-index/q3-2026/).
 
-## 7. Implications for personal-anti-hack
+## 7. Implications for agent-virus-check
 
 - Guard every door an AI-tool user opens, not one ecosystem; leave deep npm detection to OSV and tools like Gatekeeper.
 - Code decides, the LLM investigates. A model can raise suspicion but cannot clear a rule-based block, and its claims count only when they cite lines that code has verified. A refusal or a truncation is reported as "not scanned".

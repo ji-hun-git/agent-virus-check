@@ -158,7 +158,7 @@ def plan_claude(plan: Plan, home: Path) -> None:
         _append_event(hooks, "SessionStart", {"hooks": [{"type": "command", "command": cmd["session-start"], "timeout": 60}]})
 
     _merge_json(plan, path, mutate, "PreToolUse, PostToolUse and SessionStart hooks")
-    plan.notes.append("Or install the plugin instead: /plugin marketplace add ji-hun-git/personal-anti-hack, then "
+    plan.notes.append("Or install the plugin instead: /plugin marketplace add ji-hun-git/agent-virus-check, then "
                       "/plugin install personal-anti-hack.")
 
 
@@ -166,11 +166,11 @@ def plan_codex(plan: Plan, home: Path) -> None:
     base = Path(os.environ["CODEX_HOME"]) if os.environ.get("CODEX_HOME") else home / ".codex"
     entry = {"matcher": "^(Bash|apply_patch)$", "hooks": [{"type": "command", "command": hook_command("codex", shell="posix"),
                                                            "commandWindows": hook_command("codex", shell="windows"),
-                                                           "timeout": 60, "statusMessage": "personal-anti-hack check"}]}
+                                                           "timeout": 60, "statusMessage": "agent-virus-check check"}]}
     _merge_json(plan, base / "hooks.json", lambda d: _append_event(d.setdefault("hooks", {}), "PreToolUse", entry),
                 "PreToolUse hook for shell commands and patches")
     plan.notes.append("Codex runs a new hook only after you approve it: start Codex and open /hooks once. Codex hooks "
-                      "cannot ask, so anything personal-anti-hack would ask about is blocked with the reason.")
+                      "cannot ask, so anything agent-virus-check would ask about is blocked with the reason.")
 
 
 def plan_gemini(plan: Plan, home: Path) -> None:
@@ -178,7 +178,7 @@ def plan_gemini(plan: Plan, home: Path) -> None:
              "hooks": [{"name": MARK, "type": "command", "command": hook_command("gemini"), "timeout": 60000}]}
     _merge_json(plan, home / ".gemini" / "settings.json",
                 lambda d: _append_event(d.setdefault("hooks", {}), "BeforeTool", entry), "BeforeTool hook")
-    plan.notes.append("Gemini CLI hooks cannot ask; anything personal-anti-hack would ask about is blocked with the reason.")
+    plan.notes.append("Gemini CLI hooks cannot ask; anything agent-virus-check would ask about is blocked with the reason.")
 
 
 def plan_antigravity(plan: Plan, home: Path) -> None:
@@ -226,7 +226,7 @@ def plan_devin(plan: Plan, home: Path) -> None:
     entry = {"matcher": "^(exec|write|edit|apply_patch)$",
              "hooks": [{"type": "command", "command": hook_command("devin"), "timeout": 60}]}
     _merge_json(plan, path, lambda d: _append_event(d.setdefault("hooks", {}), "PreToolUse", entry), "PreToolUse hook")
-    plan.notes.append("Devin hooks cannot ask; anything personal-anti-hack would ask about is blocked with the reason.")
+    plan.notes.append("Devin hooks cannot ask; anything agent-virus-check would ask about is blocked with the reason.")
 
 
 def plan_kiro(plan: Plan, home: Path) -> None:
@@ -268,10 +268,10 @@ DETECT = {"claude-code": ".claude", "codex": ".codex", "gemini": ".gemini", "ant
 def plan_skills(plan: Plan, home: Path, targets: tuple[str, ...] = (".agents/skills", ".claude/skills")) -> None:
     if not SKILLS.is_dir():
         plan.notes.append("The skills ship with the repository, not with the Python package: clone "
-                          "https://github.com/ji-hun-git/personal-anti-hack and run `python -I pah_entry.py install "
+                          "https://github.com/ji-hun-git/agent-virus-check and run `python -I pah_entry.py install "
                           "--skills` from the clone.")
         return
-    note = (f"\n\n---\nInstalled by personal-anti-hack from {ROOT}. If `pah` is not on PATH, run "
+    note = (f"\n\n---\nInstalled by agent-virus-check from {ROOT}. If `pah` is not on PATH, run "
             f"`{posix_command()}` (macOS, Linux, Git Bash) or `{windows_command()}` (PowerShell) in its place.\n")
     for target in targets:
         for skill in sorted(p for p in SKILLS.iterdir() if (p / "SKILL.md").is_file()):

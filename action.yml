@@ -1,4 +1,4 @@
-name: personal-anti-hack scan
+name: agent-virus-check scan
 description: Find code that runs without being read (agent hooks, install scripts, hidden payloads) before an AI agent sets a project up.
 author: Jihun Chae
 branding:
@@ -55,14 +55,14 @@ runs:
           fi
         done
         if [ -z "$py" ]; then
-          echo "::error title=personal-anti-hack::No Python 3.10 or newer found; add actions/setup-python before this step."
+          echo "::error title=agent-virus-check::No Python 3.10 or newer found; add actions/setup-python before this step."
           exit 2
         fi
         args=(scan "$PAH_ACTION_PATH" --github)
         case "$PAH_ACTION_FAIL_ON" in
           block|warn|incomplete) args+=(--fail-on "$PAH_ACTION_FAIL_ON") ;;
           none) ;;
-          *) echo "::error title=personal-anti-hack::fail-on must be block, warn, incomplete or none."; exit 2 ;;
+          *) echo "::error title=agent-virus-check::fail-on must be block, warn, incomplete or none."; exit 2 ;;
         esac
         if [ "$PAH_ACTION_ONLINE" = "true" ]; then args+=(--online); fi
         if [ -n "$PAH_ACTION_SARIF" ]; then

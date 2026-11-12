@@ -1,6 +1,15 @@
-- id: personal-anti-hack
-  name: personal-anti-hack scan
+- id: agent-virus-check
+  name: agent-virus-check scan
   description: Stop commits that add code which runs without being read, such as agent hooks, install scripts and hidden payloads.
+  entry: pah scan . --fail-on block
+  language: python
+  pass_filenames: false
+  always_run: true
+  require_serial: true
+# The hook's id before the rename, so configurations written for 0.2.0 keep working.
+- id: personal-anti-hack
+  name: agent-virus-check scan
+  description: Same hook under its earlier id.
   entry: pah scan . --fail-on block
   language: python
   pass_filenames: false

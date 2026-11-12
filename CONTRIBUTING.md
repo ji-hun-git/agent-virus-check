@@ -2,11 +2,11 @@
 
 The most useful contributions, in order:
 
-1. **False positives.** Use the [false positive form](https://github.com/ji-hun-git/personal-anti-hack/issues/new?template=false-positive.yml):
+1. **False positives.** Use the [false positive form](https://github.com/ji-hun-git/agent-virus-check/issues/new?template=false-positive.yml):
    what you scanned (a public URL and commit is best), the rule and the line, and why it is harmless. A legitimate
    pattern the scanner gets wrong becomes a benign TrapRepo case, so it stays fixed.
 2. **Missed malware and bypasses.** Report them privately through a
-   [security advisory](https://github.com/ji-hun-git/personal-anti-hack/security/advisories/new), not in a public
+   [security advisory](https://github.com/ji-hun-git/agent-virus-check/security/advisories/new), not in a public
    issue. The best report is an inert TrapRepo case (see below).
 3. **Code**, for one of the above or an issue marked as ready.
 

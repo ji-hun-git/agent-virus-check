@@ -1,5 +1,5 @@
 {
-  "description": "personal-anti-hack guard: judges commands, file writes, credential reads and fetches before they run, scans new clones, and checks the project and agent configuration at session start.",
+  "description": "agent-virus-check guard: judges commands, file writes, credential reads and fetches before they run, scans new clones, and checks the project and agent configuration at session start.",
   "hooks": {
     "PreToolUse": [
       {

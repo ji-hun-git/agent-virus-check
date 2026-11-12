@@ -85,7 +85,7 @@ def download_tarball(slug: str, dest: Path) -> str:
     if dest.exists():
         remove_tree(dest)
     req = urllib.request.Request(f"https://api.github.com/repos/{slug}/tarball",
-                                 headers={"User-Agent": "personal-anti-hack-benchmark", "Accept": "application/vnd.github+json"})
+                                 headers={"User-Agent": "agent-virus-check-benchmark", "Accept": "application/vnd.github+json"})
     with urllib.request.urlopen(req, timeout=900) as resp:
         data = resp.read()
     dest.mkdir(parents=True)

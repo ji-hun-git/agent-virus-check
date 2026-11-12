@@ -2,7 +2,7 @@
  "date": "2026-11-12",
  "platform": "win32",
  "mode": "in-process",
- "seconds": 4.6,
+ "seconds": 6.9,
  "summary": {
   "claude": {
    "malicious_stopped": 63,

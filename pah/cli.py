@@ -71,7 +71,7 @@ def cmd_check_command(args) -> int:
         print(json.dumps({"action": d.action, "reason": d.reason,
                           "findings": [f.to_dict() for f in d.findings]}, indent=2, ensure_ascii=False))
     else:
-        print(f"{d.action.upper()}: {d.reason or 'no objection from personal-anti-hack'}")
+        print(f"{d.action.upper()}: {d.reason or 'no objection from agent-virus-check'}")
     return {"defer": 0, "ask": 1, "deny": 2}[d.action]
 
 
@@ -121,12 +121,12 @@ def cmd_checkup(args) -> int:
 
 
 SWEEP_WORDS = {
-    "en": {"title": "personal-anti-hack sweep", "items": "items", "places": "places", "cached": "unchanged since the last "
+    "en": {"title": "agent-virus-check sweep", "items": "items", "places": "places", "cached": "unchanged since the last "
            "sweep", "engine": "Antivirus engine", "none": "none found", "computer": "This computer (pah checkup)",
            "quarantined": "Quarantined", "verdict": "Verdict", "next_block": "Blocked items stay where they are unless you "
            "add --quarantine; `pah quarantine list` shows what was moved and `pah quarantine restore ID` puts it back.",
            "no_engine": "none on this computer, so binaries were not checked against signatures"},
-    "ko": {"title": "personal-anti-hack 전체 검사", "items": "개 항목", "places": "곳", "cached": "지난 검사 이후 바뀌지 않음",
+    "ko": {"title": "agent-virus-check 전체 검사", "items": "개 항목", "places": "곳", "cached": "지난 검사 이후 바뀌지 않음",
            "engine": "백신 엔진", "none": "발견 없음", "computer": "이 컴퓨터 (pah checkup)", "quarantined": "격리됨",
            "verdict": "판정", "next_block": "--quarantine을 붙이지 않으면 차단 항목은 그대로 둡니다. 옮긴 항목은 "
            "`pah quarantine list`로 보고 `pah quarantine restore ID`로 되돌립니다.", "no_engine": "이 컴퓨터에 없어서 실행 파일은 시그니처로 검사하지 못했습니다"},
@@ -314,7 +314,7 @@ def main(argv: list[str] | None = None) -> int:
     _stdio()
     parser = argparse.ArgumentParser(prog="pah", description="A local shield for people who let AI agents open, install and "
                                      "run code. Nothing is executed and nothing leaves your machine unless you ask.")
-    parser.add_argument("--version", action="version", version=f"personal-anti-hack {__version__}")
+    parser.add_argument("--version", action="version", version=f"agent-virus-check {__version__}")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("scan", help="scan a repository, skill, MCP server, package, archive or git URL before using it")
