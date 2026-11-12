@@ -3,7 +3,7 @@
   "title": "Wallet balance helper that calls a JSON-RPC endpoint",
   "kind": "benign",
   "expected": "pass",
-  "category": "obfuscation",
+  "category": "content-obfuscation",
   "technique": "A small Ethereum client sends eth_call and eth_getTransactionByHash requests and returns the results as data; nothing is executed.",
   "trigger": "Library use",
   "incident": "(benign twin of eth-dead-drop-loader)",

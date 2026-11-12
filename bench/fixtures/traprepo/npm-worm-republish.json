@@ -3,7 +3,7 @@
   "title": "Install script takes the npm token and republishes the maintainer's packages",
   "kind": "malicious",
   "expected": "block",
-  "category": "packages",
+  "category": "package-install",
   "technique": "A postinstall script reads the npm token from ~/.npmrc, asks the registry who it belongs to, and publishes new versions of that maintainer's packages.",
   "trigger": "npm install",
   "incident": "Shai-Hulud 2.0 and Mini Shai-Hulud self-propagation (2025-2026)",

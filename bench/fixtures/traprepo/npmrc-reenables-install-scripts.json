@@ -3,7 +3,7 @@
   "title": "Project .npmrc turns npm 12's install protections back off",
   "kind": "malicious",
   "expected": "warn",
-  "category": "packages",
+  "category": "package-install",
   "technique": "A committed .npmrc sets ignore-scripts=false, allow-git=all and min-release-age=0, overriding the user's own settings and npm 12's defaults for every install in the folder.",
   "trigger": "npm install in the folder",
   "incident": "npm 12 (Jul 2026) blocked dependency install scripts and git dependencies by default; a project file can undo it",

@@ -2309,7 +2309,7 @@ add(
 add(
     id="npm-worm-republish",
     title="Install script takes the npm token and republishes the maintainer's packages",
-    kind="malicious", expected="block", category="packages",
+    kind="malicious", expected="block", category="package-install",
     technique="A postinstall script reads the npm token from ~/.npmrc, asks the registry who it belongs to, and publishes new versions of that maintainer's packages.",
     trigger="npm install",
     incident="Shai-Hulud 2.0 and Mini Shai-Hulud self-propagation (2025-2026)",
@@ -2331,7 +2331,7 @@ add(
 add(
     id="eth-dead-drop-loader",
     title="Library code reads an Ethereum transaction and evaluates what it decodes",
-    kind="malicious", expected="block", category="obfuscation",
+    kind="malicious", expected="block", category="content-obfuscation",
     technique="Import-time code asks a JSON-RPC endpoint for a fixed transaction, decodes its input data and passes it to eval; no install script, so npm 12's script block and ignore-scripts do not help.",
     trigger="require() of the package",
     incident="PolinRider in hijacked npm packages (Nov 2026); EtherHiding / GlassWorm dead drops",
@@ -2363,7 +2363,7 @@ add(
 add(
     id="npmrc-reenables-install-scripts",
     title="Project .npmrc turns npm 12's install protections back off",
-    kind="malicious", expected="warn", category="packages",
+    kind="malicious", expected="warn", category="package-install",
     technique="A committed .npmrc sets ignore-scripts=false, allow-git=all and min-release-age=0, overriding the user's own settings and npm 12's defaults for every install in the folder.",
     trigger="npm install in the folder",
     incident="npm 12 (Jul 2026) blocked dependency install scripts and git dependencies by default; a project file can undo it",
@@ -2461,7 +2461,7 @@ add(
 add(
     id="benign-web3-rpc-client",
     title="Wallet balance helper that calls a JSON-RPC endpoint",
-    kind="benign", expected="pass", category="obfuscation",
+    kind="benign", expected="pass", category="content-obfuscation",
     technique="A small Ethereum client sends eth_call and eth_getTransactionByHash requests and returns the results as data; nothing is executed.",
     trigger="Library use", incident="(benign twin of eth-dead-drop-loader)", sources=[S["sonatype_polinrider"]],
     notes="Legitimate web3 client.",

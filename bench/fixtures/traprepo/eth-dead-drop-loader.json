@@ -3,7 +3,7 @@
   "title": "Library code reads an Ethereum transaction and evaluates what it decodes",
   "kind": "malicious",
   "expected": "block",
-  "category": "obfuscation",
+  "category": "content-obfuscation",
   "technique": "Import-time code asks a JSON-RPC endpoint for a fixed transaction, decodes its input data and passes it to eval; no install script, so npm 12's script block and ignore-scripts do not help.",
   "trigger": "require() of the package",
   "incident": "PolinRider in hijacked npm packages (Nov 2026); EtherHiding / GlassWorm dead drops",

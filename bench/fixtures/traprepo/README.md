@@ -80,6 +80,7 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `makefile-shell-download-run` | malicious | block | A top-level $(shell ...) assignment is evaluated as soon as make parses the Makefile (inc… | Makefile $(shell ...) execution (Bagmar & Saraf setup-doc e… |
 | `workflow-secrets-exfil` | malicious | block | A workflow named like security tooling writes ${{ toJSON(secrets) }} to a file and posts … | GhostAction (Sep to Oct 2026, about 30,000 repositories) an… |
 | `date-ci-conditional-trigger` | malicious | block | The beacon runs only when it detects a CI environment or when the date is past a hardcode… | Environment/date-conditional malware (NuGet logic bombs; en… |
+| `eth-dead-drop-loader` | malicious | block | Import-time code asks a JSON-RPC endpoint for a fixed transaction, decodes its input data… | PolinRider in hijacked npm packages (Nov 2026); EtherHiding… |
 | `glassworm-variation-selectors-eval` | malicious | block | A JS string carries an invisible payload encoded as Unicode variation selectors; a decode… | GlassWorm (Oct 2025-Mar 2026): payloads hidden in Unicode v… |
 | `js-100k-leading-newlines` | malicious | block | A JS file begins with about 100,000 blank lines so size/line-count truncation drops the r… | Trail of Bits skill-scanner bypass (large files truncated b… |
 | `js-multimb-single-line` | malicious | block | A ~3 MB single line of minified filler hides an eval payload near its end, where length-b… | Miasma (a single 4.6 MB line); CASHEWS/Cloudflare on large-… |
@@ -100,19 +101,18 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `readme-curl-bash-lookalike` | malicious | warn | The README's install step is `curl ... | bash` from a domain crafted to look like an offi… | InstallFix (Mar 2026): cloned Claude Code install pages who… |
 | `readme-nondefault-registry` | malicious | warn | The README 'Quick start' tells the reader to run commands that switch the npm registry an… | Bagmar & Saraf: agents install whatever setup docs list; re… |
 | `mcp-tool-description-poisoning` | malicious | block | The MCP server's code is benign, but one tool's description embeds hidden instructions te… | MCPTox / tool-poisoning class; first malicious MCP server (… |
-| `eth-dead-drop-loader` | malicious | block | Import-time code asks a JSON-RPC endpoint for a fixed transaction, decodes its input data… | PolinRider in hijacked npm packages (Nov 2026); EtherHiding… |
 | `agent-cli-yolo-secret-hunt` | malicious | block | A script run during install invokes a coding agent already on the machine with its guardr… | Nx / s1ngularity (Aug 2025): used Claude Code, Gemini CLI a… |
 | `binding-gyp-command-expansion` | malicious | block | A native addon's binding.gyp embeds a <!(...) command-expansion token, which node-gyp exe… | Phantom Gyp: 57 npm packages ran code through binding.gyp c… |
 | `lookalike-dep-separator-confusion` | malicious | warn | requirements.txt depends on 'azurecore', a separator-dropped look-alike of the real PyPI … | Bagmar & Saraf: near-miss names (azurecore for azure-core) … |
 | `npm-postinstall-beacon` | malicious | block | An internal-looking package runs a postinstall lifecycle script that executes attacker co… | Dependency-confusion / Shai-Hulud class (install-time beaco… |
 | `npm-prepare-script` | malicious | block | The repo's own package.json prepare script runs during `npm install` in the cloned repo; … | Shai-Hulud / Cline postinstall class (a repo's own lifecycl… |
 | `npm-url-dependency` | malicious | block | A dependency is specified as an http(s) tarball URL instead of a registry range, so npm f… | PhantomRaven: 126 npm packages fetched payloads from URL de… |
+| `npm-worm-republish` | malicious | block | A postinstall script reads the npm token from ~/.npmrc, asks the registry who it belongs … | Shai-Hulud 2.0 and Mini Shai-Hulud self-propagation (2025-2… |
+| `npmrc-reenables-install-scripts` | malicious | warn | A committed .npmrc sets ignore-scripts=false, allow-git=all and min-release-age=0, overri… | npm 12 (Jul 2026) blocked dependency install scripts and gi… |
 | `npmrc-registry-redirect` | malicious | block | A repo-local .npmrc overrides the registry (and injects an auth token) so every install i… | Registry redirection via .npmrc (Trail of Bits LLM-scanner … |
 | `package-lock-offregistry-resolved` | malicious | warn | The lockfile's resolved URL for a common package points at an attacker mirror, so `npm ci… | Lockfile integrity abuse (resolved URL redirection) in the … |
 | `pnpmfile-cjs-hook` | malicious | block | A .pnpmfile.cjs readPackage hook runs arbitrary code during dependency resolution and can… | pnpm lifecycle-hook abuse (install-time code execution clas… |
 | `yarnrc-yarnpath-repo-script` | malicious | block | yarnPath makes Yarn execute a JavaScript file shipped in the repo instead of a trusted Ya… | Yarn yarnPath redirection (self-hosted binary abuse, regist… |
-| `npm-worm-republish` | malicious | block | A postinstall script reads the npm token from ~/.npmrc, asks the registry who it belongs … | Shai-Hulud 2.0 and Mini Shai-Hulud self-propagation (2025-2… |
-| `npmrc-reenables-install-scripts` | malicious | warn | A committed .npmrc sets ignore-scripts=false, allow-git=all and min-release-age=0, overri… | npm 12 (Jul 2026) blocked dependency install scripts and gi… |
 | `python-conftest-beacon` | malicious | block | Module-level code in conftest.py executes during pytest collection, before any test runs,… | Import-time Python execution class (conftest / sitecustomiz… |
 | `python-exec-base64-zlib-loader` | malicious | block | The module decodes a base64+zlib (and, in the wild, marshal) blob and exec()s it, hiding … | Hades PyPI campaign (Jun 2026): base64/zlib/marshal exec lo… |
 | `python-exec-loader-ai-reviewer-comment` | malicious | block | A base64 exec loader is preceded by a comment addressed to automated reviewers asserting … | Hades campaign prompt-injection-to-scanner; Cloudflare dilu… |
@@ -135,6 +135,7 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `benign-workflow-issue-env` | benign | pass | An issues workflow reads the issue title the safe way (through env:, quoted) and labels t… | (benign twin of workflow-secrets-exfil) |
 | `benign-emoji-vs16-locales` | benign | pass | A localization file with legitimate non-ASCII: emoji using the U+FE0F variation selector … | Legitimate Unicode (hard negative for variation-selector an… |
 | `benign-minified-dist-no-eval` | benign | pass | A legitimately minified bundle: long single-ish lines and short identifiers, but no eval/… | Legitimate minified output (mirrors js-multimb-single-line … |
+| `benign-web3-rpc-client` | benign | pass | A small Ethereum client sends eth_call and eth_getTransactionByHash requests and returns … | (benign twin of eth-dead-drop-loader) |
 | `benign-gitmodules-normal` | benign | pass | A standard submodule under a sensible path pointing at a github.com HTTPS URL. | Legitimate submodule (mirrors gitmodules-suspicious-submodu… |
 | `benign-husky-lint-staged` | benign | pass | A standard husky pre-commit hook runs lint-staged to lint staged files; no network, no pa… | Legitimate husky + lint-staged setup (mirrors husky-precomm… |
 | `benign-devcontainer-postcreate` | benign | pass | postCreateCommand runs inside the container after it is built (sandboxed), and there is n… | Legitimate devcontainer.json (mirrors devcontainer-initiali… |
@@ -145,7 +146,6 @@ they did not reproduce their incident; both changes are recorded in the cases' `
 | `benign-cursor-style-rules` | benign | pass | A .cursor/rules/*.mdc with plain, visible style guidance and no hidden Unicode and no alw… | Legitimate Cursor rules (mirrors cursor-rules-mdc-tagchars … |
 | `benign-readme-official-installers` | benign | pass | The README's setup references the real official installers (rustup, uv, bun) over https; … | Legitimate install docs (mirrors readme-curl-bash-lookalike… |
 | `benign-mcp-server-normal` | benign | pass | An MCP server whose tool descriptions plainly describe their function and whose code does… | Legitimate MCP server (mirrors mcp-tool-description-poisoni… |
-| `benign-web3-rpc-client` | benign | pass | A small Ethereum client sends eth_call and eth_getTransactionByHash requests and returns … | (benign twin of eth-dead-drop-loader) |
 | `benign-native-addon-binding-gyp` | benign | pass | A normal N-API addon: binding.gyp lists sources only (no command expansion), built with n… | Legitimate node-gyp native addon (mirrors binding-gyp-comma… |
 | `benign-npmrc-save-exact` | benign | pass | A repo .npmrc that sets save-exact and engine-strict and keeps the default public registr… | Legitimate .npmrc (mirrors npmrc-registry-redirect without … |
 | `benign-package-lock-registry` | benign | pass | A normal lockfile whose resolved URLs and integrity hashes point at registry.npmjs.org. | Legitimate lockfile (mirrors package-lock-offregistry-resol… |

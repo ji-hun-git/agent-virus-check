@@ -40,7 +40,7 @@ VALID_EXPECTED = {"block", "warn", "pass"}
 VALID_CATEGORIES = {
     "agent-config", "instruction-file", "ide", "package-install", "python",
     "rust", "build", "git", "skill", "mcp", "content-obfuscation", "binary",
-    "docs",
+    "docs", "ci",
 }
 KNOWN_GENERATORS = {
     "repeat_text", "pyc", "zip", "binary", "git_dir",
