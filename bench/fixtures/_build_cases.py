@@ -2512,7 +2512,7 @@ def write_all() -> None:
           f"+ README.md into {CASES_DIR}")
 
 
-README_TEMPLATE = """# TrapRepo: the agent-virus-check benchmark corpus
+README_TEMPLATE = """# TrapRepo: the agent-white-hat benchmark corpus
 
 {n_total} cases ({n_mal} malicious, {n_ben} benign) that measure whether a
 pre-flight scanner (or a plain LLM review) catches real 2025-2026 supply-chain

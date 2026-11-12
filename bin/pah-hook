@@ -1,5 +1,5 @@
 #!/bin/sh
-# agent-virus-check hook launcher for the Claude Code plugin.
+# agent-white-hat hook launcher for the Claude Code plugin.
 # Finds Python 3.10+ once (skipping the Windows Store stub), remembers it, and runs the hook in isolated mode (-I), so
 # files in the project being worked on can never shadow the scanner's own modules. If no Python is found, it says so
 # instead of failing silently, and never blocks the agent.
@@ -22,5 +22,5 @@ for name in $candidates; do
     exec "$name" -I "$root/pah_entry.py" hook "$@"
   fi
 done
-printf '%s\n' '{"systemMessage": "agent-virus-check: Python 3.10 or newer was not found, so the guard is not running."}'
+printf '%s\n' '{"systemMessage": "agent-white-hat: Python 3.10 or newer was not found, so the guard is not running."}'
 exit 0

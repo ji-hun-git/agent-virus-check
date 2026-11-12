@@ -148,7 +148,7 @@ def respond(agent: str, action: str, reason: str) -> tuple[str, int, str]:
             action, reason = "defer", reason
         else:
             action = "deny"
-            reason += (" (agent-virus-check would have asked you; this agent cannot ask from a hook, so it was blocked. "
+            reason += (" (agent-white-hat would have asked you; this agent cannot ask from a hook, so it was blocked. "
                        "Review it and run it yourself if you agree.)")
     reason = reason[:2000]
     if action == "defer":

@@ -1,14 +1,14 @@
 {
   "name": "personal-anti-hack",
-  "displayName": "agent-virus-check",
-  "version": "0.2.1",
+  "displayName": "agent-white-hat",
+  "version": "0.3.0",
   "description": "The antivirus for people who use AI agents. Scans repositories, skills, MCP servers and packages before they run; stops setup commands in repositories that fail the scan; flags download-and-run, look-alike packages, hidden Unicode, credential theft and changes to agent configuration. Nothing is executed and nothing leaves your machine.",
   "author": {
     "name": "Jihun Chae",
     "url": "https://github.com/ji-hun-git"
   },
-  "homepage": "https://github.com/ji-hun-git/agent-virus-check",
-  "repository": "https://github.com/ji-hun-git/agent-virus-check",
+  "homepage": "https://github.com/ji-hun-git/agent-white-hat",
+  "repository": "https://github.com/ji-hun-git/agent-white-hat",
   "license": "MIT",
   "keywords": [
     "security",

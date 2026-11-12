@@ -1,4 +1,4 @@
-# agent-virus-check: guide for AI agents
+# agent-white-hat: guide for AI agents
 
 This repository is a malware, virus and supply-chain guard for people who use AI coding agents. If the user opened you in this folder, they most likely want you to check something: a repository, package, Agent Skill, MCP server, extension, download, or their own computer. Use the tool and the skills here to do it properly.
 

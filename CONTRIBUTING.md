@@ -2,11 +2,11 @@
 
 The most useful contributions, in order:
 
-1. **False positives.** Use the [false positive form](https://github.com/ji-hun-git/agent-virus-check/issues/new?template=false-positive.yml):
+1. **False positives.** Use the [false positive form](https://github.com/ji-hun-git/agent-white-hat/issues/new?template=false-positive.yml):
    what you scanned (a public URL and commit is best), the rule and the line, and why it is harmless. A legitimate
    pattern the scanner gets wrong becomes a benign TrapRepo case, so it stays fixed.
 2. **Missed malware and bypasses.** Report them privately through a
-   [security advisory](https://github.com/ji-hun-git/agent-virus-check/security/advisories/new), not in a public
+   [security advisory](https://github.com/ji-hun-git/agent-white-hat/security/advisories/new), not in a public
    issue. The best report is an inert TrapRepo case (see below).
 3. **Code**, for one of the above or an issue marked as ready.
 
@@ -20,6 +20,7 @@ python -m unittest discover -s tests          # unit tests and the TrapRepo corp
 python bench/materialize.py --check           # every case inert, every URL on a reserved domain
 python bench/run.py --name dev                # benchmark, rules only (seconds, offline)
 python bench/drill.py --name dev              # every agent hook protocol against every case
+python bench/fuzz.py --check                  # every trap rewritten 20 ways to evade, all still caught
 python -I pah_entry.py scan . --fail-on block # the repository passes its own scan
 ```
 
@@ -31,6 +32,8 @@ Lint the way CI does: `ruff check --select F,E9,B,UP --ignore UP007,B904 --targe
 - Add a malicious TrapRepo case and a benign twin that uses the same mechanism legitimately, in
   `bench/fixtures/_build_cases.py`. Payloads only print `PAH-CANARY` and every URL is on a reserved domain such as
   `.invalid`; `bench/materialize.py --check` enforces both.
+- Found a way past the rules? Add it to `bench/fuzz.py` as an operator, so every case is tried with it, and close
+  it in the scanner; `python bench/fuzz.py --check` must end with 0 got past and 0 false alarms.
 - Keep the benchmark at 0 benign flagged. If the rule could fire on ordinary projects, also run
   `python bench/real_repos.py` (it downloads widely used repositories and scans them).
 - Regenerate the rule list with `python -I pah_entry.py rules --markdown > docs/rules.md`, and the README figures with

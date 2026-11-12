@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.3.0 (2026-11-12)
+
+**Renamed to agent-white-hat.** The repository, the package, the Action and the plugin's display name are now
+agent-white-hat. Like a white-hat hacker, it attacks its own rules before an attacker does (the fuzzer below). The
+plugin's ID, the `pah` command, the `PAH-` rule IDs, the `~/.personal-anti-hack` folder and the default SARIF file name
+keep the first name, so installed hooks and CI keep working. The pre-commit hook is `agent-white-hat` and still answers
+to `agent-virus-check` and `personal-anti-hack`; GitHub redirects both old repository URLs. `pah protect --uninstall`
+also removes a login item that 0.2.0 or 0.2.1 set up under its name, and the guard asks before an agent disables or
+uninstalls the plugin under any of the three names.
+
+**An evasion fuzzer.** [`bench/fuzz.py`](bench/fuzz.py) rewrites every malicious TrapRepo case in 20 ways attackers
+hide a payload, across JavaScript, Python and shell, without changing what it does: strings split and joined, built
+from character codes, written as hex escapes or ROT13; calls such as `execSync` and `os.system` made through brackets
+or `getattr`; `require` reached through an alias; the whole file run from base64 by `eval`, `Function` or `exec`; the
+payload delayed; tool names assembled in shell variables and addresses by `printf`; base64 piped into a shell.
+Harmless rewrites of the benign cases' code (renamed variables, added comments) check that none of this raises a
+false alarm. CI fails if a rewrite gets past or a harmless one is flagged.
+
+**Decoding before the rules.** The first fuzz run got 8 rewrites past 0.2.1: tool names held in shell variables,
+strings built from character codes, hex escapes and ROT13, calls made through brackets and `getattr`, and a payload
+whose severity was lost when the decoded finding was merged with the plain one. In code, the
+scanner now decodes all of these before the rules run and scans the decoded copy too; a more severe finding there
+replaces the plain one, and a sensitive name or address that appears only after decoding is reported as obfuscated
+code (PAH-C012). Comments and strings that only describe a trick stay quiet. Escapes count as hiding text only
+when they stand for letters or digits: the check on popular repositories caught the first version of the decoding
+blocking Codex, whose clickable terminal links escape only the control characters around a plain URL. A control
+character added to an escaped string as padding no longer stops it from being decoded.
+
+**Measured:** fuzzer 318 of 318 rewrites caught, 0 of 11 harmless rewrites flagged; TrapRepo 63 of 63 malicious
+repositories caught, 0 of 33 benign flagged; attack drill 951 decisions, 0 unexpected; 30 popular repositories
+26 pass, 4 warn, none blocked, with the same findings as 0.2.1.
+
 ## 0.2.1 (2026-11-12)
 
 **Renamed to agent-virus-check.** The repository, the package and the plugin's display name are now agent-virus-check,

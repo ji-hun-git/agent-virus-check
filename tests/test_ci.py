@@ -63,7 +63,7 @@ class OutputTests(unittest.TestCase):
             self.assertIn("verdict=block\n", out.read_text(encoding="utf-8"))
             self.assertIn("high=1\n", out.read_text(encoding="utf-8"))
             text = summary.read_text(encoding="utf-8")
-            self.assertTrue(text.startswith("### agent-virus-check: BLOCK"))
+            self.assertTrue(text.startswith("### agent-white-hat: BLOCK"))
             self.assertIn("Claude Code hook &#124; SessionStart", text)  # a pipe cannot break the table
             self.assertIn("1 low or informational finding is in the SARIF report", text)
 

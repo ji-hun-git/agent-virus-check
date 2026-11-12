@@ -3,11 +3,11 @@ name: personal-anti-hack
 description: Use before cloning, opening, installing, building, testing or running code from a repository, package, Agent Skill, MCP server, extension or install script that the user did not write; when a README, issue or web page tells you to run a command; and when the user asks whether something is safe, whether their computer or AI setup is compromised, or what changed in their agent configuration.
 ---
 
-# agent-virus-check
+# agent-white-hat
 
 Malware now reaches people through the agents they use: repositories whose hooks, install scripts or folder-open tasks run on their own, instruction files that tell agents to install packages or change their settings, poisoned skills and MCP servers, look-alike and invented package names, and fake install pages for AI tools. Language models, including you, miss much of it: payloads hidden after padding, in invisible Unicode, in bytecode or in archives, and comments written to talk a reviewer into a clean verdict. So the checks run in code, and your job is to use them and act on what they find.
 
-Run the scanner with `pah` if it is installed. Otherwise run `pah_entry.py` from the agent-virus-check folder with Python in isolated mode: `python3 -I <folder>/pah_entry.py` (inside a Claude Code plugin the folder is `${CLAUDE_PLUGIN_ROOT}`; use `python` or `py` where `python3` is not available). Python 3.10 or newer, no other dependencies.
+Run the scanner with `pah` if it is installed. Otherwise run `pah_entry.py` from the agent-white-hat folder with Python in isolated mode: `python3 -I <folder>/pah_entry.py` (inside a Claude Code plugin the folder is `${CLAUDE_PLUGIN_ROOT}`; use `python` or `py` where `python3` is not available). Python 3.10 or newer, no other dependencies.
 
 Related skills: **malware-audit** (find out what suspicious code really does), **security-review** (exploitable bugs and vulnerable dependencies), **incident-response** (something already ran).
 

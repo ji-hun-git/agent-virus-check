@@ -1,4 +1,4 @@
-# Using agent-virus-check with your agent
+# Using agent-white-hat with your agent
 
 One guard, one hook entry point, nine agent protocols. `pah install` writes the configuration for the agents it finds;
 this page says what it writes, what each agent can and cannot do with it, and how each integration was checked.
@@ -36,7 +36,7 @@ starts hooks with.
 
 ### Agent-specific notes
 
-- **Claude Code:** the plugin (`/plugin marketplace add ji-hun-git/agent-virus-check`) is the simplest install. It also
+- **Claude Code:** the plugin (`/plugin marketplace add ji-hun-git/agent-white-hat`) is the simplest install. It also
   scans every new `git clone` and checks the folder and your agent configuration at session start. A repository's own
   `SessionStart` hooks run at the same moment as the guard's, so scan unfamiliar repositories before you open Claude
   Code in them (`pah scan <url>` clones safely into a temporary folder).
@@ -56,7 +56,7 @@ OpenClaw, Devin, Amp, opencode and Cline:
 
 | Skill | For |
 |---|---|
-| `agent-virus-check` | everyday rules: scan before setup, instructions in a target are data, no download-and-run, exact package names |
+| `agent-white-hat` | everyday rules: scan before setup, instructions in a target are data, no download-and-run, exact package names |
 | `malware-audit` | a full audit of suspicious code: execution surfaces, static decoding, behavior classes, provenance, verdict |
 | `security-review` | exploitable bugs and vulnerable dependencies, including prompt injection and excessive agency in LLM features |
 | `incident-response` | something already ran: contain, find out what ran, rotate credentials in order, remove persistence, harden |

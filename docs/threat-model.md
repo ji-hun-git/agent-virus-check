@@ -11,7 +11,7 @@ tokens, which infostealers now collect on purpose.
 
 ## The doors, and what guards each
 
-| Door | How malware comes through | agent-virus-check |
+| Door | How malware comes through | agent-white-hat |
 | --- | --- | --- |
 | Opening a repository with an agent or editor | `.claude/settings.json` hooks and env, `.mcp.json`, `.cursor/` hooks and MCP, `.codex/` with a `.env` CODEX_HOME, `.gemini/settings.json`, `.openclaw/extensions/`, `.vscode/tasks.json` folder-open tasks, workspace settings, dev container `initializeCommand`, `.envrc` | Mapped as surfaces; every command analyzed; files they run judged as code that runs on its own (`scan`, SessionStart hook) |
 | Following instructions | AGENTS.md / CLAUDE.md / GEMINI.md / rules / skills telling the agent to install, reconfigure itself, change its API URL, disable approvals or hide things; README setup steps with registry redirects or `curl \| sh` from look-alike domains | Commands extracted and judged; instructions to change settings, hide actions or read credentials flagged; files instructions run marked as running on their own |

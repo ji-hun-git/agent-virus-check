@@ -81,7 +81,7 @@ AGENTS = ["Claude Code", "Codex", "Gemini CLI", "Antigravity", "Cursor", "Copilo
 
 STR = {
     "en": {
-        "hero_alt": "agent-virus-check: the antivirus for people who use AI agents",
+        "hero_alt": "agent-white-hat: the antivirus for people who use AI agents",
         "tagline": [[("The antivirus for", "fg")], [("people who use", "fg")], [("AI agents.", "accent")]],
         "tag_size": 31,
         "hero_sub": "Scans your computer, watches what arrives and quarantines what it blocks; reads repositories, "
@@ -139,7 +139,7 @@ STR = {
         "res_every": "every run",
         "res_any": "any run",
         "res_of": "{a} of {b}",
-        "res_foot": "A refused review is not a clean result: agent-virus-check reports it as \u201cnot reviewed\u201d. "
+        "res_foot": "A refused review is not a clean result: agent-white-hat reports it as \u201cnot reviewed\u201d. "
                     "Every case, run and answer is in bench/results/.",
         "repo_title": "{n} widely used repositories, scanned in full",
         "repo_big": "0 blocked",
@@ -155,7 +155,7 @@ STR = {
         "social_tag": ["The antivirus for people", "who use AI agents."],
     },
     "ko": {
-        "hero_alt": "agent-virus-check: AI 에이전트를 쓰는 사람을 위한 백신",
+        "hero_alt": "agent-white-hat: AI 에이전트를 쓰는 사람을 위한 백신",
         "tagline": [[("AI 에이전트를 쓰는", "fg")], [("사람을 위한 ", "fg"), ("백신.", "accent")]],
         "tag_size": 34,
         "hero_sub": "컴퓨터를 검사하고, 들어오는 것을 지켜보고, 막은 것은 격리합니다. 레포지토리·스킬·MCP 서버·패키지는 "
@@ -212,7 +212,7 @@ STR = {
         "res_every": "매 실행",
         "res_any": "한 번이라도",
         "res_of": "{b}개 중 {a}",
-        "res_foot": "거절은 깨끗하다는 뜻이 아닙니다: agent-virus-check은 \u2018검토 안 됨\u2019으로 보고합니다. "
+        "res_foot": "거절은 깨끗하다는 뜻이 아닙니다: agent-white-hat은 \u2018검토 안 됨\u2019으로 보고합니다. "
                     "모든 사례·실행·답변은 bench/results/에 있습니다.",
         "repo_title": "널리 쓰이는 레포지토리 {n}개, 통째로 검사",
         "repo_big": "차단 0",
@@ -450,7 +450,7 @@ def hero(lang: str, theme: str) -> str:
     # left column
     x = 44
     out.append(logo(x, 38, 38, t["accent"]))
-    out.append(text(x + 50, 64, "agent-virus-check", 21, t["fg"], 700))
+    out.append(text(x + 50, 64, "agent-white-hat", 21, t["fg"], 700))
     size = s["tag_size"]
     y = 128 if len(s["tagline"]) == 3 else 150
     for line in s["tagline"]:
@@ -492,7 +492,7 @@ def hero(lang: str, theme: str) -> str:
         lines.append([("› " if i == 0 else "  ", T["prompt"], 700), (part, T["fg"], 400)])
     lines.append([])
     lines.append([("● ", T["tool"], 400), (rec["tool"], T["fg"], 700), (f"({rec['command']})", T["dim"], 400)])
-    lines.append([("  ✕ ", T["red"], 700), ("Blocked by agent-virus-check before it ran:", T["red"], 400)])
+    lines.append([("  ✕ ", T["red"], 700), ("Blocked by agent-white-hat before it ran:", T["red"], 400)])
     for sev, title, detail in rec["findings"]:
         color = T["high"] if sev in ("HIGH", "CRITICAL") else T["low"]
         tag = "    " + sev.ljust(4) + " "
@@ -928,7 +928,7 @@ def repos_figure(lang: str, theme: str) -> str:
 def social() -> str:
     t, s, h = THEMES["dark"], STR["en"], headline()
     W, H = 1280, 640
-    out = svg_open(W, H, "agent-virus-check", s["hero_sub"])
+    out = svg_open(W, H, "agent-white-hat", s["hero_sub"])
     out.append(
         '<defs>'
         '<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#13213d"/>'
@@ -945,7 +945,7 @@ def social() -> str:
                'stroke-width="0.9" stroke-linejoin="round"><path d="M50 17 L76 26 L76 50 Q74 72 50 84 Q26 72 24 50 L24 26 Z"/>'
                '<path d="M36 50 L43 43 L48 49 L60 35 L67 42 L48 62 Z"/></g>')
     out.append(logo(96, 92, 96, t["accent"]))
-    out.append(text(96, 300, "agent-virus-check", 76, "#f0f6fc", 800, extra=' letter-spacing="-1.5"'))
+    out.append(text(96, 300, "agent-white-hat", 76, "#f0f6fc", 800, extra=' letter-spacing="-1.5"'))
     for i, line in enumerate(s["social_tag"]):
         out.append(text(96, 368 + i * 48, line, 38, "#9fb8e6" if i else "#c9d6ee", 500))
     stats = [(f"{h['caught']}/{h['malicious']}", "malicious repos caught"), (f"{h['flagged']}/{h['benign']}",

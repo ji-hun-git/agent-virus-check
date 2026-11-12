@@ -1,5 +1,5 @@
 name: False positive
-description: agent-virus-check flagged something that is not dangerous.
+description: agent-white-hat flagged something that is not dangerous.
 title: "False positive: "
 body:
   - type: markdown

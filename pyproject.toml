@@ -3,8 +3,8 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agent-virus-check"
-version = "0.2.1"
+name = "agent-white-hat"
+version = "0.3.0"
 description = "The antivirus for people who use AI agents: full scans, real-time protection and quarantine, and a guard that reads repositories, skills, MCP servers and packages before they run."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -27,10 +27,10 @@ dependencies = []
 pah = "pah.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/ji-hun-git/agent-virus-check"
-Documentation = "https://github.com/ji-hun-git/agent-virus-check#readme"
-Changelog = "https://github.com/ji-hun-git/agent-virus-check/blob/main/CHANGELOG.md"
-Issues = "https://github.com/ji-hun-git/agent-virus-check/issues"
+Homepage = "https://github.com/ji-hun-git/agent-white-hat"
+Documentation = "https://github.com/ji-hun-git/agent-white-hat#readme"
+Changelog = "https://github.com/ji-hun-git/agent-white-hat/blob/main/CHANGELOG.md"
+Issues = "https://github.com/ji-hun-git/agent-white-hat/issues"
 
 [tool.setuptools]
 packages = ["pah"]

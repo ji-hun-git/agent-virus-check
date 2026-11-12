@@ -48,7 +48,7 @@ R_VULNERABLE = rule(
     "Upgrade to a fixed version (shown) and rerun the tests. If you cannot, check whether the vulnerable code is used.",
     attack=("T1190",), refs=("https://osv.dev/", "https://google.github.io/osv.dev/post-v1-querybatch/"))
 
-UA = {"User-Agent": "agent-virus-check (+https://github.com/ji-hun-git/agent-virus-check)", "Accept": "application/json"}
+UA = {"User-Agent": "agent-white-hat (+https://github.com/ji-hun-git/agent-white-hat)", "Accept": "application/json"}
 
 
 def _get(url: str, timeout: int = 15):

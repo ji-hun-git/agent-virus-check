@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/figures/hero-en-dark.svg">
-    <img src="docs/figures/hero-en-light.svg" width="100%" alt="agent-virus-check: the antivirus for people who use AI agents. A recorded run: an agent with approvals off is told to set up a cloned project; agent-virus-check blocks its npm install because the project's postinstall script sends data out, and the agent stops and explains. Results: 63 of 63 malicious test repositories caught, 0 of 33 benign look-alikes flagged, 0 of 30 widely used repositories blocked, and the payload ran in 0 of 12 live agent runs."/>
+    <img src="docs/figures/hero-en-light.svg" width="100%" alt="agent-white-hat: the antivirus for people who use AI agents. A recorded run: an agent with approvals off is told to set up a cloned project; agent-white-hat blocks its npm install because the project's postinstall script sends data out, and the agent stops and explains. Results: 63 of 63 malicious test repositories caught, 0 of 33 benign look-alikes flagged, 0 of 30 widely used repositories blocked, and the payload ran in 0 of 12 live agent runs."/>
   </picture>
 </p>
 
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ji-hun-git/agent-virus-check/actions/workflows/ci.yml"><img src="https://github.com/ji-hun-git/agent-virus-check/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
+  <a href="https://github.com/ji-hun-git/agent-white-hat/actions/workflows/ci.yml"><img src="https://github.com/ji-hun-git/agent-white-hat/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-2f6fde" alt="Claude Code plugin"/>
   <a href="docs/agent-setup.md"><img src="https://img.shields.io/badge/agents-9%20hook%20protocols-2f6fde" alt="Nine agent hook protocols"/></a>
   <a href="docs/ci.md"><img src="https://img.shields.io/badge/GitHub%20Action-%2B%20pre--commit-2f6fde" alt="GitHub Action and pre-commit hook"/></a>
@@ -38,18 +38,20 @@
   <b>The antivirus for people who use AI agents.</b> It scans your computer, watches what arrives in real time and
   quarantines what it blocks, like the antivirus you would install; and it reads what that antivirus never opens:
   repositories, skills, MCP servers, packages and agent settings, before they run. One guard for Claude Code, Codex,
-  Gemini CLI, Antigravity, Cursor, Copilot, Devin, Kiro and Cline. The checks run in code, on your machine.
+  Gemini CLI, Antigravity, Cursor, Copilot, Devin, Kiro and Cline. The checks run in code, on your machine. Like a
+  white-hat hacker, it attacks its own rules first: every trap is rewritten the ways attackers hide a payload, and
+  CI fails if one rewrite gets past.
 </p>
 
 ## Instead of a third-party antivirus
 
 Conventional antivirus looks for known malicious files. The attacks on people who use AI agents are mostly not
 files of that kind: a hook in `.claude/settings.json`, a sentence in `AGENTS.md`, a skill's setup step, an install
-script that reads your tokens, a workflow that posts your secrets. agent-virus-check does an antivirus's job for the
+script that reads your tokens, a workflow that posts your secrets. agent-white-hat does an antivirus's job for the
 places where those attacks land, and hands the files a signature engine is good at to the one already built into your
 operating system, so a separate antivirus product adds little.
 
-| | A conventional antivirus | agent-virus-check |
+| | A conventional antivirus | agent-white-hat |
 | --- | --- | --- |
 | Full scan | Every file, against signatures | `pah sweep`: Downloads and Desktop, every project in your code folders, installed agent skills, plugins and extensions, editor extensions, startup items, exposed keys and known traces; binaries go to Microsoft Defender (built into Windows) or ClamAV |
 | Real-time protection | Hooks into the file system | `pah protect`: new downloads, clones, extensions, skills and startup items are scanned within seconds; `--install` starts it at login. Your agents' own hooks stop dangerous commands before they run |
@@ -119,17 +121,18 @@ Python 3.10 or newer; nothing else.
 **Claude Code plugin** (scan, guard, watch and checkup, the four skills, and `/audit`, `/scan`, `/checkup`, `/watch` commands):
 
 ```
-/plugin marketplace add ji-hun-git/agent-virus-check
+/plugin marketplace add ji-hun-git/agent-white-hat
 /plugin install personal-anti-hack@personal-anti-hack
 ```
 
-agent-virus-check was called personal-anti-hack until 0.2.1. The plugin's ID, the `pah` command, the `PAH-` rule
-IDs and the `~/.personal-anti-hack` folder keep that name, so existing installs, hooks and CI keep working.
+agent-white-hat was called agent-virus-check in 0.2.1 and personal-anti-hack before that. The plugin's ID, the `pah`
+command, the `PAH-` rule IDs and the `~/.personal-anti-hack` folder keep the first name, and the pre-commit hook
+answers to all three, so existing installs, hooks and CI keep working.
 
 **Command line** (any agent, any CI):
 
 ```
-pipx install git+https://github.com/ji-hun-git/agent-virus-check
+pipx install git+https://github.com/ji-hun-git/agent-white-hat
 pah audit https://github.com/owner/repo
 ```
 
@@ -150,7 +153,7 @@ pah protect --install --quarantine  # shows the change; add --yes to apply
 **In CI and before commits** ([docs/ci.md](docs/ci.md) has SARIF upload, inputs and other CI systems):
 
 ```yaml
-# .github/workflows/agent-virus-check.yml: fails on BLOCK, annotates pull requests
+# .github/workflows/agent-white-hat.yml: fails on BLOCK, annotates pull requests
 on: [push, pull_request]
 permissions:
   contents: read
@@ -159,16 +162,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ji-hun-git/agent-virus-check@v0.2.1
+      - uses: ji-hun-git/agent-white-hat@v0.3.0
 ```
 
 ```yaml
 # .pre-commit-config.yaml
 repos:
-  - repo: https://github.com/ji-hun-git/agent-virus-check
-    rev: v0.2.1
+  - repo: https://github.com/ji-hun-git/agent-white-hat
+    rev: v0.3.0
     hooks:
-      - id: agent-virus-check
+      - id: agent-white-hat
 ```
 
 **No install at all:** clone this repository and start any agent in it. [`AGENTS.md`](AGENTS.md) (imported by
@@ -193,7 +196,7 @@ Per-agent details, including which agents can ask you before a command and which
 
 ```
 $ pah scan ./acme-utils
-agent-virus-check 0.2.1  ·  ./acme-utils
+agent-white-hat 0.3.0  ·  ./acme-utils
  BLOCK   do not open, install or run this with an agent until the findings below are explained
    1 critical, 2 high, 1 medium  ·  6 files  ·  0.0s
 
@@ -242,14 +245,14 @@ saved as a font, a workflow that sends secrets out, a worm, an Ethereum dead dro
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/figures/results-en-dark.svg">
-    <img src="docs/figures/results-en-light.svg" width="100%" alt="Malicious repositories caught, out of 54. agent-virus-check, rules only and offline: 54 caught, 0 of 27 benign repositories flagged. GPT-6 Astra reading the repository: 44 caught in every run, 3 in some runs, 7 missed in every run, 1 of 27 benign flagged. Muse Spark 1.3: 40 in every run, 9 in some, 5 missed, 1 of 27 benign flagged. Claude Opus 5.5: 1 caught in some runs, 2 missed, 51 refused in every run, 0 of 27 benign flagged."/>
+    <img src="docs/figures/results-en-light.svg" width="100%" alt="Malicious repositories caught, out of 54. agent-white-hat, rules only and offline: 54 caught, 0 of 27 benign repositories flagged. GPT-6 Astra reading the repository: 44 caught in every run, 3 in some runs, 7 missed in every run, 1 of 27 benign flagged. Muse Spark 1.3: 40 in every run, 9 in some, 5 missed, 1 of 27 benign flagged. Claude Opus 5.5: 1 caught in some runs, 2 missed, 51 refused in every run, 0 of 27 benign flagged."/>
   </picture>
 </p>
 
 | On the 54 malicious and 27 benign cases of the first release | Caught in every run | Caught at least once | Answered "safe" | Refused | Benign flagged |
 | --- | --- | --- | --- | --- | --- |
-| **agent-virus-check**, rules only, offline | **54** (52 blocked, 2 warned as those cases expect) | 54 | 0 | 0 | **0** |
-| **agent-virus-check + Claude Opus 5.5 review**¹ | **54** (53 blocked) | 54 | 0 | 0 (51 answered through fallback) | **0** |
+| **agent-white-hat**, rules only, offline | **54** (52 blocked, 2 warned as those cases expect) | 54 | 0 | 0 | **0** |
+| **agent-white-hat + Claude Opus 5.5 review**¹ | **54** (53 blocked) | 54 | 0 | 0 (51 answered through fallback) | **0** |
 | GPT-6 Astra, reading the repository | 44 | 47 | 25 of 162 runs | 0 | 1 |
 | Muse Spark 1.3, reading the repository | 40 | 49 | 26 of 162 runs | 0 | 1 |
 | Claude Opus 5.5, reading the repository | 0 | 1 | 6 of 162 runs | 155 of 162 runs | 0 |
@@ -272,6 +275,12 @@ saved as a font, a workflow that sends secrets out, a worm, an Ethereum dead dro
   Three got through 0.2.0 (names built from string pieces, `eval` reached through `globalThis`, the `Function`
   constructor reached through an alias); 0.2.1 blocks all six. They stay in the tests (`EvasionTests`), and every
   bypass found from now on joins them. Found one? Report it through a private security advisory.
+- **Evasion fuzzer (0.3.0):** [`bench/fuzz.py`](bench/fuzz.py) rewrites every malicious case in 20 ways attackers
+  hide a payload (strings split, built from character codes, hex-escaped or ROT13-encoded; calls made through
+  brackets or `getattr`; `require` reached through an alias; base64 run by `eval`, `Function` or `exec`; a delayed
+  start; commands assembled in shell variables) and scans each rewrite. The first run got 8 past 0.2.1. 0.3.0
+  decodes all of these before the rules run and catches **318 of 318**; harmless rewrites of the benign cases
+  (renamed variables, added comments) raise no flag (0 of 11). CI runs it on every change: `python bench/fuzz.py`.
 - The one malicious case not counted is a symbolic link to `~/.ssh`, which needs elevated rights to create on Windows;
   CI runs it on Linux and macOS.
 - ¹ The model-review row was measured on the first version of the rules (code `4ae527ce9ad3`), before the
@@ -303,8 +312,9 @@ same day blocked 11 of 25; the fixes are part of this release: test fixtures, CI
 where they actually run, download rules that depend on the host, strings and comments recognized as data, and
 established packages no longer taken for look-alikes. The 0.2.0 rules were checked against the same set, now
 with everything-claude-code: two of their first warnings, on prettier, were calibrated away. The evasion checks of
-0.2.1 changed no verdict. Results, with the commit
-of every repository: [`bench/results/2026-11-12-real-repos.json`](bench/results/2026-11-12-real-repos.json).
+0.2.1 and the decoding of 0.3.0 changed no verdict; the first version of the decoding blocked Codex over its
+clickable terminal links and was fixed before release. Results, with the commit of every repository:
+[`bench/results/2026-11-12-real-repos.json`](bench/results/2026-11-12-real-repos.json).
 
 ## Attack drill
 
@@ -387,7 +397,7 @@ Keys for `--deep` come from `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` or `META_API_K
 - It is a static scanner. A second stage fetched at run time is caught by the shape of the fetch, the decode or the
   send, not by running it. It is not a sandbox; keep your agent's approvals and sandbox on.
 - The rules are public, so attackers can test against them, as with every open scanner. Report a bypass through a
-  [security advisory](https://github.com/ji-hun-git/agent-virus-check/security/advisories/new), ideally as an inert
+  [security advisory](https://github.com/ji-hun-git/agent-white-hat/security/advisories/new), ideally as an inert
   TrapRepo case.
 - Benign repositories that ship agent hooks or folder-open tasks will be questioned on purpose: those run with your
   permissions.

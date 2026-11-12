@@ -1233,6 +1233,136 @@ def fold_strings(text: str) -> tuple[str, list[tuple[int, str]]]:
     return SPLIT_STRINGS.sub(joined, text), joins
 
 
+CHAR_CODES = re.compile(r"String\.fromCharCode\(\s*((?:\d{1,6}\s*,\s*){1,400}\d{1,6})\s*\)"
+                        r"|''\.join\(\s*map\(\s*chr\s*,\s*[\[(]\s*((?:\d{1,6}\s*,\s*){1,400}\d{1,6})\s*,?\s*[\])]\s*\)\s*\)"
+                        r"|\bbytes\(\s*\[\s*((?:\d{1,3}\s*,\s*){1,400}\d{1,3})\s*\]\s*\)\.decode\([^)]{0,20}\)")
+ESCAPED = re.compile(r"(['\"])((?:[^'\"\\\n]|\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4}){0,400}?\\(?:x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})"
+                     r"(?:[^'\"\\\n]|\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4}){0,400})\1")
+ESCAPE = re.compile(r"\\x([0-9a-fA-F]{2})|\\u([0-9a-fA-F]{4})")
+ROT13_PY = re.compile(r"(?:__import__\(\s*['\"]codecs['\"]\s*\)|\bcodecs)\.decode\(\s*(['\"])([^'\"\\\n]{1,400})\1\s*,\s*"
+                      r"['\"]rot[_-]?13['\"]\s*\)")
+ROT13_JS_FN = re.compile(r"\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=[^\n;]{0,200}?charCodeAt\(\s*0?\s*\)\s*\+\s*13\b"
+                         r"|\bfunction\s+([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{[^}]{0,240}?charCodeAt\(\s*0?\s*\)\s*\+\s*13\b")
+JS_BRACKET = re.compile(r"(?<=[\w$)\]])\[\s*(['\"])([A-Za-z_$][\w$]*)\1\s*\]")
+PY_GETATTR = re.compile(r"\bgetattr\(\s*([A-Za-z_][\w.]*)\s*,\s*(['\"])([A-Za-z_]\w*)\2\s*\)")
+SH_ASSIGN = re.compile(r"(?:^|(?<=[;&|\n]))[ \t]*([A-Za-z_]\w*)=('[^'\n]*'|\"[^\"$`\n]*\"|[^\s;&|'\"$`()]*)(?=[ \t]*(?:[;&|\n]|$))")
+SH_VAR = re.compile(r"\$\{([A-Za-z_]\w*)\}|\$([A-Za-z_]\w*)")
+SHELL_FILES = (".sh", ".bash", ".zsh", ".ksh")
+SHELL_TOOLS = re.compile(r"(?<![\w./-])(?:curl|wget|bash|sh|zsh|nc|ncat|python3?|node|base64|powershell|pwsh|eval)(?![\w.-])")
+DEOBF_HINT = re.compile(r"fromCharCode|map\(\s*chr|bytes\(\s*\[|\\x[0-9a-fA-F]{2}|\\u[0-9a-fA-F]{4}|rot[_-]?13|\+\s*13\b"
+                        r"|getattr\(|\[\s*['\"][A-Za-z_$]|\$\{?[A-Za-z_]")
+SENSITIVE_TEXT = re.compile(r"\b(?:curl|wget)\b|\|\s*(?:ba|z)?sh\b|\bnpm\s+publish\b|/-/whoami|\.npmrc\b|\.pypirc\b|\bid_rsa\b"
+                            r"|\bchild_process\b|\beval\s*\(|\bexec\s*\(", re.I)
+
+
+def _rot13(s: str) -> str:
+    return s.translate(str.maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+                                     "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm"))
+
+
+def _quoted(s: str) -> str:
+    return "'" + s.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n") + "'"
+
+
+def _from_codes(m: re.Match) -> str:
+    try:
+        return "".join(chr(int(n)) for n in re.findall(r"\d+", next(g for g in m.groups() if g)))
+    except (ValueError, OverflowError):
+        return ""
+
+
+def _unescape(body: str) -> str:
+    """Decode the escapes that stand for printable characters. Control characters, quotes and backslashes stay
+    escaped, so the literal stays well formed and a control character added as padding cannot stop the decoding."""
+    def one(m: re.Match) -> str:
+        c = chr(int(m.group(1) or m.group(2), 16))
+        return c if c.isprintable() and c not in "'\"\\" else m.group()
+    return ESCAPE.sub(one, body)
+
+
+def _spells_text(body: str) -> bool:
+    """Whether some escape stands for a letter or digit, which nothing needs to escape: the escapes are hiding text
+    ("http" written as \\x68\\x74\\x74\\x70). Escapes for control characters, as in terminal sequences around a plain
+    URL, hide nothing."""
+    return any((c := chr(int(m.group(1) or m.group(2), 16))).isascii() and c.isalnum() for m in ESCAPE.finditer(body))
+
+
+def _printable(s: str) -> bool:
+    return bool(s) and all(c.isprintable() or c in "\t\n" for c in s)
+
+
+def _rot13_functions(text: str) -> list[str]:
+    return [m.group(1) or m.group(2) for m in ROT13_JS_FN.finditer(text)]
+
+
+def _shell_values(text: str) -> dict[str, str]:
+    values = {}
+    for m in SH_ASSIGN.finditer(text):
+        raw = m.group(2)
+        values[m.group(1)] = raw[1:-1] if raw[:1] in ("'", '"') else raw
+    return values
+
+
+def _expand_shell(text: str, values: dict[str, str]) -> str:
+    for _ in range(3):  # a=cu; b=${a}rl; $b
+        new = SH_VAR.sub(lambda m: values.get(m.group(1) or m.group(2), m.group()), text)
+        if new == text:
+            break
+        text = new
+    return text
+
+
+def _sensitive(value: str) -> bool:
+    v = value.strip()
+    return v.lower() in SENSITIVE_NAMES or "://" in v or bool(SECRET_PATHS.search(v)) or bool(SENSITIVE_TEXT.search(v))
+
+
+def decoded_items(text: str, path: str) -> list[tuple[int, str, str]]:
+    """(position, decoded value, how) for every value the code spells in a disguise: pieces, character codes,
+    escapes, ROT13, or a shell command assembled from variables."""
+    items = [(pos, value, "builds out of pieces") for pos, value in fold_strings(text)[1]] if SPLIT_HINT.search(text) else []
+    items += [(m.start(), _from_codes(m), "decodes from character codes") for m in CHAR_CODES.finditer(text)]
+    items += [(m.start(), _unescape(m.group(2)), "decodes from escape sequences") for m in ESCAPED.finditer(text)
+              if _spells_text(m.group(2))]
+    items += [(m.start(), _rot13(m.group(2)), "decodes with ROT13") for m in ROT13_PY.finditer(text)]
+    for name in _rot13_functions(text):
+        items += [(m.start(), _rot13(m.group(2)), "decodes with ROT13")
+                  for m in re.finditer(rf"(?<![\w$.]){re.escape(name)}\(\s*(['\"])([^'\"\\\n]{{1,400}})\1\s*\)", text)]
+    if path.lower().endswith(SHELL_FILES):
+        values = _shell_values(text)
+        if values:
+            whole = {v.strip().split(" ")[0] for v in values.values()}  # CURL=curl names the tool in one piece
+            for m in re.finditer(r"[^\n]*\$\{?[A-Za-z_][^\n]*", text):
+                expanded = _expand_shell(m.group(), values)
+                tools = set(SHELL_TOOLS.findall(expanded)) - set(SHELL_TOOLS.findall(m.group())) - whole
+                if tools:
+                    items.append((m.start(), " ".join(sorted(tools)) + ": " + expanded.strip()[:120],
+                                  "assembles a command from shell variables"))
+    return items
+
+
+def deobfuscate(text: str, path: str) -> str:
+    """The text with what the code hides spelled out, every line in place: pieces joined, character codes and escapes
+    decoded, ROT13 undone where the file carries a decoder, members reached through brackets or getattr written
+    plainly, and shell variables expanded."""
+    if SPLIT_HINT.search(text):
+        text = fold_strings(text)[0]
+    text = CHAR_CODES.sub(lambda m: _quoted(_from_codes(m)) if _printable(_from_codes(m)) else m.group(), text)
+    text = ESCAPED.sub(lambda m: m.group(1) + _unescape(m.group(2)) + m.group(1), text)
+    text = ROT13_PY.sub(lambda m: _quoted(_rot13(m.group(2))), text)
+    for name in _rot13_functions(text):
+        text = re.sub(rf"(?<![\w$.]){re.escape(name)}\(\s*(['\"])([^'\"\\\n]{{1,400}})\1\s*\)",
+                      lambda m: _quoted(_rot13(m.group(2))), text)
+    text = PY_GETATTR.sub(lambda m: f"{m.group(1)}.{m.group(3)}", text)
+    if path.lower().endswith(JS_SUFFIXES):
+        text = JS_BRACKET.sub(lambda m: "." + m.group(2), text)
+    if path.lower().endswith(SHELL_FILES):
+        values = _shell_values(text)
+        if values:
+            text = _expand_shell(text, values)
+    return text
+
+
 def scan_text(text: str, path: str, context: str, *, decode: bool = True, structural: bool = True,
               note: str = "", line_offset: int = 0, fold: bool = True) -> list[Finding]:
     """All content rules for one text. Structural checks (invisible characters, padding) run on original text only."""
@@ -1401,26 +1531,29 @@ def scan_text(text: str, path: str, context: str, *, decode: bool = True, struct
                     "(a logic bomb)", context)
         elif date_gate and nets:
             col.add(R_CONDITIONAL, "medium", date_gate.start(), "network code gated on a date that has not come yet", context)
-    if is_code and fold and len(text) <= FOLD_LIMIT and SPLIT_HINT.search(text):
-        # Attackers split names so that patterns miss them: a module, eval or env spelled in pieces.
-        # The joined pieces are judged like everything else, and building a sensitive name from pieces is itself
-        # a sign: legitimate code writes 'https' and 'eval' in one piece.
-        folded, joins = fold_strings(text)
-        built = [(pos, value) for pos, value in joins if value.lower() in SENSITIVE_NAMES
-                 and not in_comment(text, pos, path) and not _after_trailing_comment(text, pos, path)
-                 and not _in_other_string(text, pos, path) and not (context == "code" and is_test_code(path))]
-        if built:
-            pos, value = built[0]
+    if is_code and fold and len(text) <= FOLD_LIMIT and (SPLIT_HINT.search(text) or DEOBF_HINT.search(text)):
+        # Attackers spell what patterns look for in pieces, character codes, escapes or ROT13, reach members through
+        # brackets or getattr, and assemble shell commands from variables. The decoded copy is judged like everything
+        # else, and a sensitive name or URL that needed decoding is a sign of its own: legitimate code writes
+        # 'https' and 'eval' plainly.
+        normal = deobfuscate(text, path)
+        flagged = [(pos, value, how) for pos, value, how in decoded_items(text, path) if _sensitive(value)
+                   and not in_comment(text, pos, path) and not _after_trailing_comment(text, pos, path)
+                   and not _in_other_string(text, pos, path) and not (context == "code" and is_test_code(path))]
+        if flagged:
+            pos, value, how = flagged[0]
             col.add(R_OBFUSCATED, "critical" if context == "autoexec" else "high", pos,
-                    f"builds the name {value!r} out of pieces ({len(built)} such name{'s' if len(built) > 1 else ''})",
-                    context)
-        if folded != text:
-            known = {(f.rule, f.line) for f in col.items}
-            for f in scan_text(folded, path, context, decode=False, structural=False, note=note, line_offset=line_offset,
+                    f"{how} {clip(value, 80)!r}" + (f" ({len(flagged)} such values)" if len(flagged) > 1 else ""), context)
+        if normal != text:
+            known = {(f.rule, f.line): f for f in col.items}
+            for f in scan_text(normal, path, context, decode=False, structural=False, note=note, line_offset=line_offset,
                                fold=False):
-                if (f.rule, f.line) not in known:
-                    f.message += " (after joining split strings)"
+                same = known.get((f.rule, f.line))
+                if same is None:
+                    f.message += " (after decoding what the code hides)"
                     col.items.append(f)
+                elif rank(f.severity) > rank(same.severity):  # decoding showed more than the disguised text did
+                    same.severity, same.message = f.severity, f.message + " (after decoding what the code hides)"
     if is_code:
         alias = next((m for m in live(FUNCTION_ALIAS.finditer(text), 20)
                       if not _after_trailing_comment(text, m.start(), path)), None)

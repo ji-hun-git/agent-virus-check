@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""TrapRepo materializer and validator (agent-virus-check benchmark).
+"""TrapRepo materializer and validator (agent-white-hat benchmark).
 
 The benchmark cases live as JSON DATA under ``bench/fixtures/traprepo/``. No fixture file is
 ever a real file in the repo tree; this module turns one case into a throwaway

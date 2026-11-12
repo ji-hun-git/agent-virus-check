@@ -8,7 +8,7 @@
                      scanned within seconds; --quarantine moves blocked ones away. --install starts it at login.
     pah quarantine   list | restore ID | delete ID
 
-Nothing is executed. Quarantine moves a file or folder into the agent-virus-check folder, renamed so that nothing
+Nothing is executed. Quarantine moves a file or folder into the agent-white-hat folder, renamed so that nothing
 loads or runs it, and records where it came from so that `pah quarantine restore` can put it back.
 """
 from __future__ import annotations
@@ -414,7 +414,7 @@ def check_new(before: dict, after: dict, pending: dict, *, do_quarantine: bool, 
             reason = item.findings[0]["message"] if item.findings else item.note
             _log(f"{item.verdict.upper():5} {kind:10} {key}  {reason}" + (f"  (quarantined: {', '.join(item.quarantined)})"
                                                                             if item.quarantined else ""))
-            alert("agent-virus-check: " + ("blocked" if item.verdict == "block" else "check this"),
+            alert("agent-white-hat: " + ("blocked" if item.verdict == "block" else "check this"),
                   f"{path.name}: {reason}"[:200])
         out.append(item)
     return out
@@ -442,13 +442,15 @@ def protect(interval: float = 5.0, *, do_quarantine: bool = False, cycles: int |
                 for change in watch.check():
                     if change["severity"] in ("high", "critical"):
                         _log(f"WATCH {change['label']}: {change['change']}")
-                        alert("agent-virus-check: agent settings changed", f"{change['label']}: {change['change']}"[:200])
+                        alert("agent-white-hat: agent settings changed", f"{change['label']}: {change['change']}"[:200])
 
 
 # --------------------------------------------------------------------------------------------- start at login
 
-TASK_NAME = "agent-virus-check protect"
-PLIST = "dev.agent-virus-check.protect"
+TASK_NAME = "agent-white-hat protect"
+PLIST = "dev.agent-white-hat.protect"
+# Names used by earlier versions, so --uninstall also removes what 0.2.0 and 0.2.1 set up.
+NAMES = ("agent-white-hat", "agent-virus-check", "personal-anti-hack")
 
 
 def login_plan(command: list[str], remove: bool = False) -> list[dict]:
@@ -458,12 +460,13 @@ def login_plan(command: list[str], remove: bool = False) -> list[dict]:
         exe = Path(command[0])
         quiet = exe.with_name("pythonw.exe") if exe.with_name("pythonw.exe").exists() else exe
         run = subprocess.list2cmdline([str(quiet)] + command[1:])
-        return [{"run": ["schtasks", "/Delete", "/TN", TASK_NAME, "/F"]}] if remove else \
+        return [{"run": ["schtasks", "/Delete", "/TN", f"{n} protect", "/F"]} for n in NAMES] if remove else \
             [{"run": ["schtasks", "/Create", "/TN", TASK_NAME, "/SC", "ONLOGON", "/RL", "LIMITED", "/F", "/TR", run]}]
     if sys.platform == "darwin":
         plist = home / "Library" / "LaunchAgents" / f"{PLIST}.plist"
         if remove:
-            return [{"run": ["launchctl", "unload", str(plist)]}, {"delete": str(plist)}]
+            agents = [home / "Library" / "LaunchAgents" / f"dev.{n}.protect.plist" for n in NAMES]
+            return [step for a in agents for step in ({"run": ["launchctl", "unload", str(a)]}, {"delete": str(a)})]
         args = "".join(f"<string>{a}</string>" for a in command)
         text = ('<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" '
                 '"http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>'
@@ -471,10 +474,12 @@ def login_plan(command: list[str], remove: bool = False) -> list[dict]:
                 "<key>RunAtLoad</key><true/><key>KeepAlive</key><true/>"
                 f"<key>StandardOutPath</key><string>{PROTECT_LOG}</string></dict></plist>\n")
         return [{"write": str(plist), "text": text}, {"run": ["launchctl", "load", "-w", str(plist)]}]
-    unit = home / ".config" / "systemd" / "user" / "agent-virus-check-protect.service"
+    unit = home / ".config" / "systemd" / "user" / "agent-white-hat-protect.service"
     if remove:
-        return [{"run": ["systemctl", "--user", "disable", "--now", unit.name]}, {"delete": str(unit)}]
-    text = ("[Unit]\nDescription=agent-virus-check real-time protection\n\n[Service]\n"
+        units = [unit.with_name(f"{n}-protect.service") for n in NAMES]
+        return [step for u in units for step in ({"run": ["systemctl", "--user", "disable", "--now", u.name]},
+                                                 {"delete": str(u)})]
+    text = ("[Unit]\nDescription=agent-white-hat real-time protection\n\n[Service]\n"
             f"ExecStart={subprocess.list2cmdline(command)}\nRestart=on-failure\n\n[Install]\nWantedBy=default.target\n")
     return [{"write": str(unit), "text": text}, {"run": ["systemctl", "--user", "daemon-reload"]},
             {"run": ["systemctl", "--user", "enable", "--now", unit.name]}]

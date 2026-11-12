@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Missed malware, a bypass, or a vulnerability in agent-virus-check
-    url: https://github.com/ji-hun-git/agent-virus-check/security/advisories/new
+  - name: Missed malware, a bypass, or a vulnerability in agent-white-hat
+    url: https://github.com/ji-hun-git/agent-white-hat/security/advisories/new
     about: Report it privately, ideally as an inert TrapRepo case. Please do not open a public issue.
   - name: How to use it in CI and before commits
-    url: https://github.com/ji-hun-git/agent-virus-check/blob/main/docs/ci.md
+    url: https://github.com/ji-hun-git/agent-white-hat/blob/main/docs/ci.md
     about: The GitHub Action, SARIF upload, pre-commit and other CI systems.

@@ -135,7 +135,7 @@ class Report:
         for f in self.findings:
             counts[f.severity] += 1
         return {
-            "tool": "agent-virus-check",
+            "tool": "agent-white-hat",
             "version": __version__,
             "target": self.target,
             "verdict": self.verdict,

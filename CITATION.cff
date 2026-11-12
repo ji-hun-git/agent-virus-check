@@ -1,13 +1,13 @@
 cff-version: 1.2.0
-message: "If you use agent-virus-check, please cite it as below."
-title: "agent-virus-check: a local shield for people who let AI agents open, install and run code"
+message: "If you use agent-white-hat, please cite it as below."
+title: "agent-white-hat: a local shield for people who let AI agents open, install and run code"
 authors:
   - family-names: Chae
     given-names: Jihun
 date-released: 2026-11-12
-version: "0.2.1"
-url: "https://github.com/ji-hun-git/agent-virus-check"
-repository-code: "https://github.com/ji-hun-git/agent-virus-check"
+version: "0.3.0"
+url: "https://github.com/ji-hun-git/agent-white-hat"
+repository-code: "https://github.com/ji-hun-git/agent-white-hat"
 license: MIT
 keywords:
   - software supply chain

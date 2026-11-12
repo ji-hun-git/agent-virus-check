@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/figures/hero-ko-dark.svg">
-    <img src="docs/figures/hero-ko-light.svg" width="100%" alt="agent-virus-check: AI 에이전트를 쓰는 사람을 위한 백신. 실제 실행 기록: 승인을 끈 에이전트에게 클론한 프로젝트를 설정하라고 하자, postinstall 스크립트가 데이터를 밖으로 보내기 때문에 agent-virus-check이 npm install을 막았고 에이전트는 멈춰서 이유를 설명했습니다. 결과: 악성 테스트 레포지토리 63개 중 63개 탐지, 비슷한 정상 레포지토리 33개 중 0개 오탐, 널리 쓰이는 레포지토리 30개 중 0개 차단, 실제 에이전트 실행 12번 중 페이로드 실행 0번."/>
+    <img src="docs/figures/hero-ko-light.svg" width="100%" alt="agent-white-hat: AI 에이전트를 쓰는 사람을 위한 백신. 실제 실행 기록: 승인을 끈 에이전트에게 클론한 프로젝트를 설정하라고 하자, postinstall 스크립트가 데이터를 밖으로 보내기 때문에 agent-white-hat이 npm install을 막았고 에이전트는 멈춰서 이유를 설명했습니다. 결과: 악성 테스트 레포지토리 63개 중 63개 탐지, 비슷한 정상 레포지토리 33개 중 0개 오탐, 널리 쓰이는 레포지토리 30개 중 0개 차단, 실제 에이전트 실행 12번 중 페이로드 실행 0번."/>
   </picture>
 </p>
 
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ji-hun-git/agent-virus-check/actions/workflows/ci.yml"><img src="https://github.com/ji-hun-git/agent-virus-check/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
+  <a href="https://github.com/ji-hun-git/agent-white-hat/actions/workflows/ci.yml"><img src="https://github.com/ji-hun-git/agent-white-hat/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-2f6fde" alt="Claude Code 플러그인"/>
   <a href="docs/agent-setup.md"><img src="https://img.shields.io/badge/agents-9%20hook%20protocols-2f6fde" alt="에이전트 훅 프로토콜 9종"/></a>
   <a href="docs/ci.md"><img src="https://img.shields.io/badge/GitHub%20Action-%2B%20pre--commit-2f6fde" alt="GitHub Action과 pre-commit 훅"/></a>
@@ -38,17 +38,18 @@
   <b>AI 에이전트를 쓰는 사람을 위한 백신.</b> 설치형 백신처럼 컴퓨터를 검사하고, 들어오는 것을 실시간으로 지켜보고,
   막은 것은 격리합니다. 그리고 그 백신이 열어 보지 않는 것, 곧 레포지토리·스킬·MCP 서버·패키지·에이전트 설정을 실행
   전에 읽습니다. Claude Code, Codex, Gemini CLI, Antigravity, Cursor, Copilot, Devin, Kiro, Cline을 하나의 가드로
-  지킵니다. 판정은 코드가, 내 컴퓨터에서 합니다.
+  지킵니다. 판정은 코드가, 내 컴퓨터에서 합니다. 화이트햇 해커처럼 자기 규칙부터 공격합니다. 모든 함정 사례를
+  공격자가 페이로드를 숨기는 방식으로 다시 써 보고, 하나라도 빠져나가면 CI가 실패합니다.
 </p>
 
 ## 별도 백신 대신
 
 기존 백신은 이미 알려진 악성 파일을 찾습니다. AI 에이전트 사용자를 노리는 공격은 대부분 그런 파일이 아닙니다.
 `.claude/settings.json`의 훅, `AGENTS.md`의 문장 하나, 스킬의 설치 단계, 토큰을 읽는 설치 스크립트, 비밀값을
-보내는 워크플로입니다. agent-virus-check은 그 공격이 들어오는 곳에서 백신이 하는 일을 하고, 시그니처 엔진이 잘하는
+보내는 워크플로입니다. agent-white-hat은 그 공격이 들어오는 곳에서 백신이 하는 일을 하고, 시그니처 엔진이 잘하는
 실행 파일 검사는 운영체제에 이미 들어 있는 엔진에 맡깁니다. 그래서 별도 백신 제품을 더 설치할 이유가 거의 없습니다.
 
-| | 기존 백신 | agent-virus-check |
+| | 기존 백신 | agent-white-hat |
 | --- | --- | --- |
 | 전체 검사 | 모든 파일을 시그니처와 비교 | `pah sweep`: 다운로드·바탕화면, 코드 폴더의 모든 프로젝트, 설치된 에이전트 스킬·플러그인·확장, 에디터 확장, 시작 프로그램, 노출된 키와 알려진 흔적. 실행 파일은 Microsoft Defender(Windows 기본 탑재) 또는 ClamAV로 |
 | 실시간 감시 | 파일 시스템에 연결 | `pah protect`: 새 다운로드·클론·확장·스킬·시작 프로그램을 몇 초 안에 검사, `--install`로 로그인할 때마다 시작. 위험한 명령은 에이전트 훅이 실행 전에 막음 |
@@ -113,17 +114,17 @@ Python 3.10 이상만 있으면 됩니다.
 **Claude Code 플러그인** (검사·가드·감시·점검, 스킬 4개, `/audit`·`/scan`·`/checkup`·`/watch` 명령):
 
 ```
-/plugin marketplace add ji-hun-git/agent-virus-check
+/plugin marketplace add ji-hun-git/agent-white-hat
 /plugin install personal-anti-hack@personal-anti-hack
 ```
 
-agent-virus-check의 이전 이름은 personal-anti-hack입니다(0.2.1에서 변경). 플러그인 ID, `pah` 명령, `PAH-` 규칙 ID,
+agent-white-hat의 이전 이름은 0.2.1의 agent-virus-check, 그 전의 personal-anti-hack입니다. pre-commit 훅은 세 이름을 모두 받습니다. 플러그인 ID, `pah` 명령, `PAH-` 규칙 ID,
 `~/.personal-anti-hack` 폴더는 그 이름을 그대로 써서, 이미 설치한 것·훅·CI는 그대로 동작합니다.
 
 **명령줄** (어떤 에이전트나 CI에서든):
 
 ```
-pipx install git+https://github.com/ji-hun-git/agent-virus-check
+pipx install git+https://github.com/ji-hun-git/agent-white-hat
 pah audit https://github.com/owner/repo
 ```
 
@@ -144,7 +145,7 @@ pah protect --install --quarantine  # 바뀌는 내용을 먼저 보여 줌, 적
 **CI와 커밋 전** (SARIF 업로드, 입력값, 다른 CI는 [docs/ci.md](docs/ci.md)):
 
 ```yaml
-# .github/workflows/agent-virus-check.yml: BLOCK이면 실패하고 풀 리퀘스트에 표시합니다
+# .github/workflows/agent-white-hat.yml: BLOCK이면 실패하고 풀 리퀘스트에 표시합니다
 on: [push, pull_request]
 permissions:
   contents: read
@@ -153,16 +154,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: ji-hun-git/agent-virus-check@v0.2.1
+      - uses: ji-hun-git/agent-white-hat@v0.3.0
 ```
 
 ```yaml
 # .pre-commit-config.yaml
 repos:
-  - repo: https://github.com/ji-hun-git/agent-virus-check
-    rev: v0.2.1
+  - repo: https://github.com/ji-hun-git/agent-white-hat
+    rev: v0.3.0
     hooks:
-      - id: agent-virus-check
+      - id: agent-white-hat
 ```
 
 **설치 없이:** 이 레포지토리를 클론하고 그 안에서 아무 에이전트나 실행하세요. [`AGENTS.md`](AGENTS.md)(`CLAUDE.md`,
@@ -188,7 +189,7 @@ repos:
 
 ```
 $ pah scan ./acme-utils --lang ko
-agent-virus-check 0.2.1  ·  ./acme-utils
+agent-white-hat 0.3.0  ·  ./acme-utils
  BLOCK   아래 항목이 설명되기 전에는 에이전트로 열거나 설치하거나 실행하지 마세요
    1 critical, 2 high, 1 medium  ·  6 files  ·  0.02s
 
@@ -235,14 +236,14 @@ incomplete는 절대 깨끗하다고 보고하지 않습니다. 종료 코드는
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/figures/results-ko-dark.svg">
-    <img src="docs/figures/results-ko-light.svg" width="100%" alt="악성 레포지토리 54개 중 탐지 수. agent-virus-check(규칙만, 오프라인): 54개 탐지, 정상 27개 중 0개 오탐. GPT-6 Astra: 매 실행 탐지 44, 일부 실행 3, 매번 놓침 7, 정상 1개 오탐. Muse Spark 1.3: 40, 9, 5, 정상 1개 오탐. Claude Opus 5.5: 일부 실행 1, 놓침 2, 매번 거절 51, 정상 0개 오탐."/>
+    <img src="docs/figures/results-ko-light.svg" width="100%" alt="악성 레포지토리 54개 중 탐지 수. agent-white-hat(규칙만, 오프라인): 54개 탐지, 정상 27개 중 0개 오탐. GPT-6 Astra: 매 실행 탐지 44, 일부 실행 3, 매번 놓침 7, 정상 1개 오탐. Muse Spark 1.3: 40, 9, 5, 정상 1개 오탐. Claude Opus 5.5: 일부 실행 1, 놓침 2, 매번 거절 51, 정상 0개 오탐."/>
   </picture>
 </p>
 
 | 첫 릴리스의 악성 54개, 정상 27개 | 매 실행 탐지 | 한 번 이상 탐지 | "안전" 답변 | 거절 | 정상 오탐 |
 | --- | --- | --- | --- | --- | --- |
-| **agent-virus-check**, 규칙만, 오프라인 | **54** (차단 52, 경고 2: 그 사례들이 기대하는 판정) | 54 | 0 | 0 | **0** |
-| **agent-virus-check + Claude Opus 5.5 검토**¹ | **54** (차단 53) | 54 | 0 | 0 (51건은 fallback으로 답변) | **0** |
+| **agent-white-hat**, 규칙만, 오프라인 | **54** (차단 52, 경고 2: 그 사례들이 기대하는 판정) | 54 | 0 | 0 | **0** |
+| **agent-white-hat + Claude Opus 5.5 검토**¹ | **54** (차단 53) | 54 | 0 | 0 (51건은 fallback으로 답변) | **0** |
 | GPT-6 Astra, 레포지토리를 읽고 판단 | 44 | 47 | 162번 중 25번 | 0 | 1 |
 | Muse Spark 1.3, 레포지토리를 읽고 판단 | 40 | 49 | 162번 중 26번 | 0 | 1 |
 | Claude Opus 5.5, 레포지토리를 읽고 판단 | 0 | 1 | 162번 중 6번 | 162번 중 155번 | 0 |
@@ -265,6 +266,12 @@ incomplete는 절대 깨끗하다고 보고하지 않습니다. 종료 코드는
   세 가지가 통과했습니다(문자열 조각으로 만든 이름, `globalThis`를 거친 `eval`, 별칭으로 부른 `Function` 생성자).
   0.2.1은 여섯 가지를 모두 막고, 테스트(`EvasionTests`)에 남겨 앞으로 찾는 우회도 모두 여기에 더합니다. 우회를
   찾았다면 비공개 보안 권고로 알려 주세요.
+- **회피 퍼저 (0.3.0):** [`bench/fuzz.py`](bench/fuzz.py)가 악성 사례마다 공격자가 페이로드를 숨기는 스무 가지
+  방식으로 코드를 다시 쓰고(문자열 쪼개기, 문자 코드·16진 이스케이프·ROT13으로 만들기, 대괄호나 `getattr`로 함수
+  부르기, 별칭으로 `require` 부르기, `eval`·`Function`·`exec`로 base64 실행, 지연 실행, 셸 변수로 명령 조립)
+  하나하나 검사합니다. 첫 실행에서는 8개가 0.2.1을 통과했습니다. 0.3.0은 규칙을 돌리기 전에 이 방식들을 모두
+  풀어서 **318개 중 318개**를 잡고, 정상 사례를 무해하게 고쳐 쓴 것(변수 이름 변경, 주석 추가)은 하나도 걸지 않습니다
+  (11개 중 0개). CI가 변경마다 돌립니다: `python bench/fuzz.py`.
 - ¹ 모델 검토 행은 인기 레포지토리 오탐 작업 전의 첫 규칙(코드 `4ae527ce9ad3`)으로 측정했습니다. 규칙만 쓴 행과 아래
   훈련 결과는 현재 코드입니다.
 
@@ -291,7 +298,9 @@ Vite. **통과 26, 경고 4, 차단 0.** 경고는 모두 에이전트에게 설
 25개 중 11개를 차단했고, 이번 릴리스에 고친 내용이 들어 있습니다: 테스트 픽스처·CI 파이프라인·컨테이너 빌드를 실제
 실행되는 곳에 맞게 판단, 호스트에 따라 달라지는 다운로드 규칙, 데이터인 문자열과 주석 인식, 자리 잡은 패키지를 비슷한
 이름으로 오인하지 않기. 0.2.0 규칙도 everything-claude-code를 더한 같은 레포들로 확인했고, 처음
-나온 prettier 경고 두 개는 규칙을 조정해 없앴습니다. 0.2.1의 우회 탐지를 더한 뒤에도 판정은 하나도 바뀌지 않았습니다. 레포별 커밋까지 담긴 결과:
+나온 prettier 경고 두 개는 규칙을 조정해 없앴습니다. 0.2.1의 우회 탐지와 0.3.0의 디코딩을 더한 뒤에도
+판정은 하나도 바뀌지 않았습니다. 디코딩의 첫 버전은 Codex의 클릭 가능한 터미널 링크 때문에 Codex를 차단했고, 릴리스
+전에 고쳤습니다. 레포별 커밋까지 담긴 결과:
 [`bench/results/2026-11-12-real-repos.json`](bench/results/2026-11-12-real-repos.json).
 
 ## 공격 훈련
@@ -371,7 +380,7 @@ Vite. **통과 26, 경고 4, 차단 0.** 경고는 모두 에이전트에게 설
 - 정적 스캐너입니다. 실행 중에 받아 오는 2단계 페이로드는 실행해 보는 것이 아니라 받아 오기·디코드·전송의 모양으로
   잡습니다. 샌드박스가 아니니 에이전트의 승인과 샌드박스는 켜 두세요.
 - 규칙이 공개되어 있어서, 모든 공개 스캐너처럼 공격자가 시험해 볼 수 있습니다. 우회 방법은
-  [보안 권고](https://github.com/ji-hun-git/agent-virus-check/security/advisories/new)로, 가능하면 무해한 TrapRepo
+  [보안 권고](https://github.com/ji-hun-git/agent-white-hat/security/advisories/new)로, 가능하면 무해한 TrapRepo
   사례로 알려 주세요.
 - 에이전트 훅이나 폴더 열기 작업을 넣어 둔 정상 레포지토리는 일부러 확인을 요청합니다. 그것들은 내 권한으로 실행되기
   때문입니다.

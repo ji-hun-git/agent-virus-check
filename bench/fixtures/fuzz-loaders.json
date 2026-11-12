@@ -1,0 +1,7 @@
+{
+  "_about": "Loader shapes real droppers use to run base64-encoded code. bench/fuzz.py wraps a TrapRepo case's code in each one ({blob} is that inert code, {shebang} the case's first line) and writes the result to a temporary copy of the case, which is scanned and deleted, never run.",
+  "js_eval": "eval(Buffer.from('{blob}', 'base64').toString());\n",
+  "js_function": "new Function('require', 'process', Buffer.from('{blob}', 'base64').toString())(require, process);\n",
+  "py_exec": "exec(__import__('base64').b64decode('{blob}'))\n",
+  "sh_pipe": "{shebang}echo {blob} | base64 -d | sh\n"
+}

@@ -3,11 +3,11 @@
 ## Reporting a problem
 
 Report vulnerabilities privately through
-[GitHub security advisories](https://github.com/ji-hun-git/agent-virus-check/security/advisories/new). Include what you
+[GitHub security advisories](https://github.com/ji-hun-git/agent-white-hat/security/advisories/new). Include what you
 ran, what you expected and what happened. A technique that gets malicious code past the scanner is a vulnerability
 here: please report it the same way, ideally with an inert test case in the format of `bench/fixtures/traprepo/`.
 
-## What agent-virus-check does and does not do
+## What agent-white-hat does and does not do
 
 - **It never runs code from what it scans.** Repositories, archives, packages and skills are read as bytes. The only
   program it starts while scanning is `git`, with hooks and fsmonitor disabled, to clone a URL or to read symbolic

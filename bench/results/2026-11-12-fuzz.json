@@ -1,0 +1,4055 @@
+{
+  "rows": [
+    {
+      "case": "agent-cli-yolo-secret-hunt",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "agent-cli-yolo-secret-hunt",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "agent-cli-yolo-secret-hunt",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "agent-cli-yolo-secret-hunt",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "agents-md-install-and-reconfigure",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A011",
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "agents-md-install-and-reconfigure",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A011",
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "agents-md-install-and-reconfigure",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A011"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "benign-claude-md-conventions",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-claude-plugin-hooks",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-gitmodules-normal",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-mcp-json-local-stdio",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-mcp-server-normal",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-pytest-conftest-fixtures",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-requirements-hashes",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-setup-py-pyproject",
+      "kind": "benign",
+      "operator": "rename",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-setup-py-pyproject",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-skill-md-normal",
+      "kind": "benign",
+      "operator": "py_comments",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "benign-web3-rpc-client",
+      "kind": "benign",
+      "operator": "rename",
+      "expected": "pass",
+      "verdict": "pass",
+      "rules": [],
+      "bypass": false
+    },
+    {
+      "case": "binary-magic-disguised-fixture",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-F002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cargo-config-rustc-wrapper",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P011"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cargo-config-rustc-wrapper",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-P011"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cargo-config-rustc-wrapper",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-P011"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-apikeyhelper-command",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A002",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-plugin-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-plugin-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-plugin-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-env-anthropic-base-url",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A003",
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-env-anthropic-base-url",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A003",
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-env-anthropic-base-url",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-pretooluse-hook",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-sessionstart-hook",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-sessionstart-hook",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-sessionstart-hook",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-sessionstart-hook",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-sessionstart-hook",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-settings-sessionstart-hook",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "claude-statusline-command",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "codex-env-codexhome-config-toml",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A008",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "codex-env-codexhome-config-toml",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A008",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "codex-env-codexhome-config-toml",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A008",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "codex-env-codexhome-config-toml",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A008",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "codex-env-codexhome-config-toml",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A008",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "codex-env-codexhome-config-toml",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A008",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "copilot-hooks-sessionstart",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cursor-hooks-json",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A007",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cursor-hooks-json",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A007",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cursor-hooks-json",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A007",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cursor-hooks-json",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A007",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cursor-hooks-json",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A007",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "cursor-hooks-json",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A007",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "date-ci-conditional-trigger",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C016"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "devcontainer-initializecommand",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "eth-dead-drop-loader",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C023"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gemini-settings-hook",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gemini-settings-hook",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gemini-settings-hook",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gemini-settings-hook",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A001",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "git-dir-hookspath-fsmonitor",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-G002",
+        "PAH-G003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gitmodules-suspicious-submodule",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-G001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gitmodules-suspicious-submodule",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-G001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gitmodules-suspicious-submodule",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-G001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gitmodules-suspicious-submodule",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-G001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gitmodules-suspicious-submodule",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-G001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "gitmodules-suspicious-submodule",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-G001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "glassworm-variation-selectors-eval",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-T002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "husky-precommit-payload",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "husky-precommit-payload",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "husky-precommit-payload",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "husky-precommit-payload",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "husky-precommit-payload",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "husky-precommit-payload",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "lookalike-dep-separator-confusion",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P007"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-json-enable-all-project",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A006",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-tool-description-poisoning",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-tool-description-poisoning",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-tool-description-poisoning",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-tool-description-poisoning",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-tool-description-poisoning",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-tool-description-poisoning",
+      "kind": "malicious",
+      "operator": "py_getattr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "mcp-tool-description-poisoning",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-postinstall-beacon",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-prepare-script",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-url-dependency",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-url-dependency",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-url-dependency",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012",
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npm-worm-republish",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C018",
+        "PAH-C024"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-reenables-install-scripts",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P019"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-reenables-install-scripts",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P019"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-reenables-install-scripts",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "warn",
+      "verdict": "warn",
+      "rules": [
+        "PAH-P019"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "npmrc-registry-redirect",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "obfuscatorio-js-loader",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C002",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "openclaw-extension-autoload",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A010",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "package-lock-offregistry-resolved",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pnpmfile-cjs-hook",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pyc-only-payload",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-F003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pyc-only-payload",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-F003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pyc-only-payload",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-F003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pyc-only-payload",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-F003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pyc-only-payload",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-F003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "pyc-only-payload",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-F003"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-conftest-beacon",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-base64-zlib-loader",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-base64-zlib-loader",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-base64-zlib-loader",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-base64-zlib-loader",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-base64-zlib-loader",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-base64-zlib-loader",
+      "kind": "malicious",
+      "operator": "py_getattr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-base64-zlib-loader",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-loader-ai-reviewer-comment",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-loader-ai-reviewer-comment",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-loader-ai-reviewer-comment",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-loader-ai-reviewer-comment",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-loader-ai-reviewer-comment",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-loader-ai-reviewer-comment",
+      "kind": "malicious",
+      "operator": "py_getattr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-exec-loader-ai-reviewer-comment",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-pth-exec",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P008"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-pth-exec",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P008"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-pth-exec",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P008"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-pth-exec",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P008"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-pth-exec",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-P008"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-pth-exec",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P008"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-requirements-index-url",
+      "kind": "malicious",
+      "operator": "py_getattr",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-requirements-index-url",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-P004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-setup-py-download-run",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-setup-py-download-run",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-setup-py-download-run",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-setup-py-download-run",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-setup-py-download-run",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-setup-py-download-run",
+      "kind": "malicious",
+      "operator": "py_getattr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "python-setup-py-download-run",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "readme-curl-bash-lookalike",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002",
+        "PAH-C013"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "readme-nondefault-registry",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C018"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "readme-nondefault-registry",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C018"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "readme-nondefault-registry",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "warn",
+      "verdict": "block",
+      "rules": [
+        "PAH-C018"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "skill-md-fetch-binary",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "skill-md-fetch-binary",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "skill-md-fetch-binary",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C001",
+        "PAH-C002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "skill-shell-line-preexec",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A019",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "skill-shell-line-preexec",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A019",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "skill-shell-line-preexec",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-A019",
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-C022",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-folderopen-fake-font",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C022",
+        "PAH-F002",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-settings-autoapprove",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001",
+        "PAH-I002"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-tasks-folderopen",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-tasks-folderopen",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-tasks-folderopen",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-tasks-folderopen",
+      "kind": "malicious",
+      "operator": "sh_split_tools",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-tasks-folderopen",
+      "kind": "malicious",
+      "operator": "sh_printf_url",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "vscode-tasks-folderopen",
+      "kind": "malicious",
+      "operator": "sh_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C003",
+        "PAH-C004",
+        "PAH-I001"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "workflow-secrets-exfil",
+      "kind": "malicious",
+      "operator": "py_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-I010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "workflow-secrets-exfil",
+      "kind": "malicious",
+      "operator": "py_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-I010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "workflow-secrets-exfil",
+      "kind": "malicious",
+      "operator": "py_chr",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-I010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "workflow-secrets-exfil",
+      "kind": "malicious",
+      "operator": "py_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-I010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "workflow-secrets-exfil",
+      "kind": "malicious",
+      "operator": "py_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-I010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "workflow-secrets-exfil",
+      "kind": "malicious",
+      "operator": "py_exec_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-I010"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_split",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_array_join",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_char_codes",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_hex_escape",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_rot13",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-C012",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_brackets",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_alias_require",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_eval_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_function_base64",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C002",
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    },
+    {
+      "case": "yarnrc-yarnpath-repo-script",
+      "kind": "malicious",
+      "operator": "js_delay",
+      "expected": "block",
+      "verdict": "block",
+      "rules": [
+        "PAH-C004",
+        "PAH-P006"
+      ],
+      "bypass": false
+    }
+  ],
+  "untestable": [
+    "symlink-to-ssh-key"
+  ],
+  "name": "2026-11-12",
+  "date": "2026-11-12",
+  "version": "0.3.0",
+  "code": "f2974c0fff31",
+  "seconds": 11.9,
+  "operators": [
+    "js_split",
+    "js_array_join",
+    "js_char_codes",
+    "js_hex_escape",
+    "js_rot13",
+    "js_brackets",
+    "js_alias_require",
+    "js_eval_base64",
+    "js_function_base64",
+    "js_delay",
+    "py_split",
+    "py_join",
+    "py_chr",
+    "py_hex_escape",
+    "py_rot13",
+    "py_getattr",
+    "py_exec_base64",
+    "sh_split_tools",
+    "sh_printf_url",
+    "sh_base64"
+  ],
+  "neutral": [
+    "rename",
+    "py_comments"
+  ]
+}

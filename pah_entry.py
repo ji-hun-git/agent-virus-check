@@ -7,7 +7,7 @@ they run before every tool call.
 import sys
 
 if sys.version_info < (3, 10):  # noqa: UP036 (whatever Python the hook finds, say why the guard is off)
-    sys.stdout.write('{"systemMessage": "agent-virus-check needs Python 3.10 or newer; the guard is not running."}\n')
+    sys.stdout.write('{"systemMessage": "agent-white-hat needs Python 3.10 or newer; the guard is not running."}\n')
     sys.exit(0)
 
 import os  # noqa: E402

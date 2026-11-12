@@ -1,4 +1,4 @@
-# TrapRepo: the agent-virus-check benchmark corpus
+# TrapRepo: the agent-white-hat benchmark corpus
 
 97 cases (64 malicious, 33 benign) that measure whether a
 pre-flight scanner (or a plain LLM review) catches real 2025-2026 supply-chain

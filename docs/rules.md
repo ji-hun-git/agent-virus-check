@@ -1,6 +1,6 @@
 # Rules
 
-Every rule agent-virus-check reports, with the incident or study behind it.
+Every rule agent-white-hat reports, with the incident or study behind it.
 
 | Rule | What it means | ATT&CK | OWASP |
 | --- | --- | --- | --- |
