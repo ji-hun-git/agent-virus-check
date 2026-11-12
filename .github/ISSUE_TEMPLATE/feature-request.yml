@@ -1,0 +1,15 @@
+name: Idea or new agent
+description: Cover another agent, ecosystem or attack technique, or improve how something works.
+title: "Idea: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What is not covered today. For an attack technique, link the incident, CVE or paper behind it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose

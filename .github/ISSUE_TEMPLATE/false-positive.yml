@@ -1,0 +1,42 @@
+name: False positive
+description: personal-anti-hack flagged something that is not dangerous.
+title: "False positive: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. If the flagged code really is malicious, or you found a way past the scanner, please
+        report it privately through a security advisory instead.
+  - type: input
+    id: target
+    attributes:
+      label: What was scanned
+      description: A public repository URL with the commit, a package name and version, or a short description.
+      placeholder: https://github.com/owner/repo at 1a2b3c4
+    validations:
+      required: true
+  - type: input
+    id: finding
+    attributes:
+      label: Rule and location
+      placeholder: PAH-C004 at scripts/build.js:12
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it is harmless
+      description: What the code really does, and when it runs.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The relevant part of `pah scan <target>`, or of `--json`.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The output of `pah --version`, or the commit or tag you used.

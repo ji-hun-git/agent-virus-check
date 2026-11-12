@@ -28,6 +28,8 @@ pah = "pah.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/ji-hun-git/personal-anti-hack"
+Documentation = "https://github.com/ji-hun-git/personal-anti-hack#readme"
+Changelog = "https://github.com/ji-hun-git/personal-anti-hack/blob/main/CHANGELOG.md"
 Issues = "https://github.com/ji-hun-git/personal-anti-hack/issues"
 
 [tool.setuptools]

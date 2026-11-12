@@ -48,6 +48,14 @@ def cmd_scan(args) -> int:
         Path(args.output).write_text(out + "\n", encoding="utf-8")
     else:
         print(out)
+    prefix = None
+    if getattr(args, "github", False):
+        from .ci import github, workspace_prefix
+
+        prefix = workspace_prefix(args.target)
+        github(rep, prefix=prefix)
+    if getattr(args, "sarif_out", None):
+        Path(args.sarif_out).write_text(render.sarif(rep, base=prefix or "") + "\n", encoding="utf-8")
     verdict = rep.verdict
     if args.fail_on:
         return EXIT_CODES[verdict] if FAIL_ORDER[verdict] >= FAIL_ORDER[args.fail_on] else 0
@@ -168,6 +176,13 @@ def cmd_rules(args) -> int:
     return 0
 
 
+def _ci_options(p: argparse.ArgumentParser) -> None:
+    p.add_argument("--sarif-out", metavar="FILE", help="also write a SARIF report to FILE (for GitHub code scanning), "
+                   "whatever --format prints")
+    p.add_argument("--github", action="store_true", help="GitHub Actions: annotate findings on their lines, set the "
+                   "verdict as a step output and write a job summary")
+
+
 def main(argv: list[str] | None = None) -> int:
     _stdio()
     parser = argparse.ArgumentParser(prog="pah", description="A local shield for people who let AI agents open, install and "
@@ -192,6 +207,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("-v", "--verbose", action="store_true", help="also show info-level findings")
     p.add_argument("--av", action="store_true", help="also scan with the antivirus engine on this computer "
                    "(Microsoft Defender or ClamAV; local only)")
+    _ci_options(p)
     p.set_defaults(func=cmd_scan)
 
     p = sub.add_parser("audit", help="everything for one target: the scan, the local antivirus engine, and (with "
@@ -210,6 +226,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--model", default=None)
     p.add_argument("--lang", choices=("en", "ko"), default=os.environ.get("PAH_LANG", "en"))
     p.add_argument("-v", "--verbose", action="store_true")
+    _ci_options(p)
     p.set_defaults(func=cmd_scan, av=True, audit=True)
 
     p = sub.add_parser("check-command", help="judge a shell command an agent (or you) is about to run")

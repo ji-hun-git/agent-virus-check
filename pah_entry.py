@@ -14,7 +14,8 @@ import os  # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-if len(sys.argv) in (3, 5) and sys.argv[1] == "hook" and sys.argv[2] in ("pre", "post", "session-start")         and (len(sys.argv) == 3 or sys.argv[3] == "--agent"):
+if (len(sys.argv) in (3, 5) and sys.argv[1] == "hook" and sys.argv[2] in ("pre", "post", "session-start")
+        and (len(sys.argv) == 3 or sys.argv[3] == "--agent")):
     from pah.hooks import main as hook_main  # noqa: E402
 
     sys.exit(hook_main(sys.argv[2], sys.argv[4] if len(sys.argv) == 5 else "claude"))

@@ -166,7 +166,8 @@ def as_json(report: Report) -> str:
     return json.dumps(report.to_dict(), indent=2, ensure_ascii=False)
 
 
-def sarif(report: Report) -> str:
+def sarif(report: Report, base: str = "") -> str:
+    """SARIF 2.1.0. `base` is the scanned folder's path inside the repository, so code scanning finds the files."""
     level = {"critical": "error", "high": "error", "medium": "warning", "low": "note", "info": "note"}
     used = sorted({f.rule for f in report.findings})
     rules = [{
@@ -177,7 +178,8 @@ def sarif(report: Report) -> str:
     } for rid in used]
     results = []
     for f in report.sorted_findings():
-        loc = {"physicalLocation": {"artifactLocation": {"uri": f.path.split("!/")[0]}}}
+        path = f.path.split("!/")[0]
+        loc = {"physicalLocation": {"artifactLocation": {"uri": f"{base}/{path}" if base else path}}}
         if f.line:
             loc["physicalLocation"]["region"] = {"startLine": max(1, f.line)}
         results.append({"ruleId": f.rule, "level": level[f.severity],

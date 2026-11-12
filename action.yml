@@ -1,0 +1,75 @@
+name: personal-anti-hack scan
+description: Find code that runs without being read (agent hooks, install scripts, hidden payloads) before an AI agent sets a project up.
+author: Jihun Chae
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  path:
+    description: Folder, file, archive or git URL to scan.
+    default: "."
+  fail-on:
+    description: Fail the step at or above this verdict (block, warn or incomplete), or never (none).
+    default: block
+  sarif:
+    description: Also write a SARIF report to this file, for github/codeql-action/upload-sarif. Empty to skip.
+    default: personal-anti-hack.sarif
+  online:
+    description: Also check packages against the public registries and OSV ("true" sends package names and versions).
+    default: "false"
+  annotations:
+    description: Put medium-or-worse findings on their lines in the run and the pull request ("false" to skip).
+    default: "true"
+  python:
+    description: Python 3.10 or newer to run with. Empty to use the runner's python3 or python.
+    default: ""
+
+outputs:
+  verdict:
+    description: block, warn, pass or incomplete.
+    value: ${{ steps.scan.outputs.verdict }}
+  sarif:
+    description: Path of the SARIF report, when one was written.
+    value: ${{ steps.scan.outputs.sarif }}
+
+runs:
+  using: composite
+  steps:
+    - id: scan
+      shell: bash
+      env:
+        PAH_ACTION_PATH: ${{ inputs.path }}
+        PAH_ACTION_FAIL_ON: ${{ inputs.fail-on }}
+        PAH_ACTION_SARIF: ${{ inputs.sarif }}
+        PAH_ACTION_ONLINE: ${{ inputs.online }}
+        PAH_ACTION_PYTHON: ${{ inputs.python }}
+        PAH_ANNOTATIONS: ${{ inputs.annotations }}
+      run: |
+        set -uo pipefail
+        py=""
+        for candidate in "$PAH_ACTION_PYTHON" python3 python; do
+          if [ -n "$candidate" ] && command -v "$candidate" >/dev/null 2>&1 \
+             && "$candidate" -c 'import sys; sys.exit(sys.version_info < (3, 10))' >/dev/null 2>&1; then
+            py="$candidate"; break
+          fi
+        done
+        if [ -z "$py" ]; then
+          echo "::error title=personal-anti-hack::No Python 3.10 or newer found; add actions/setup-python before this step."
+          exit 2
+        fi
+        args=(scan "$PAH_ACTION_PATH" --github)
+        case "$PAH_ACTION_FAIL_ON" in
+          block|warn|incomplete) args+=(--fail-on "$PAH_ACTION_FAIL_ON") ;;
+          none) ;;
+          *) echo "::error title=personal-anti-hack::fail-on must be block, warn, incomplete or none."; exit 2 ;;
+        esac
+        if [ "$PAH_ACTION_ONLINE" = "true" ]; then args+=(--online); fi
+        if [ -n "$PAH_ACTION_SARIF" ]; then
+          args+=(--sarif-out "$PAH_ACTION_SARIF")
+          echo "sarif=$PAH_ACTION_SARIF" >> "$GITHUB_OUTPUT"
+        fi
+        status=0
+        "$py" -I "$GITHUB_ACTION_PATH/pah_entry.py" "${args[@]}" || status=$?
+        if [ "$PAH_ACTION_FAIL_ON" = "none" ] && [ "$status" -lt 64 ]; then exit 0; fi
+        exit "$status"

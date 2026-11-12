@@ -13,6 +13,7 @@
   <a href="https://github.com/ji-hun-git/personal-anti-hack/actions/workflows/ci.yml"><img src="https://github.com/ji-hun-git/personal-anti-hack/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-2f6fde" alt="Claude Code plugin"/>
   <a href="docs/agent-setup.md"><img src="https://img.shields.io/badge/agents-9%20hook%20protocols-2f6fde" alt="Nine agent hook protocols"/></a>
+  <a href="docs/ci.md"><img src="https://img.shields.io/badge/GitHub%20Action-%2B%20pre--commit-2f6fde" alt="GitHub Action and pre-commit hook"/></a>
   <img src="https://img.shields.io/badge/MCP-server-2f6fde" alt="MCP server"/>
   <img src="https://img.shields.io/badge/python-3.10%20to%203.14-2f6fde" alt="Python 3.10 to 3.14"/>
   <img src="https://img.shields.io/badge/dependencies-none-2f6fde" alt="No dependencies"/>
@@ -24,6 +25,7 @@
   <a href="#install"><b>Install</b></a> &nbsp;|&nbsp;
   <a href="#what-it-does"><b>What it does</b></a> &nbsp;|&nbsp;
   <a href="docs/agent-setup.md"><b>Agents</b></a> &nbsp;|&nbsp;
+  <a href="docs/ci.md"><b>CI</b></a> &nbsp;|&nbsp;
   <a href="#benchmark"><b>Benchmark</b></a> &nbsp;|&nbsp;
   <a href="#attack-drill"><b>Attack drill</b></a> &nbsp;|&nbsp;
   <a href="#how-it-decides"><b>How it decides</b></a> &nbsp;|&nbsp;
@@ -85,6 +87,7 @@
 | **Security skills** for any agent | Four Agent Skills: everyday rules, a full **malware audit** procedure (execution surfaces, static decoding, behavior, provenance, verdict), a **security review** for exploitable bugs and vulnerable dependencies (including prompt injection and excessive agency in LLM features), and **incident response** for when something already ran. |
 | **`pah watch`** | A baseline of every agent's settings, hooks, MCP servers, API URLs and approval modes (Claude Code, Codex, Gemini CLI, Cursor, OpenClaw, Claude Desktop, VS Code, Windsurf), plus shell profiles, git and npm config, startup folders, LaunchAgents and Run keys. `pah watch check` shows what changed. Secrets are stored only as hashes. |
 | **`pah checkup`** | Is this computer already exposed? API keys saved in plain files, risky agent settings, `AGENTS.md`/`CLAUDE.md` planted in Downloads or Desktop, `curl \| sh` and ClickFix traces in shell and Win+R history, known traces of campaigns aimed at AI-tool users, agents and git with known fixes missing. Key values are never shown. |
+| **In CI and before commits** | A GitHub Action that annotates findings on their lines in pull requests, writes a job summary and a SARIF report for code scanning, and fails on BLOCK; a pre-commit hook; and exit codes for any other CI ([docs/ci.md](docs/ci.md)). |
 | **`--online`** (opt-in) | Packages that do not exist (slopsquats, "phantom" dependencies), that appeared in the last week, or that OSV lists as malicious, and known vulnerabilities in the exact versions lockfiles pin. Sends package names and versions only. |
 | **`--deep`** (opt-in) | A model review of the evidence the rules prepared. It can raise a verdict with claims that cite real lines, never lower one; a refusal counts as "not reviewed". |
 
@@ -111,6 +114,30 @@ pah audit https://github.com/owner/repo
 ```
 pah install --skills --mcp          # the agents it finds; add --yes to write
 pah install codex cursor gemini --yes
+```
+
+**In CI and before commits** ([docs/ci.md](docs/ci.md) has SARIF upload, inputs and other CI systems):
+
+```yaml
+# .github/workflows/personal-anti-hack.yml: fails on BLOCK, annotates pull requests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ji-hun-git/personal-anti-hack@v0.1.0
+```
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/ji-hun-git/personal-anti-hack
+    rev: v0.1.0
+    hooks:
+      - id: personal-anti-hack
 ```
 
 **No install at all:** clone this repository and start any agent in it. [`AGENTS.md`](AGENTS.md) (imported by
@@ -294,7 +321,7 @@ leaves the machine without `--online` or `--deep`. See [SECURITY.md](SECURITY.md
 | Command | |
 | --- | --- |
 | `pah audit <folder\|file\|archive\|git URL>` | The scan, the local antivirus engine (`--no-av` to skip), and with `--online` malicious, missing, brand-new and vulnerable packages; ends with next steps |
-| `pah scan <folder\|file\|archive\|git URL>` | `--json`, `--sarif`, `-o FILE`, `--fail-on block\|warn\|incomplete`, `--online`, `--av`, `--deep [--provider anthropic\|openai\|meta\|ollama] [--model ID]`, `--lang ko`, `-v` |
+| `pah scan <folder\|file\|archive\|git URL>` | `--json`, `--sarif`, `-o FILE`, `--fail-on block\|warn\|incomplete`, `--online`, `--av`, `--deep [--provider anthropic\|openai\|meta\|ollama] [--model ID]`, `--lang ko`, `-v`, `--sarif-out FILE`, `--github` (annotations, step outputs and a job summary in GitHub Actions) |
 | `pah check-command "<command>"` | The guard's verdict on one command (`--cwd`, `--json`, `--no-scan`) |
 | `pah watch init \| check \| accept` | Baseline and changes of agent and shell configuration |
 | `pah checkup` | This computer: keys in files, risky settings, planted instructions, traces, outdated agents |
@@ -329,4 +356,5 @@ Keys for `--deep` come from `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` or `META_API_K
 ## License
 
 MIT, © 2026 Jihun Chae. Data from others is listed in [NOTICE.md](NOTICE.md). If you use it in research, see
-[CITATION.cff](CITATION.cff).
+[CITATION.cff](CITATION.cff). Changes are in [CHANGELOG.md](CHANGELOG.md); false positives, bypasses and code are
+welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).

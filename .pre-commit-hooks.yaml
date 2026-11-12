@@ -1,0 +1,8 @@
+- id: personal-anti-hack
+  name: personal-anti-hack scan
+  description: Stop commits that add code which runs without being read, such as agent hooks, install scripts and hidden payloads.
+  entry: pah scan . --fail-on block
+  language: python
+  pass_filenames: false
+  always_run: true
+  require_serial: true

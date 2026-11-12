@@ -13,6 +13,7 @@
   <a href="https://github.com/ji-hun-git/personal-anti-hack/actions/workflows/ci.yml"><img src="https://github.com/ji-hun-git/personal-anti-hack/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-2f6fde" alt="Claude Code 플러그인"/>
   <a href="docs/agent-setup.md"><img src="https://img.shields.io/badge/agents-9%20hook%20protocols-2f6fde" alt="에이전트 훅 프로토콜 9종"/></a>
+  <a href="docs/ci.md"><img src="https://img.shields.io/badge/GitHub%20Action-%2B%20pre--commit-2f6fde" alt="GitHub Action과 pre-commit 훅"/></a>
   <img src="https://img.shields.io/badge/MCP-server-2f6fde" alt="MCP 서버"/>
   <img src="https://img.shields.io/badge/python-3.10%20to%203.14-2f6fde" alt="Python 3.10~3.14"/>
   <img src="https://img.shields.io/badge/dependencies-none-2f6fde" alt="의존성 없음"/>
@@ -24,6 +25,7 @@
   <a href="#설치"><b>설치</b></a> &nbsp;|&nbsp;
   <a href="#하는-일"><b>하는 일</b></a> &nbsp;|&nbsp;
   <a href="docs/agent-setup.md"><b>에이전트</b></a> &nbsp;|&nbsp;
+  <a href="docs/ci.md"><b>CI</b></a> &nbsp;|&nbsp;
   <a href="#벤치마크"><b>벤치마크</b></a> &nbsp;|&nbsp;
   <a href="#공격-훈련"><b>공격 훈련</b></a> &nbsp;|&nbsp;
   <a href="#판정-방식"><b>판정 방식</b></a> &nbsp;|&nbsp;
@@ -81,6 +83,7 @@
 | **보안 스킬**: 어떤 에이전트에서든 | Agent Skills 4개: 일상 규칙, 전체 **악성코드 감사** 절차(실행 표면, 정적 디코딩, 행위 분류, 출처 확인, 판정), 악용 가능한 버그와 취약한 의존성을 찾는 **보안 리뷰**(LLM 기능의 프롬프트 인젝션·과도한 권한 포함), 이미 실행돼 버렸을 때의 **사고 대응**. |
 | **`pah watch`** | 모든 에이전트의 설정·훅·MCP 서버·API 주소·승인 모드(Claude Code, Codex, Gemini CLI, Cursor, OpenClaw, Claude Desktop, VS Code, Windsurf)와 셸 프로필, git·npm 설정, 시작 프로그램, LaunchAgents, Run 키의 기준선을 만들고 무엇이 바뀌었는지 보여 줍니다. 비밀 값은 해시로만 저장합니다. |
 | **`pah checkup`** | 이 컴퓨터가 이미 노출됐는지: 평문 파일에 저장된 API 키, 위험한 에이전트 설정, 다운로드·바탕화면에 심어진 `AGENTS.md`/`CLAUDE.md`, 셸·Win+R 기록의 `curl \| sh`와 ClickFix 흔적, AI 도구 사용자를 노린 캠페인의 알려진 흔적, 알려진 취약점이 고쳐지지 않은 에이전트와 git. 키 값은 절대 보여 주지 않습니다. |
+| **CI와 커밋 전** | 풀 리퀘스트의 해당 줄에 발견 사항을 표시하고, 작업 요약과 코드 스캐닝용 SARIF 보고서를 남기고, BLOCK이면 실패하는 GitHub Action. pre-commit 훅. 다른 CI에서는 종료 코드로 ([docs/ci.md](docs/ci.md)). |
 | **`--online`** (선택) | 존재하지 않는 패키지(slopsquat, "유령" 의존성), 최근 일주일 안에 생긴 패키지, OSV가 악성으로 등록한 패키지, 잠금 파일이 고정한 버전의 알려진 취약점. 패키지 이름과 버전만 보냅니다. |
 | **`--deep`** (선택) | 규칙이 준비한 증거를 모델이 검토합니다. 실제 줄을 인용한 주장으로 판정을 올릴 수만 있고 내릴 수는 없으며, 거절은 "검토 안 됨"으로 처리합니다. |
 
@@ -107,6 +110,30 @@ pah audit https://github.com/owner/repo
 ```
 pah install --skills --mcp          # 찾은 에이전트 전부; 적용하려면 --yes
 pah install codex cursor gemini --yes
+```
+
+**CI와 커밋 전** (SARIF 업로드, 입력값, 다른 CI는 [docs/ci.md](docs/ci.md)):
+
+```yaml
+# .github/workflows/personal-anti-hack.yml: BLOCK이면 실패하고 풀 리퀘스트에 표시합니다
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ji-hun-git/personal-anti-hack@v0.1.0
+```
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/ji-hun-git/personal-anti-hack
+    rev: v0.1.0
+    hooks:
+      - id: personal-anti-hack
 ```
 
 **설치 없이:** 이 레포지토리를 클론하고 그 안에서 아무 에이전트나 실행하세요. [`AGENTS.md`](AGENTS.md)(`CLAUDE.md`,
@@ -284,7 +311,7 @@ Oh My Zsh, nvm, Homebrew 설치 스크립트, GitHub CLI, spring-petclinic, vsco
 | 명령 | |
 | --- | --- |
 | `pah audit <폴더\|파일\|압축 파일\|git URL>` | 검사 + 로컬 백신 엔진(`--no-av`로 생략) + `--online`이면 악성·없는·갓 올라온·취약한 패키지; 마지막에 다음 단계 |
-| `pah scan <폴더\|파일\|압축 파일\|git URL>` | `--json`, `--sarif`, `-o FILE`, `--fail-on block\|warn\|incomplete`, `--online`, `--av`, `--deep [--provider anthropic\|openai\|meta\|ollama] [--model ID]`, `--lang ko`, `-v` |
+| `pah scan <폴더\|파일\|압축 파일\|git URL>` | `--json`, `--sarif`, `-o FILE`, `--fail-on block\|warn\|incomplete`, `--online`, `--av`, `--deep [--provider anthropic\|openai\|meta\|ollama] [--model ID]`, `--lang ko`, `-v`, `--sarif-out FILE`, `--github`(GitHub Actions에서 줄 표시, 단계 출력값, 작업 요약) |
 | `pah check-command "<명령>"` | 명령 하나에 대한 가드의 판정 (`--cwd`, `--json`, `--no-scan`) |
 | `pah watch init \| check \| accept` | 에이전트·셸 설정의 기준선과 변경 |
 | `pah checkup` | 이 컴퓨터: 파일 속 키, 위험한 설정, 심어진 지시 파일, 흔적, 오래된 에이전트 |
@@ -319,4 +346,5 @@ Oh My Zsh, nvm, Homebrew 설치 스크립트, GitHub CLI, spring-petclinic, vsco
 ## 라이선스
 
 MIT, © 2026 Jihun Chae. 다른 곳에서 가져온 데이터는 [NOTICE.md](NOTICE.md)에 있습니다. 연구에 쓰신다면
-[CITATION.cff](CITATION.cff)를 참고하세요.
+[CITATION.cff](CITATION.cff)를 참고하세요. 변경 내역은 [CHANGELOG.md](CHANGELOG.md)에 있고, 오탐·우회 사례·코드 기여는
+[CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
