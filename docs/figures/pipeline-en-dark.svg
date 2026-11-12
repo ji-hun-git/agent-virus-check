@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="721" viewBox="0 0 960 721" role="img" aria-labelledby="title desc" font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif'>
+<title id="title">How it works</title><desc id="desc">Every command your agent runs passes the guard first. A setup command gets the whole project scanned before it may run.</desc>
+<rect x="0.5" y="0.5" width="959" height="720" rx="15.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="28" y="42" font-size="20" font-weight="700" fill="#f0f6fc">How it works</text>
+<text x="28" y="66" font-size="13.5" fill="#9198a1">Every command your agent runs passes the guard first. A setup command gets the whole project scanned before it may run.</text>
+<rect x="28" y="104" width="184" height="272" rx="12" fill="#151b23" stroke="#3d444d"/><text x="42" y="130" font-size="13.5" font-weight="700" fill="#f0f6fc">What your agent touches</text>
+<rect x="42" y="156" width="156" height="23" rx="6" fill="#0d1117" stroke="#3d444d"/>
+<rect x="50" y="164" width="7" height="7" rx="2" fill="#6e7681"/>
+<text x="64" y="171.8" font-size="12" fill="#f0f6fc">Git repositories</text>
+<rect x="42" y="185" width="156" height="23" rx="6" fill="#0d1117" stroke="#3d444d"/>
+<rect x="50" y="193" width="7" height="7" rx="2" fill="#6e7681"/>
+<text x="64" y="200.8" font-size="12" fill="#f0f6fc">Packages: npm, PyPI, …</text>
+<rect x="42" y="214" width="156" height="23" rx="6" fill="#0d1117" stroke="#3d444d"/>
+<rect x="50" y="222" width="7" height="7" rx="2" fill="#6e7681"/>
+<text x="64" y="229.8" font-size="12" fill="#f0f6fc">Agent Skills</text>
+<rect x="42" y="243" width="156" height="23" rx="6" fill="#0d1117" stroke="#3d444d"/>
+<rect x="50" y="251" width="7" height="7" rx="2" fill="#6e7681"/>
+<text x="64" y="258.8" font-size="12" fill="#f0f6fc">MCP servers</text>
+<rect x="42" y="272" width="156" height="23" rx="6" fill="#0d1117" stroke="#3d444d"/>
+<rect x="50" y="280" width="7" height="7" rx="2" fill="#6e7681"/>
+<text x="64" y="287.8" font-size="12" fill="#f0f6fc">Archives, downloads</text>
+<rect x="42" y="301" width="156" height="23" rx="6" fill="#0d1117" stroke="#3d444d"/>
+<rect x="50" y="309" width="7" height="7" rx="2" fill="#6e7681"/>
+<text x="64" y="316.8" font-size="12" fill="#f0f6fc">AGENTS.md, CLAUDE.md</text>
+<rect x="268" y="104" width="188" height="272" rx="12" fill="#151b23" stroke="#3d444d"/><text x="282" y="130" font-size="13.5" font-weight="700" fill="#f0f6fc">Your AI agent</text>
+<rect x="282" y="156" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="320" y="171.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Claude Code</text>
+<rect x="366" y="156" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="404" y="171.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Codex</text>
+<rect x="282" y="186" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="320" y="201.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Gemini CLI</text>
+<rect x="366" y="186" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="404" y="201.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Antigravity</text>
+<rect x="282" y="216" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="320" y="231.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Cursor</text>
+<rect x="366" y="216" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="404" y="231.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Copilot</text>
+<rect x="282" y="246" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="320" y="261.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Devin</text>
+<rect x="366" y="246" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="404" y="261.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Kiro</text>
+<rect x="324" y="276" width="76" height="23" rx="11.5" fill="#0d1117" stroke="#3d444d"/>
+<text x="362" y="291.8" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">Cline</text>
+<rect x="512" y="104" width="208" height="272" rx="12" fill="#152338" stroke="#4c8df6"/>
+<g transform="translate(526 117) scale(0.2200)"><rect width="100" height="100" rx="18" fill="#4c8df6"/><path d="M50 17 L76 26 L76 50 Q74 72 50 84 Q26 72 24 50 L24 26 Z" fill="#ffffff"/><path d="M36 50 L43 43 L48 49 L60 35 L67 42 L48 62 Z" fill="#4c8df6"/></g>
+<text x="556" y="133" font-size="14" font-weight="700" fill="#f0f6fc">The guard</text>
+<text x="634.4" y="133" font-size="11.5" font-weight="500" fill="#79b0ff">a pre-tool hook</text>
+<text x="526" y="160" font-size="12.2" fill="#f0f6fc">Checks each command for</text>
+<text x="526" y="177.5" font-size="12.2" fill="#f0f6fc">download-and-run,</text>
+<text x="526" y="195" font-size="12.2" fill="#f0f6fc">decode-and-run, credential</text>
+<text x="526" y="212.5" font-size="12.2" fill="#f0f6fc">reads, persistence, approvals</text>
+<text x="526" y="230" font-size="12.2" fill="#f0f6fc">turned off, look-alike packages</text>
+<text x="526" y="247.5" font-size="12.2" fill="#f0f6fc">and registry redirects.</text>
+<line x1="526" y1="264.0" x2="706" y2="264.0" stroke="#4c8df6" stroke-opacity="0.35"/>
+<text x="526" y="279" font-size="12.2" font-weight="600" fill="#79b0ff">Setup commands (npm install,</text>
+<text x="526" y="296.5" font-size="12.2" font-weight="600" fill="#79b0ff">pip install -e ., make, pytest)</text>
+<text x="526" y="314" font-size="12.2" font-weight="600" fill="#79b0ff">scan the project first.</text>
+<rect x="776" y="104" width="156" height="272" rx="12" fill="#151b23" stroke="#3d444d"/><text x="790" y="130" font-size="13.5" font-weight="700" fill="#f0f6fc">Outcome</text>
+<rect x="790" y="148" width="56" height="20" rx="10" fill="#f85149"/><text x="818" y="162" font-size="11" font-weight="600" fill="#0d1117" text-anchor="middle">BLOCK</text>
+<text x="790" y="184" font-size="12" fill="#f0f6fc">Denied. Nothing runs.</text>
+<rect x="790" y="206" width="51.4" height="20" rx="10" fill="#d29922"/><text x="815.7" y="220" font-size="11" font-weight="600" fill="#0d1117" text-anchor="middle">WARN</text>
+<text x="790" y="242" font-size="12" fill="#f0f6fc">You are asked.</text>
+<rect x="790" y="264" width="46.9" height="20" rx="10" fill="#3fb950"/><text x="813.5" y="278" font-size="11" font-weight="600" fill="#0d1117" text-anchor="middle">PASS</text>
+<text x="790" y="300" font-size="12" fill="#f0f6fc">Your agent's own rules</text>
+<text x="790" y="316" font-size="12" fill="#f0f6fc">apply.</text>
+<text x="790" y="347" font-size="11.5" fill="#9198a1">The guard never</text>
+<text x="790" y="362" font-size="11.5" fill="#9198a1">answers “allow”.</text>
+<line x1="218" y1="222" x2="262" y2="222" stroke="#6e7681" stroke-width="1.6"/><path d="M255 217 L262 222 L255 227" fill="none" stroke="#6e7681" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="240" y="199" font-size="12" font-weight="500" fill="#9198a1" text-anchor="middle">clones,</text><text x="240" y="213" font-size="12" font-weight="500" fill="#9198a1" text-anchor="middle">reads</text>
+<line x1="462" y1="222" x2="506" y2="222" stroke="#4c8df6" stroke-width="1.6"/><path d="M499 217 L506 222 L499 227" fill="none" stroke="#4c8df6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="484" y="199" font-size="12" font-weight="500" fill="#79b0ff" text-anchor="middle">every</text><text x="484" y="213" font-size="12" font-weight="500" fill="#79b0ff" text-anchor="middle">tool call</text>
+<line x1="726" y1="222" x2="770" y2="222" stroke="#4c8df6" stroke-width="1.6"/><path d="M763 217 L770 222 L763 227" fill="none" stroke="#4c8df6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="748" y="199" font-size="12" font-weight="500" fill="#79b0ff" text-anchor="middle">command</text><text x="748" y="213" font-size="12" font-weight="500" fill="#79b0ff" text-anchor="middle">checks</text>
+<rect x="28" y="428" width="904" height="267" rx="12" fill="#151b23" stroke="#3d444d"/>
+<line x1="616" y1="378" x2="616" y2="425" stroke="#4c8df6" stroke-width="1.6"/><path d="M611 418 L616 425 L621 418" fill="none" stroke="#4c8df6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="625" y="405.5" font-size="12" font-weight="500" fill="#79b0ff">setup: scan the project</text>
+<text x="44" y="456" font-size="13.5" font-weight="700" fill="#f0f6fc">Inside the scan</text>
+<rect x="44" y="472" width="198.5" height="167" rx="10" fill="#0d1117" stroke="#3d444d"/>
+<circle cx="66" cy="494" r="11" fill="#4c8df6"/>
+<text x="66" y="498.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="84" y="498.5" font-size="13" font-weight="700" fill="#f0f6fc">Map what runs</text>
+<text x="84" y="514.5" font-size="13" font-weight="700" fill="#f0f6fc">on its own</text>
+<text x="58" y="538" font-size="12.4" fill="#9198a1">Agent hooks, npm and pip</text>
+<text x="58" y="555" font-size="12.4" fill="#9198a1">lifecycle scripts, IDE tasks,</text>
+<text x="58" y="572" font-size="12.4" fill="#9198a1">dev containers, build scripts,</text>
+<text x="58" y="589" font-size="12.4" fill="#9198a1">git hooks, instruction files,</text>
+<text x="58" y="606" font-size="12.4" fill="#9198a1">and the files they run.</text>
+<line x1="246.5" y1="555.5" x2="264.5" y2="555.5" stroke="#6e7681" stroke-width="1.6"/><path d="M257.5 550.5 L264.5 555.5 L257.5 560.5" fill="none" stroke="#6e7681" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="268.5" y="472" width="198.5" height="167" rx="10" fill="#0d1117" stroke="#3d444d"/>
+<circle cx="290.5" cy="494" r="11" fill="#4c8df6"/>
+<text x="290.5" y="498.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="308.5" y="498.5" font-size="13" font-weight="700" fill="#f0f6fc">Read everything</text>
+<text x="282.5" y="538" font-size="12.4" fill="#9198a1">Whole files, never truncated.</text>
+<text x="282.5" y="555" font-size="12.4" fill="#9198a1">Base64, hex and escapes</text>
+<text x="282.5" y="572" font-size="12.4" fill="#9198a1">decoded; hidden Unicode,</text>
+<text x="282.5" y="589" font-size="12.4" fill="#9198a1">padding, archives, and</text>
+<text x="282.5" y="606" font-size="12.4" fill="#9198a1">binaries found by what they</text>
+<text x="282.5" y="623" font-size="12.4" fill="#9198a1">are.</text>
+<line x1="471" y1="555.5" x2="489" y2="555.5" stroke="#6e7681" stroke-width="1.6"/><path d="M482 550.5 L489 555.5 L482 560.5" fill="none" stroke="#6e7681" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="493" y="472" width="198.5" height="167" rx="10" fill="#0d1117" stroke="#3d444d"/>
+<circle cx="515" cy="494" r="11" fill="#4c8df6"/>
+<text x="515" y="498.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<text x="533" y="498.5" font-size="13" font-weight="700" fill="#f0f6fc">Judge by context</text>
+<text x="507" y="538" font-size="12.4" fill="#9198a1">The same line is critical in a</text>
+<text x="507" y="555" font-size="12.4" fill="#9198a1">hook, high in code and quiet</text>
+<text x="507" y="572" font-size="12.4" fill="#9198a1">in docs. Downloads judged</text>
+<text x="507" y="589" font-size="12.4" fill="#9198a1">by host; combinations</text>
+<text x="507" y="606" font-size="12.4" fill="#9198a1">escalate.</text>
+<line x1="695.5" y1="555.5" x2="713.5" y2="555.5" stroke="#6e7681" stroke-width="1.6"/><path d="M706.5 550.5 L713.5 555.5 L706.5 560.5" fill="none" stroke="#6e7681" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="717.5" y="472" width="198.5" height="167" rx="10" fill="#0d1117" stroke="#4c8df6"/>
+<circle cx="739.5" cy="494" r="11" fill="#4c8df6"/>
+<text x="739.5" y="498.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+<text x="757.5" y="498.5" font-size="13" font-weight="700" fill="#f0f6fc">Verdict</text>
+<rect x="731.5" y="525" width="52.2" height="19" rx="9.5" fill="#f85149"/><text x="757.6" y="538.3" font-size="10.5" font-weight="600" fill="#0d1117" text-anchor="middle">BLOCK</text>
+<rect x="788.7" y="525" width="47.8" height="19" rx="9.5" fill="#d29922"/><text x="812.6" y="538.3" font-size="10.5" font-weight="600" fill="#0d1117" text-anchor="middle">WARN</text>
+<rect x="841.5" y="525" width="43.5" height="19" rx="9.5" fill="#3fb950"/><text x="863.2" y="538.3" font-size="10.5" font-weight="600" fill="#0d1117" text-anchor="middle">PASS</text>
+<text x="731.5" y="556" font-size="12.4" fill="#9198a1">High or critical blocks,</text>
+<text x="731.5" y="573" font-size="12.4" fill="#9198a1">medium warns. Anything not</text>
+<text x="731.5" y="590" font-size="12.4" fill="#9198a1">read in full is never called</text>
+<text x="731.5" y="607" font-size="12.4" fill="#9198a1">clean.</text>
+<line x1="816.8" y1="470" x2="816.8" y2="379" stroke="#4c8df6" stroke-width="1.6"/><path d="M811.8 386 L816.8 379 L821.8 386" fill="none" stroke="#4c8df6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="825.8" y="428.5" font-size="12" font-weight="500" fill="#79b0ff">verdict</text>
+<rect x="44" y="657" width="269.1" height="24" rx="12" fill="#0d1117" stroke="#3d444d"/><text x="178.6" y="673.1" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">+ local antivirus: Microsoft Defender, ClamAV</text>
+<rect x="323.1" y="657" width="230.8" height="24" rx="12" fill="#0d1117" stroke="#3d444d"/><text x="438.5" y="673.1" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">+ known vulnerabilities: OSV (--online)</text>
+<rect x="563.9" y="657" width="163.7" height="24" rx="12" fill="#0d1117" stroke="#3d444d"/><text x="645.8" y="673.1" font-size="11.5" font-weight="500" fill="#f0f6fc" text-anchor="middle">+ config watch: pah watch</text>
+</svg>

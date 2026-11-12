@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" role="img" aria-labelledby="title desc" font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif'>
+<title id="title">작동 방식</title><desc id="desc">에이전트가 실행하는 모든 명령은 먼저 가드를 거칩니다. 설치·설정 명령이면 프로젝트 전체를 검사한 뒤에만 실행됩니다.</desc>
+<rect x="0.5" y="0.5" width="959" height="719" rx="15.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="28" y="42" font-size="20" font-weight="700" fill="#1f2328">작동 방식</text>
+<text x="28" y="66" font-size="13.5" fill="#59636e">에이전트가 실행하는 모든 명령은 먼저 가드를 거칩니다. 설치·설정 명령이면 프로젝트 전체를 검사한 뒤에만 실행됩니다.</text>
+<rect x="28" y="104" width="184" height="288" rx="12" fill="#f6f8fa" stroke="#d1d9e0"/><text x="42" y="130" font-size="13.5" font-weight="700" fill="#1f2328">에이전트가 다루는 것</text>
+<rect x="42" y="156" width="156" height="23" rx="6" fill="#ffffff" stroke="#d1d9e0"/>
+<rect x="50" y="164" width="7" height="7" rx="2" fill="#818b98"/>
+<text x="64" y="171.8" font-size="12" fill="#1f2328">Git 레포지토리</text>
+<rect x="42" y="185" width="156" height="23" rx="6" fill="#ffffff" stroke="#d1d9e0"/>
+<rect x="50" y="193" width="7" height="7" rx="2" fill="#818b98"/>
+<text x="64" y="200.8" font-size="12" fill="#1f2328">패키지: npm, PyPI …</text>
+<rect x="42" y="214" width="156" height="23" rx="6" fill="#ffffff" stroke="#d1d9e0"/>
+<rect x="50" y="222" width="7" height="7" rx="2" fill="#818b98"/>
+<text x="64" y="229.8" font-size="12" fill="#1f2328">에이전트 스킬</text>
+<rect x="42" y="243" width="156" height="23" rx="6" fill="#ffffff" stroke="#d1d9e0"/>
+<rect x="50" y="251" width="7" height="7" rx="2" fill="#818b98"/>
+<text x="64" y="258.8" font-size="12" fill="#1f2328">MCP 서버</text>
+<rect x="42" y="272" width="156" height="23" rx="6" fill="#ffffff" stroke="#d1d9e0"/>
+<rect x="50" y="280" width="7" height="7" rx="2" fill="#818b98"/>
+<text x="64" y="287.8" font-size="12" fill="#1f2328">압축 파일·다운로드</text>
+<rect x="42" y="301" width="156" height="23" rx="6" fill="#ffffff" stroke="#d1d9e0"/>
+<rect x="50" y="309" width="7" height="7" rx="2" fill="#818b98"/>
+<text x="64" y="316.8" font-size="12" fill="#1f2328">AGENTS.md·CLAUDE.md</text>
+<rect x="268" y="104" width="188" height="288" rx="12" fill="#f6f8fa" stroke="#d1d9e0"/><text x="282" y="130" font-size="13.5" font-weight="700" fill="#1f2328">내 AI 에이전트</text>
+<rect x="282" y="156" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="320" y="171.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Claude Code</text>
+<rect x="366" y="156" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="404" y="171.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Codex</text>
+<rect x="282" y="186" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="320" y="201.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Gemini CLI</text>
+<rect x="366" y="186" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="404" y="201.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Antigravity</text>
+<rect x="282" y="216" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="320" y="231.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Cursor</text>
+<rect x="366" y="216" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="404" y="231.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Copilot</text>
+<rect x="282" y="246" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="320" y="261.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Devin</text>
+<rect x="366" y="246" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="404" y="261.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Kiro</text>
+<rect x="324" y="276" width="76" height="23" rx="11.5" fill="#ffffff" stroke="#d1d9e0"/>
+<text x="362" y="291.8" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">Cline</text>
+<rect x="512" y="104" width="208" height="288" rx="12" fill="#ebf2fe" stroke="#2f6fde"/>
+<g transform="translate(526 117) scale(0.2200)"><rect width="100" height="100" rx="18" fill="#2f6fde"/><path d="M50 17 L76 26 L76 50 Q74 72 50 84 Q26 72 24 50 L24 26 Z" fill="#ffffff"/><path d="M36 50 L43 43 L48 49 L60 35 L67 42 L48 62 Z" fill="#2f6fde"/></g>
+<text x="556" y="133" font-size="14" font-weight="700" fill="#1f2328">가드</text>
+<text x="592.5" y="133" font-size="11.5" font-weight="500" fill="#1f5bc6">도구 실행 전 훅</text>
+<text x="526" y="160" font-size="12.2" fill="#1f2328">명령마다 확인합니다: 내려받아</text>
+<text x="526" y="177.5" font-size="12.2" fill="#1f2328">실행, 디코딩해 실행, 자격 증명</text>
+<text x="526" y="195" font-size="12.2" fill="#1f2328">읽기, 지속성, 승인 끄기, 비슷한</text>
+<text x="526" y="212.5" font-size="12.2" fill="#1f2328">이름의 패키지, 레지스트리 변경.</text>
+<line x1="526" y1="229.0" x2="706" y2="229.0" stroke="#2f6fde" stroke-opacity="0.35"/>
+<text x="526" y="244" font-size="12.2" font-weight="600" fill="#1f5bc6">설치·설정 명령(npm install, pip</text>
+<text x="526" y="261.5" font-size="12.2" font-weight="600" fill="#1f5bc6">install -e ., make, pytest)은</text>
+<text x="526" y="279" font-size="12.2" font-weight="600" fill="#1f5bc6">프로젝트를 먼저 검사합니다.</text>
+<rect x="776" y="104" width="156" height="288" rx="12" fill="#f6f8fa" stroke="#d1d9e0"/><text x="790" y="130" font-size="13.5" font-weight="700" fill="#1f2328">결과</text>
+<rect x="790" y="148" width="56" height="20" rx="10" fill="#cf222e"/><text x="818" y="162" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle">BLOCK</text>
+<text x="790" y="184" font-size="12" fill="#1f2328">거부. 아무것도</text>
+<text x="790" y="200" font-size="12" fill="#1f2328">실행되지 않습니다.</text>
+<rect x="790" y="222" width="51.4" height="20" rx="10" fill="#9a6700"/><text x="815.7" y="236" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle">WARN</text>
+<text x="790" y="258" font-size="12" fill="#1f2328">나에게 묻습니다.</text>
+<rect x="790" y="280" width="46.9" height="20" rx="10" fill="#1a7f37"/><text x="813.5" y="294" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle">PASS</text>
+<text x="790" y="316" font-size="12" fill="#1f2328">에이전트 자체</text>
+<text x="790" y="332" font-size="12" fill="#1f2328">규칙대로.</text>
+<text x="790" y="363" font-size="11.5" fill="#59636e">가드는 ‘허용’이라고</text>
+<text x="790" y="378" font-size="11.5" fill="#59636e">답하지 않습니다.</text>
+<line x1="218" y1="222" x2="262" y2="222" stroke="#818b98" stroke-width="1.6"/><path d="M255 217 L262 222 L255 227" fill="none" stroke="#818b98" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="240" y="199" font-size="12" font-weight="500" fill="#59636e" text-anchor="middle">클론,</text><text x="240" y="213" font-size="12" font-weight="500" fill="#59636e" text-anchor="middle">읽기</text>
+<line x1="462" y1="222" x2="506" y2="222" stroke="#2f6fde" stroke-width="1.6"/><path d="M499 217 L506 222 L499 227" fill="none" stroke="#2f6fde" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="484" y="199" font-size="12" font-weight="500" fill="#1f5bc6" text-anchor="middle">모든</text><text x="484" y="213" font-size="12" font-weight="500" fill="#1f5bc6" text-anchor="middle">도구 호출</text>
+<line x1="726" y1="222" x2="770" y2="222" stroke="#2f6fde" stroke-width="1.6"/><path d="M763 217 L770 222 L763 227" fill="none" stroke="#2f6fde" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="748" y="199" font-size="12" font-weight="500" fill="#1f5bc6" text-anchor="middle">명령</text><text x="748" y="213" font-size="12" font-weight="500" fill="#1f5bc6" text-anchor="middle">검사</text>
+<rect x="28" y="444" width="904" height="250" rx="12" fill="#f6f8fa" stroke="#d1d9e0"/>
+<line x1="616" y1="394" x2="616" y2="441" stroke="#2f6fde" stroke-width="1.6"/><path d="M611 434 L616 441 L621 434" fill="none" stroke="#2f6fde" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="625" y="421.5" font-size="12" font-weight="500" fill="#1f5bc6">설치·설정: 프로젝트 검사</text>
+<text x="44" y="472" font-size="13.5" font-weight="700" fill="#1f2328">검사 안에서 일어나는 일</text>
+<rect x="44" y="488" width="198.5" height="150" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="66" cy="510" r="11" fill="#2f6fde"/>
+<text x="66" y="514.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="84" y="514.5" font-size="13" font-weight="700" fill="#1f2328">스스로 실행되는 것</text>
+<text x="84" y="530.5" font-size="13" font-weight="700" fill="#1f2328">찾기</text>
+<text x="58" y="554" font-size="12.4" fill="#59636e">에이전트 훅, npm·pip</text>
+<text x="58" y="571" font-size="12.4" fill="#59636e">라이프사이클 스크립트, IDE</text>
+<text x="58" y="588" font-size="12.4" fill="#59636e">작업, 개발 컨테이너, 빌드</text>
+<text x="58" y="605" font-size="12.4" fill="#59636e">스크립트, git 훅, 지시 파일과</text>
+<text x="58" y="622" font-size="12.4" fill="#59636e">그것들이 실행하는 파일.</text>
+<line x1="246.5" y1="563" x2="264.5" y2="563" stroke="#818b98" stroke-width="1.6"/><path d="M257.5 558 L264.5 563 L257.5 568" fill="none" stroke="#818b98" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="268.5" y="488" width="198.5" height="150" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="290.5" cy="510" r="11" fill="#2f6fde"/>
+<text x="290.5" y="514.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<text x="308.5" y="514.5" font-size="13" font-weight="700" fill="#1f2328">전부 읽기</text>
+<text x="282.5" y="554" font-size="12.4" fill="#59636e">파일을 자르지 않고 끝까지.</text>
+<text x="282.5" y="571" font-size="12.4" fill="#59636e">Base64·hex·이스케이프를</text>
+<text x="282.5" y="588" font-size="12.4" fill="#59636e">풀고, 숨은 유니코드, 패딩,</text>
+<text x="282.5" y="605" font-size="12.4" fill="#59636e">압축 파일, 이름을 속인</text>
+<text x="282.5" y="622" font-size="12.4" fill="#59636e">바이너리를 찾습니다.</text>
+<line x1="471" y1="563" x2="489" y2="563" stroke="#818b98" stroke-width="1.6"/><path d="M482 558 L489 563 L482 568" fill="none" stroke="#818b98" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="493" y="488" width="198.5" height="150" rx="10" fill="#ffffff" stroke="#d1d9e0"/>
+<circle cx="515" cy="510" r="11" fill="#2f6fde"/>
+<text x="515" y="514.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<text x="533" y="514.5" font-size="13" font-weight="700" fill="#1f2328">맥락으로 판단</text>
+<text x="507" y="554" font-size="12.4" fill="#59636e">같은 줄도 훅에서는 critical,</text>
+<text x="507" y="571" font-size="12.4" fill="#59636e">코드에서는 high, 문서에서는</text>
+<text x="507" y="588" font-size="12.4" fill="#59636e">조용히. 다운로드는 호스트로</text>
+<text x="507" y="605" font-size="12.4" fill="#59636e">판단하고, 조합은 심각도를</text>
+<text x="507" y="622" font-size="12.4" fill="#59636e">올립니다.</text>
+<line x1="695.5" y1="563" x2="713.5" y2="563" stroke="#818b98" stroke-width="1.6"/><path d="M706.5 558 L713.5 563 L706.5 568" fill="none" stroke="#818b98" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="717.5" y="488" width="198.5" height="150" rx="10" fill="#ffffff" stroke="#2f6fde"/>
+<circle cx="739.5" cy="510" r="11" fill="#2f6fde"/>
+<text x="739.5" y="514.2" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+<text x="757.5" y="514.5" font-size="13" font-weight="700" fill="#1f2328">판정</text>
+<rect x="731.5" y="541" width="52.2" height="19" rx="9.5" fill="#cf222e"/><text x="757.6" y="554.3" font-size="10.5" font-weight="600" fill="#ffffff" text-anchor="middle">BLOCK</text>
+<rect x="788.7" y="541" width="47.8" height="19" rx="9.5" fill="#9a6700"/><text x="812.6" y="554.3" font-size="10.5" font-weight="600" fill="#ffffff" text-anchor="middle">WARN</text>
+<rect x="841.5" y="541" width="43.5" height="19" rx="9.5" fill="#1a7f37"/><text x="863.2" y="554.3" font-size="10.5" font-weight="600" fill="#ffffff" text-anchor="middle">PASS</text>
+<text x="731.5" y="572" font-size="12.4" fill="#59636e">high·critical은 차단, medium은</text>
+<text x="731.5" y="589" font-size="12.4" fill="#59636e">경고. 끝까지 읽지 못한 것은</text>
+<text x="731.5" y="606" font-size="12.4" fill="#59636e">깨끗하다고 하지 않습니다.</text>
+<line x1="816.8" y1="486" x2="816.8" y2="395" stroke="#2f6fde" stroke-width="1.6"/><path d="M811.8 402 L816.8 395 L821.8 402" fill="none" stroke="#2f6fde" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="825.8" y="444.5" font-size="12" font-weight="500" fill="#1f5bc6">판정</text>
+<rect x="44" y="656" width="243.3" height="24" rx="12" fill="#ffffff" stroke="#d1d9e0"/><text x="165.6" y="672.1" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">+ 로컬 백신: Microsoft Defender, ClamAV</text>
+<rect x="297.3" y="656" width="188.9" height="24" rx="12" fill="#ffffff" stroke="#d1d9e0"/><text x="391.7" y="672.1" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">+ 알려진 취약점: OSV (--online)</text>
+<rect x="496.2" y="656" width="144.3" height="24" rx="12" fill="#ffffff" stroke="#d1d9e0"/><text x="568.3" y="672.1" font-size="11.5" font-weight="500" fill="#1f2328" text-anchor="middle">+ 설정 감시: pah watch</text>
+</svg>

